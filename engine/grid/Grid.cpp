@@ -4,7 +4,7 @@
 //-----------------------------------------------------------------------------
 #include "Grid.h"
 #include "console/engineAPI.h"
-#include "interface/ConsoleTypes.h"
+#include "ConsoleTypes.h"
 // #include "core/Globals.h"
 namespace ElfGrid {
 

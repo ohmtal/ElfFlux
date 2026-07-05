@@ -3,13 +3,15 @@
 // SPDX-License-Identifier: MIT
 //-----------------------------------------------------------------------------
 // ConsoleGuiObject using modified dk_console
+// FIXME port to imgui/ohmflux ImConsole
 //-----------------------------------------------------------------------------
 #include "console/engineAPI.h"
 #include "console/script.h"
-#include "interface/elfResource.h"
 #include "raylib.h"
 #include "raymath.h"
 #include "core/strings/stringUnit.h"
+
+#include "elfResource.h"
 
 #define DK_CONSOLE_IMPLEMENTATION
 #include "dk/dk_console.h"

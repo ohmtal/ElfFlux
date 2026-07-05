@@ -1,9 +1,11 @@
-# ElfFlux 
+# ![icon](res/icon_32.png) ElfFlux 
 
-## NOTE: in progress: putting the parts together....
+
+
+## STATUS: early state ...
 
 Game Engine using:
 
 - [ElfScript](https://github.com/ohmtal/ElfScript)
 - [raylib-elfscript](https://github.com/ohmtal/raylib-elfscript)
-- ...
+- TODO imgui / raylib / ohmFlux imGui stuff

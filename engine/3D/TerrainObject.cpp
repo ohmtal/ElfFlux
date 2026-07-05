@@ -13,9 +13,10 @@
 #include "raylib.h"
 #include "raymath.h"
 
-#include "interface/elfTools.h"
-#include "interface/ConsoleTypes.h"
-#include "interface/elfResource.h"
+#include "elfTools.h"
+#include "ConsoleTypes.h"
+#include "elfResource.h"
+
 #include "SceneObject.h"
 
 

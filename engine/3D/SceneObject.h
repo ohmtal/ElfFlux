@@ -6,11 +6,11 @@
 //-----------------------------------------------------------------------------
 #pragma once
 
-#include "interface/ConsoleTypes.h"
-
 #include "console/engineAPI.h"
 #include "console/simSet.h"
 #include "core/util/tVector.h"
+
+#include "ConsoleTypes.h"
 
 namespace ElfObjects {
 

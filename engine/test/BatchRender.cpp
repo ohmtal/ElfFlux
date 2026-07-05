@@ -1,8 +1,8 @@
 // #include "elfObjects.h"
 #include "console/engineAPI.h"
-#include "math/mMathFn.h"
-#include "interface/ConsoleTypes.h"
 #include "console/consoleInternal.h"
+#include "math/mMathFn.h"
+#include "ConsoleTypes.h"
 
 // -------------------------------------------------------------------------------------------
 // BatchRender

@@ -4,12 +4,16 @@
 //-----------------------------------------------------------------------------
 
 #include "console/engineAPI.h"
-#include "interface/ConsoleTypes.h"
+#include "math/mMathRand.h"
+
 #include "raylib.h"
 #include "raymath.h"
-#include "math/mMathRand.h"
-#include "interface/elfResource.h"
+
+#include "elfResource.h"
+#include "ConsoleTypes.h"
+
 #include "SceneObject.h"
+
 
 namespace ElfObjects {
 

@@ -7,7 +7,7 @@
 // #include "render/fluxRender2D.h"
 #include "console/simBase.h"
 #include "console/consoleTypes.h"
-#include "ohmflux/grid/basicgrid.h"
+#include "grid/basicgrid.h"
 
 namespace ElfGrid {
 

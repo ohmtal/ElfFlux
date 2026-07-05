@@ -182,7 +182,7 @@ CVS/
 Projects.Obsolete/
 notOpenSource/
 .kdev4
-
+*.kdev4
 
 #############
 ## Torque
@@ -209,5 +209,8 @@ removeIcon.sh
 *.ppu
 *.lps
 #######
-*.x86_64
 *.log
+*.kdev4
+*.ini
+*.core
+*.exe

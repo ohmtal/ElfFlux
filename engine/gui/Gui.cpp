@@ -3,7 +3,7 @@
 #define RAYGUI_IMPLEMENTATION
 #include "rayspice/raygui_custom.h"
 
-#include "interface/ConsoleTypes.h"
+#include "ConsoleTypes.h"
 
 
 

@@ -20,7 +20,7 @@
 #include "console/engineAPI.h"
 #include "raylib.h"
 #include "raymath.h"
-#include <interface/ConsoleTypes.h>
+#include "ConsoleTypes.h"
 
 namespace ElfObjects {
 
