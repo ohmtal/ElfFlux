@@ -1,0 +1,149 @@
+// -----------------------------------------------------------------------------
+//  A Script with .elf extension 
+// ./raylib-elfscript --script assets/test/test.elf
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+function CenterText(%text, %fontsize) {
+    %textWidth = MeasureText(%text,%fontSize);
+    %x = GetScreenWidth() / 2 - %textWidth / 2;
+    %y = GetScreenHeight() / 2 - %fontSize / 2;
+    return %x SPC %y;
+}
+// -----------------------------------------------------------------------------
+function Label::Draw(%this) {
+
+    DrawText(%this.text, %this.x, %this.y, %this.fontsize, %this.color, true, %this.shadowColor);
+}
+// -----------------------------------------------------------------------------
+function MainInit() {
+    $screenWidth = 800;
+    $screenHeight = 450;
+
+    SetConfigFlags( FLAG_WINDOW_RESIZABLE );
+    InitWindow($screenWidth, $screenHeight, "raylib-elfScript [core] example - basic window");
+
+    // setup console
+    $ConsoleGui = singleton ConsoleGuiObject();
+    $ConsoleFont= LoadFontEx("assets/font/JetBrainsMono-Regular.ttf", 16, 0, 250);
+    $ConsoleGui.setFont( $ConsoleFont);
+    $ConsoleGui.heightDiv = 2; //must be set here !!
+    $ConsoleGui.fontsize = 16.0; //must be set here !!
+
+    // S32 GenImageChecked( int width, int height, int checksX, int checksY, Color col1, Color col2 ) {}
+    %checkImg = GenImageChecked(256,256,8,8, WHITE,BLACK);
+    %checkTex = LoadTextureFromImage( %checkImg); //$iconImg);
+    UnloadImage(%checkImg);
+
+    $backTex =  LoadTexture("assets/texture/nebulapurple_sky_back.png");
+    $backTexRect =  "0 0" SPC getTextureSize($backTex);
+    $ScreenRect = "0 0" SPC $screenWidth SPC $screenHeight;
+
+    // icon
+    %iconImg = LoadImage("assets/texture/raylib_32x32.png");
+    SetWindowIcon(%iconImg);
+    // $iconTex = LoadTextureFromImage( %iconImg);
+    UnloadImage(%iconImg);
+
+
+    $mesh = GenMeshPlane(1.0, 1.0, 20, 20); // width, length, subdivisions
+    // $mesh = GenMeshPoly(100.0, 1.0);
+    $model = LoadModelFromMesh($mesh);
+    // $model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = tex; =>
+    SetModelMapTexture($model, %checkTex);
+    // SetModelMapColor($model, "255 255 255 196");
+
+    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
+
+    // setup text with center
+    $text  = "Hello World from raylib-elfScript!";
+    $fontSize = 30;
+    $Position = CenterText($text, $fontSize);
+
+    // example with simple Object:
+    %infoLabel = new ScriptObject() {
+        class = "Label";
+        x = 100;
+        y = 10;
+        text = "Press grave key (^) to open console";
+        fontsize = 20;
+        color = GRAY;
+        shadowColor = "100 100 150";
+    };
+    $Labels = new SimSet();
+    $Labels.add(%infoLabel);
+
+
+
+    // ---- camera
+    $camera = new Camera3DObject() {
+        position = "12.0 8.0 10.0 ";    // Camera position
+        // position = "2.0 4.0 8.0 ";    // Camera position
+        target = "0.0 0.5 0.0";      // Camera looking at point
+        up = "0.0 1.0 0.0";          // Camera up vector (rotation towards target)
+        fovy = 45.0;                  // Camera field-of-view Y
+        projection = CAMERA_PERSPECTIVE;  // Camera projection type
+    };
+
+    InitAudioDevice();
+
+    $music = LoadMusicStream("assets/music/fullhouse2026.fms.mp3");
+    if ($music > 0 ) PlayMusicStream($music);
+
+    return true;
+}
+// -----------------------------------------------------------------------------
+function MainShutDown() {
+    // no worries raylib-elfScript make the garbage collection for you :)
+    CloseAudioDevice();
+    CloseWindow();        // Close window and OpenGL context
+}
+// -----------------------------------------------------------------------------
+function rl() {
+    exec("assets/test/test.elf");
+    echo("reloaded ?!");
+}
+// -----------------------------------------------------------------------------
+function MainLoop()
+{
+    // ----- Update
+    if (IsWindowResized()) {
+        $position = CenterText($text, $fontSize);
+        $ScreenRect = "0 0" SPC GetScreenWidth() SPC GetScreenHeight();
+    }
+    UpdateMusicStream($music);
+    $camera.update(CAMERA_ORBITAL);
+
+    $hue += 30 * GetFrameTime();
+    if ($hue >= 360.0) $hue = 0.0;
+    %rainbowColor = ColorFromHSV($hue, 1.0, 1.0);
+    // ----- Draw
+    BeginDrawing();
+    ClearBackground("30 20 60");
+
+    // void DrawTexturePro( int textureId, Rectangle source, Rectangle dest, Vector2 origin, float rotation, Color tint=WHITE ) {}
+    DrawTexturePro( $backTex,$backTexRect,$ScreenRect,"0 0",0);
+
+    BeginMode3D($camera);
+    // DrawPlane("0 0 0", "10.0 10.0", GRAY);
+    DrawModel($model, "0 0 0", "10 10", WHITE); //generated plane
+    DrawCubeV("4 1 0", "1 2 1", GREEN);
+    DrawCubeV("-4 1 0", "1 2 1", "0 0 0 64");
+    DrawCubeV("0 1 4", "1 2 1", YELLOW);
+    DrawCubeV("0 1 -4", "1 2 1", %rainbowColor);
+    DrawSphere("0 1.0 0", 1.0, "20 20 200 200");
+    EndMode3D();
+
+    DrawFPS(10, 10);
+    // DrawText($text, $position.x, $position.y, $fontsize, LIGHTGRAY, true, BLACK);
+    DrawText($text, $position.x, GetScreenHeight() - $fontSize - 10, $fontsize, LIGHTGRAY, true, BLACK);
+
+    for (%i = 0; %i < $Labels.getCount(); %i++) {
+        $Labels.getObject(%i).Draw();
+    }
+
+    $ConsoleGui.update();
+    EndDrawing();
+
+
+    return 0;
+}

@@ -1,0 +1,25 @@
+# Wavefront MTL file
+# Creator: Ultimate Unwrap3D Pro v3.44
+# URL: http://www.unwrap3d.com
+# Time: Sat May 04 11:33:41 2013
+# num_materials: 2
+
+newmtl branchmat
+Ka 0.600000 0.600000 0.600000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+d 0.996078
+illum 2
+Ns 0.000000
+map_Kd appletree_twigtex.png
+
+newmtl barkmat
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+d 0.996078
+illum 2
+Ns 0.000000
+map_Kd bark_appletree.png
+
+# num_materials: 2
