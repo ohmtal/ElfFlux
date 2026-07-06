@@ -1,3 +1,11 @@
+class  GridTest {
+  public:
+   Script newTerrain( string this )...) {}
+   Script init( string this )...) {}
+   Script render( string this )...) {}
+   Script onRemove( string this )...) {}
+   Script onAdd( string this )...) {}
+};
 /*!
 @brief Base class for almost all objects involved in the simulation.
 @ingroup Console
@@ -54,7 +62,7 @@ class  SimObject {
    void setIsExpanded( bool state=true ) {}
    /*! Returns the filename the object is attached to.
 @return The name of the file the object is associated with; usually the file the object was loaded from. */
-   const char* getFilename() {}
+   const char* GetFileName() {}
    /*! Sets the object's file name and path
 @param fileName The name of the file to associate this object with. */
    void setFilename( string fileName ) {}
@@ -364,55 +372,12 @@ class  Gui : public SimObject {
     */
    int lastState;
 };
+/// Stub class
+/// 
+/// @note This is a stub class to ensure a proper class hierarchy. No 
+///       information was available for this class.
 class  LightGui : public Gui {
   public:
-   Script LightBox( string this, string light )...) {}
-};
-/*!
-@brief A script-level OOP object which allows binding of a class, superClass and arguments along with declaration of methods.
-ScriptObjects are extrodinarily powerful objects that allow defining of any type of data required. They can optionally have
-a class and a superclass defined for added control of multiple ScriptObjects through a simple class definition.
-@tsexample
-new ScriptObject(Game)
-{
-   class = "DeathMatchGame";
-   superClass = GameCore;
-   genre = "Action FPS"; // Note the new, non-Torque variable
-};
-@endtsexample
-@see SimObject
-@ingroup Console
- */
-class  ScriptObject : public SimObject {
-  public:
-   /*! @name Ungrouped
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Object
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Editing
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Persistence
-   @{ */
-   /*! */
-   /// @}
-};
-class  Lights : public ScriptObject {
-  public:
-   Script render( string this )...) {}
-   Script onRemove( string this )...) {}
-   Script onAdd( string this )...) {}
-};
-class  Main : public ScriptObject {
-  public:
-   Script loop( string this )...) {}
-   Script loadModule( string this, string setNewModuleIndex )...) {}
-   Script init( string this )...) {}
 };
 /*!
 @brief A collection of SimObjects.
@@ -524,6 +489,229 @@ class  SimSet : public SimObject {
    /*! */
    /// @}
 };
+class  SceneObject : public SimSet {
+  public:
+   /*!
+    */
+   Vector3 position;
+   /*!
+    */
+   Vector3 rotation;
+   /*!
+    */
+   Vector3 Scale;
+   /*!
+    */
+   bool Visible;
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
+};
+class  TerrainObject : public SceneObject {
+  public:
+   /*! Load or reload the terrain from the specified HeightMapFilename. */
+   bool load() {}
+   /*! Draw  heightmap */
+   void draw() {}
+   /*! Returns the exact terrain height (Y-coordinate) at the given world position. */
+   F32 getHeight( Vector3 position ) {}
+   /*! Returns the surface normal vector at the given world position. */
+   Vector3 getNormal( Vector3 position ) {}
+   /*! Performs a raycast collision check against the terrainand returns 'X Y Z Nx Ny Nz Dist' or empty string. */
+   String getRayCollision( Ray ray ) {}
+   /*! Returns the resource-manager compatible model ID of the terrain's 3D mesh. */
+   S32 getModelId() {}
+   /*!
+   You need to call load() after changing it.
+   
+    */
+   string HeightMapFilename;
+   /*!
+   You need to call load() after changing it.
+   
+    */
+   Vector3 Size;
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
+};
+/// Stub class
+/// 
+/// @note This is a stub class to ensure a proper class hierarchy. No 
+///       information was available for this class.
+class  terrain : public TerrainObject {
+  public:
+};
+class  Camera3DObject : public SimObject {
+  public:
+   Script updateFly( string this, string dt )...) {}
+   /*! Update camera position for selected mode (e.g. $CAMERA_FIRST_PERSON, $CAMERA_FREE) */
+   void update( int mode ) {}
+   /*! Update camera movement/rotation with pro parameters */
+   void updatePro( Vector3 movement, Vector3 rotation, float zoom ) {}
+   /*! Get a 3D ray trace from a screen position (e.g. mouse) */
+   Ray getScreenToWorldRay( Vector2 position ) {}
+   /*! Get a 3D ray trace from a screen position within a specific custom viewport size */
+   Ray getScreenToWorldRayEx( Vector2 position, int width, int height ) {}
+   /*! Get 2D screen space position for a 3D world space position */
+   Vector2 getWorldToScreen( Vector3 position ) {}
+   /*! Get 2D screen space position for a 3D world space position inside a specific custom viewport size */
+   Vector2 getWorldToScreenEx( Vector3 position, int width, int height ) {}
+   /*! Get the 3D camera transform matrix (view matrix) */
+   Matrix getCameraMatrix() {}
+   /*! BeginMode3D - Begins 3D mode with a Camera3DObject */
+   void Begin() {}
+   /*! EndMode3D - End 3D mode with custom camera */
+   void End() {}
+   /*! GetCameraForward */
+   Vector3 getForwardVector() {}
+   /*! GetCameraUp */
+   Vector3 getUpVector() {}
+   /*! GetCameraRight */
+   Vector3 getRightVector() {}
+   /*! Moves the camera forward/backward based on distance. If moveInWorldPlane is true, movement is locked to the XZ plane. */
+   void moveForward( float distance, bool moveInWorldPlane ) {}
+   /*! Moves the camera up/down along its local up vector. */
+   void moveUp( float distance ) {}
+   /*! Moves the camera right/left based on distance. If moveInWorldPlane is true, movement is locked to the XZ plane. */
+   void moveRight( float distance, bool moveInWorldPlane ) {}
+   /*! Moves the camera closer or further away from its target point. */
+   void moveToTarget( float delta ) {}
+   /*! Rotates the camera horizontally (yaw) around its own axis or around the target point (angle in radians). */
+   void yaw( float angle, bool rotateAroundTarget ) {}
+   /*! Rotates the camera vertically (pitch) with optional view locking (angle in radians). */
+   void pitch( float angle, bool lockView, bool rotateAroundTarget, bool rotateUp ) {}
+   /*! Tilts the camera (roll) along its view axis (angle in radians). */
+   void roll( float angle ) {}
+   /*! Returns the camera's view matrix. */
+   Matrix getViewMatrix() {}
+   /*! Returns the camera's projection matrix based on the given aspect ratio. */
+   Matrix getProjectionMatrix( float aspect ) {}
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
+   /*!
+   Camera position in world space
+   
+    */
+   Vector3 position;
+   /*!
+   Camera target point in world space
+   
+    */
+   Vector3 target;
+   /*!
+   Camera up vector (defines the orientation)
+   
+    */
+   Vector3 up;
+   /*!
+   Camera field-of-view aperture in Y (degrees) in perspective, or width in orthographic
+   
+    */
+   float fovy;
+   /*!
+   Camera projection type (CAMERA_PERSPECTIVE or CAMERA_ORTHOGRAPHIC)
+   
+    */
+   int projection;
+};
+/// Stub class
+/// 
+/// @note This is a stub class to ensure a proper class hierarchy. No 
+///       information was available for this class.
+class  camera : public Camera3DObject {
+  public:
+};
+/*!
+@brief A script-level OOP object which allows binding of a class, superClass and arguments along with declaration of methods.
+ScriptObjects are extrodinarily powerful objects that allow defining of any type of data required. They can optionally have
+a class and a superclass defined for added control of multiple ScriptObjects through a simple class definition.
+@tsexample
+new ScriptObject(Game)
+{
+   class = "DeathMatchGame";
+   superClass = GameCore;
+   genre = "Action FPS"; // Note the new, non-Torque variable
+};
+@endtsexample
+@see SimObject
+@ingroup Console
+ */
+class  ScriptObject : public SimObject {
+  public:
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
+};
+class  TerrainDemo : public ScriptObject {
+  public:
+   Script DropToGround( string this, string obj )...) {}
+   Script onMouseLeftClick( string this )...) {}
+   Script spawnScriptTree( string this, string worldPos )...) {}
+   Script render( string this )...) {}
+   Script updateSun( string this, string dt )...) {}
+   Script onRemove( string this )...) {}
+   Script onAdd( string this )...) {}
+};
+class  Main : public ScriptObject {
+  public:
+   Script loop( string this )...) {}
+   Script loadModule( string this, string setNewModuleIndex )...) {}
+   Script init( string this )...) {}
+};
 /// Stub class
 /// 
 /// @note This is a stub class to ensure a proper class hierarchy. No 
@@ -590,20 +778,15 @@ class  SimGroup : public SimSet {
 class  RootGroup : public SimGroup {
   public:
 };
-class  SceneObject : public SimSet {
+class  ModelObject : public SceneObject {
   public:
+   /*! Draws this object instance and all its children polymorphically. */
+   void draw() {}
    /*!
+   The script ID of the raylib model.
+   
     */
-   Vector3 Position;
-   /*!
-    */
-   Vector3 Rotation;
-   /*!
-    */
-   Vector3 Scale;
-   /*!
-    */
-   bool Visible;
+   int ModelId;
    /*! @name Ungrouped
    @{ */
    /*! */
@@ -621,14 +804,58 @@ class  SceneObject : public SimSet {
    /*! */
    /// @}
 };
-class  RenderTextureObject : public SimObject {
+class  Grid : public SimObject {
   public:
-   /*! resize (recreate) a render texture */
-   bool Resize( int width, int height, bool copyImage=true, Color copyColor=WHITE ) {}
-   /*! Begins drawing to render texture */
-   void BeginTextureMode() {}
-   /*!  End drawing to render texture */
-   void EndTextureMode() {}
+   Script addRandomMud( string this )...) {}
+   /*! param: area: x y w h, F32 SquareSize */
+   bool init( Rectangle area, float squareSize ) {}
+   /*! get count of nodes */
+   S32 getNodeCount() {}
+   /*! get count of horizontal nodes  */
+   S32 getNodeCountX() {}
+   /*! get count of vertical nodes  */
+   S32 getNodeCountY() {}
+   /*! x,y; return top left pos of a node by the world values  */
+   Vector2 getPos( float x, float y ) {}
+   /*! x,y; return flags  */
+   S32 getFlags( float x, float y ) {}
+   /*! x,y; return nodeidx x y flags  */
+   const char* getNodeByPos( float x, float y ) {}
+   /*! x,y; return S32 nodeidx  */
+   S32 getNodeIdByPos( float x, float y ) {}
+   /*! S32 NodeIndex,  return nodeidx x y z flags  */
+   const char* getNode( int nodeIndex ) {}
+   /*! x y w h,  return nodeidx nodeidx ..  */
+   const char* getNodesByRect( Rectangle area ) {}
+   /*! S32 NodeIndex, S32 Direction,  return nodeidx x y flags Directions:1  2  34  X  56  7  8 */
+   const char* getNeighbour( int nodeIndex, int direction ) {}
+   /*! x,y; set flags  */
+   bool setFlags( float x, float y, uint flags ) {}
+   /*! x,y, idx[0..9], Value; set int value  */
+   bool setIntValue( float x, float y, int idx, int value ) {}
+   /*! x,y, U8 weight */
+   bool setWeight( float x, float y, int weigth ) {}
+   /*! x,y, idx[0..9] */
+   S32 getIntValue( float x, float y, int idx ) {}
+   /*! x,y, U8 value */
+   bool setIntValueByNodeId( int nodeId, int idx, int value ) {}
+   /*! nodeId, idx[0..9] */
+   S32 getIntValueByNodeId( int nodeId, int idx ) {}
+   /*! Display Infos on Console */
+   void getinfo( bool listNodes=false ) {}
+   /*! findPath (Vector2 start, Vector2 goal, bool smoothPath = false) - Create a path between the two points.Warning smoothPath use line of sight and ignore the weight !!!!! */
+   S32 findPath( Vector2 start, Vector2 goal, bool smoothPath=false ) {}
+   S32 getWeightByNodeId( int nodeId ) {}
+   /*! nodeId, U8 weight */
+   bool setWeightByNodeId( int nodeId, int weight ) {}
+   /*! return centered rectI pos / extent  */
+   Rectangle getNodeRectbyId( int nodeId ) {}
+   /*! getPathCost (Vector2 start, Vector2 goal) - Create a path between the two points and Return the lenth of the path */
+   S32 getPathCost( Vector2 start, Vector2 goal, bool smoothPath=true ) {}
+   /*! Fill the table with all path costs - expensive! */
+   void compilePathCosts() {}
+   /*! return nodecount of to points to calculated closed path it -1 then it failed */
+   S32 getNodeToNodeCosts( Vector2 start, Vector2 goal, bool smoothPath=true ) {}
    /*! @name Ungrouped
    @{ */
    /*! */
@@ -645,199 +872,13 @@ class  RenderTextureObject : public SimObject {
    @{ */
    /*! */
    /// @}
-   /*!
-   Set the width of the RenderTexture
-   
-    */
-   int width;
-   /*!
-   Set the width of the RenderTexture
-   
-    */
-   int height;
-   /*!
-   get the Id of the Texture (readonly )
-   
-    */
-   int Texture;
-};
-class  Camera2DObject : public SimObject {
-  public:
-   /*! Get 2D screen space position for a 2D camera world space position */
-   Vector2 getWorldToScreen( Vector2 position ) {}
-   /*! Get 2D world space position for a 2D camera screen space position (e.g. mouse to world) */
-   Vector2 getScreenToWorld( Vector2 position ) {}
-   /*! Get the 2D camera transform matrix */
-   Matrix getCameraMatrix() {}
-   /*! @name Ungrouped
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Object
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Editing
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Persistence
-   @{ */
-   /*! */
-   /// @}
-   /*!
-   Camera screen offset
-   
-    */
-   Vector2 offset;
-   /*!
-   Camera world target
-   
-    */
-   Vector2 target;
-   /*!
-   Camera rotation in degrees
-   
-    */
-   float Rotation;
-   /*!
-   Camera zoom level
-   
-    */
-   float zoom;
-};
-class  Camera3DObject : public SimObject {
-  public:
-   /*! Update camera position for selected mode (e.g. $CAMERA_FIRST_PERSON, $CAMERA_FREE) */
-   void Update( int mode ) {}
-   /*! Update camera movement/rotation with pro parameters */
-   void updatePro( Vector3 movement, Vector3 rotation, float zoom ) {}
-   /*! Get a 3D ray trace from a screen position (e.g. mouse) */
-   Ray getScreenToWorldRay( Vector2 position ) {}
-   /*! Get a 3D ray trace from a screen position within a specific custom viewport size */
-   Ray getScreenToWorldRayEx( Vector2 position, int width, int height ) {}
-   /*! Get 2D screen space position for a 3D world space position */
-   Vector2 getWorldToScreen( Vector3 position ) {}
-   /*! Get 2D screen space position for a 3D world space position inside a specific custom viewport size */
-   Vector2 getWorldToScreenEx( Vector3 position, int width, int height ) {}
-   /*! Get the 3D camera transform matrix (view matrix) */
-   Matrix getCameraMatrix() {}
-   /*! BeginMode3D - Begins 3D mode with a Camera3DObject */
-   void Begin() {}
-   /*! EndMode3D - End 3D mode with custom camera */
-   void End() {}
-   /*! GetCameraForward */
-   Vector3 getForwardVector() {}
-   /*! GetCameraUp */
-   Vector3 getUpVector() {}
-   /*! GetCameraRight */
-   Vector3 getRightVector() {}
-   /*! Moves the camera forward/backward based on distance. If moveInWorldPlane is true, movement is locked to the XZ plane. */
-   void moveForward( float distance, bool moveInWorldPlane ) {}
-   /*! Moves the camera up/down along its local up vector. */
-   void moveUp( float distance ) {}
-   /*! Moves the camera right/left based on distance. If moveInWorldPlane is true, movement is locked to the XZ plane. */
-   void moveRight( float distance, bool moveInWorldPlane ) {}
-   /*! Moves the camera closer or further away from its target point. */
-   void moveToTarget( float delta ) {}
-   /*! Rotates the camera horizontally (yaw) around its own axis or around the target point (angle in radians). */
-   void yaw( float angle, bool rotateAroundTarget ) {}
-   /*! Rotates the camera vertically (pitch) with optional view locking (angle in radians). */
-   void pitch( float angle, bool lockView, bool rotateAroundTarget, bool rotateUp ) {}
-   /*! Tilts the camera (roll) along its view axis (angle in radians). */
-   void roll( float angle ) {}
-   /*! Returns the camera's view matrix. */
-   Matrix getViewMatrix() {}
-   /*! Returns the camera's projection matrix based on the given aspect ratio. */
-   Matrix getProjectionMatrix( float aspect ) {}
-   /*! @name Ungrouped
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Object
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Editing
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Persistence
-   @{ */
-   /*! */
-   /// @}
-   /*!
-   Camera position in world space
-   
-    */
-   Vector3 Position;
-   /*!
-   Camera target point in world space
-   
-    */
-   Vector3 target;
-   /*!
-   Camera up vector (defines the orientation)
-   
-    */
-   Vector3 up;
-   /*!
-   Camera field-of-view aperture in Y (degrees) in perspective, or width in orthographic
-   
-    */
-   float fovy;
-   /*!
-   Camera projection type (CAMERA_PERSPECTIVE or CAMERA_ORTHOGRAPHIC)
-   
-    */
-   int projection;
-};
-class  LightObject : public SimObject {
-  public:
-   /*! Update the shader with the current values */
-   bool Update() {}
-   /*!
-   Id of the shader object
-   
-    */
-   int shaderId;
-   /*!
-   Type of Light:LIGHT_DIRECTIONAL=0 LIGHT_POINT=1
-   
-    */
-   int type;
-   /*!
-   is enabled
-   
-    */
-   bool enabled;
-   /*!
-   position of the light
-   
-    */
-   Vector3 Position;
-   /*!
-   target of the light
-   
-    */
-   Vector3 target;
-   /*!
-   color of the light
-   
-    */
-   Color color;
-   /*!
-   attenuation of the light
-   
-    */
-   float attenuation;
 };
 class  ConsoleGuiObject : public SimObject {
   public:
    /*! set the console font */
    bool setFont( int fontId ) {}
    /*! update the console */
-   void Update() {}
+   void update() {}
    /*! @name Ungrouped
    @{ */
    /*! */
@@ -869,52 +910,6 @@ class  ConsoleGuiObject : public SimObject {
    
     */
    float heightDiv;
-};
-class  StarField : public SimObject {
-  public:
-   /*! update and render startfield */
-   void loop() {}
-   /*!
-   Set the mStars count.
-   
-    */
-   int count;
-   /*!
-   mode 0=lines, 1=rectangles, 2=circles
-   
-    */
-   int mode;
-   /*!
-   set the mSpeed of the mStars
-   
-    */
-   float speed;
-   /*!
-   color of the mStars
-   
-    */
-   Color color;
-   /*!
-   color of the background
-   
-    */
-   Color BackgroundColor;
-   /*! @name Ungrouped
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Object
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Editing
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Persistence
-   @{ */
-   /*! */
-   /// @}
 };
 class  BatchRender : public SimObject {
   public:
@@ -1034,124 +1029,35 @@ class  BatchRender : public SimObject {
    /*! */
    /// @}
 };
-class  Grid : public SimObject {
+class  StarField : public SimObject {
   public:
-   /*! param: area: x y w h, F32 SquareSize */
-   bool init( Rectangle area, float squareSize ) {}
-   /*! get count of nodes */
-   S32 getNodeCount() {}
-   /*! get count of horizontal nodes  */
-   S32 getNodeCountX() {}
-   /*! get count of vertical nodes  */
-   S32 getNodeCountY() {}
-   /*! x,y; return top left pos of a node by the world values  */
-   Vector2 getPos( float x, float y ) {}
-   /*! x,y; return flags  */
-   S32 getFlags( float x, float y ) {}
-   /*! x,y; return nodeidx x y flags  */
-   const char* getNodeByPos( float x, float y ) {}
-   /*! x,y; return S32 nodeidx  */
-   S32 getNodeIdByPos( float x, float y ) {}
-   /*! S32 NodeIndex,  return nodeidx x y z flags  */
-   const char* getNode( int nodeIndex ) {}
-   /*! x y w h,  return nodeidx nodeidx ..  */
-   const char* getNodesByRect( Rectangle area ) {}
-   /*! S32 NodeIndex, S32 Direction,  return nodeidx x y flags Directions:1  2  34  X  56  7  8 */
-   const char* getNeighbour( int nodeIndex, int direction ) {}
-   /*! x,y; set flags  */
-   bool setFlags( float x, float y, uint flags ) {}
-   /*! x,y, idx[0..9], Value; set int value  */
-   bool setIntValue( float x, float y, int idx, int value ) {}
-   /*! x,y, U8 weight */
-   bool setWeight( float x, float y, int weigth ) {}
-   /*! x,y, idx[0..9] */
-   S32 getIntValue( float x, float y, int idx ) {}
-   /*! x,y, U8 value */
-   bool setIntValueByNodeId( int nodeId, int idx, int value ) {}
-   /*! nodeId, idx[0..9] */
-   S32 getIntValueByNodeId( int nodeId, int idx ) {}
-   /*! Display Infos on Console */
-   void getinfo( bool listNodes=false ) {}
-   /*! findPath (Vector2 start, Vector2 goal, bool smoothPath = false) - Create a path between the two points.Warning smoothPath use line of sight and ignore the weight !!!!! */
-   S32 findPath( Vector2 start, Vector2 goal, bool smoothPath=false ) {}
-   S32 getWeightByNodeId( int nodeId ) {}
-   /*! nodeId, U8 weight */
-   bool setWeightByNodeId( int nodeId, int weight ) {}
-   /*! return centered rectI pos / extent  */
-   Rectangle getNodeRectbyId( int nodeId ) {}
-   /*! getPathCost (Vector2 start, Vector2 goal) - Create a path between the two points and Return the lenth of the path */
-   S32 getPathCost( Vector2 start, Vector2 goal, bool smoothPath=true ) {}
-   /*! Fill the table with all path costs - expensive! */
-   void compilePathCosts() {}
-   /*! return nodecount of to points to calculated closed path it -1 then it failed */
-   S32 getNodeToNodeCosts( Vector2 start, Vector2 goal, bool smoothPath=true ) {}
-   /*! @name Ungrouped
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Object
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Editing
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Persistence
-   @{ */
-   /*! */
-   /// @}
-};
-class  TerrainObject : public SceneObject {
-  public:
-   /*! Load or reload the terrain from the specified HeightMapFilename. */
-   bool load() {}
-   /*! Draw  heightmap */
-   void draw() {}
-   /*! Returns the exact terrain height (Y-coordinate) at the given world position. */
-   F32 getHeight( Vector3 position ) {}
-   /*! Returns the surface normal vector at the given world position. */
-   Vector3 getNormal( Vector3 position ) {}
-   /*! Performs a raycast collision check against the terrainand returns 'X Y Z Nx Ny Nz Dist' or empty string. */
-   String getRayCollision( Ray ray ) {}
-   /*! Returns the resource-manager compatible model ID of the terrain's 3D mesh. */
-   S32 getModelId() {}
+   /*! update and render startfield */
+   void loop() {}
    /*!
-   You need to call load() after changing it.
+   Set the mStars count.
    
     */
-   string HeightMapFilename;
+   int count;
    /*!
-   You need to call load() after changing it.
+   mode 0=lines, 1=rectangles, 2=circles
    
     */
-   Vector3 Size;
-   /*! @name Ungrouped
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Object
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Editing
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Persistence
-   @{ */
-   /*! */
-   /// @}
-};
-class  ModelObject : public SceneObject {
-  public:
-   /*! Draws this object instance and all its children polymorphically. */
-   void draw() {}
+   int mode;
    /*!
-   The script ID of the raylib model.
+   set the mSpeed of the mStars
    
     */
-   int ModelId;
+   float speed;
+   /*!
+   color of the mStars
+   
+    */
+   Color color;
+   /*!
+   color of the background
+   
+    */
+   Color BackgroundColor;
    /*! @name Ungrouped
    @{ */
    /*! */
@@ -2179,1000 +2085,110 @@ function Message::onRemove(%this)
    /*! */
    /// @}
 };
+class  RenderTextureObject : public SimObject {
+  public:
+   /*! resize (recreate) a render texture */
+   bool Resize( int width, int height, bool copyImage=true, Color copyColor=WHITE ) {}
+   /*! Begins drawing to render texture */
+   void BeginTextureMode() {}
+   /*!  End drawing to render texture */
+   void EndTextureMode() {}
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
+   /*!
+   Set the width of the RenderTexture
+   
+    */
+   int width;
+   /*!
+   Set the width of the RenderTexture
+   
+    */
+   int height;
+   /*!
+   get the Id of the Texture (readonly )
+   
+    */
+   int Texture;
+};
+class  Camera2DObject : public SimObject {
+  public:
+   /*! Get 2D screen space position for a 2D camera world space position */
+   Vector2 getWorldToScreen( Vector2 position ) {}
+   /*! Get 2D world space position for a 2D camera screen space position (e.g. mouse to world) */
+   Vector2 getScreenToWorld( Vector2 position ) {}
+   /*! Get the 2D camera transform matrix */
+   Matrix getCameraMatrix() {}
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
+   /*!
+   Camera screen offset
+   
+    */
+   Vector2 offset;
+   /*!
+   Camera world target
+   
+    */
+   Vector2 target;
+   /*!
+   Camera rotation in degrees
+   
+    */
+   float rotation;
+   /*!
+   Camera zoom level
+   
+    */
+   float zoom;
+};
 namespace Global {
-   Script createLights()...) {}
+   Script creategridtest()...) {}
+   Script createTerrainDemo()...) {}
    Script updateDocu()...) {}
    Script rl()...) {}
    Script MainLoop()...) {}
    Script MainShutDown()...) {}
    Script MainInit()...) {}
-   /*! Initialize window and OpenGL context */
-   void InitWindow( int width, int height, String title ) {}
-   /*! Close window and unload OpenGL context */
-   void CloseWindow() {}
-   /*! Check if application should close (KEY_ESCAPE pressed or windows close icon clicked) */
-   bool WindowShouldClose() {}
-   /*! Check if window has been initialized successfully */
-   bool IsWindowReady() {}
-   /*! Check if window is currently fullscreen */
-   bool IsWindowFullscreen() {}
-   /*! Check if window is currently hidden */
-   bool IsWindowHidden() {}
-   /*! Check if window is currently minimized */
-   bool IsWindowMinimized() {}
-   /*! Check if window is currently maximized */
-   bool IsWindowMaximized() {}
-   /*! Check if window is currently focused */
-   bool IsWindowFocused() {}
-   /*! Check if window has been resized last frame */
-   bool IsWindowResized() {}
-   /*! Check if one specific window flag is enabled */
-   bool IsWindowState( unsigned int flag ) {}
-   /*! Set window configuration state using flags */
-   void SetWindowState( unsigned int flags ) {}
-   /*! Clear window configuration state flags */
-   void ClearWindowState( unsigned int flags ) {}
-   /*! Toggle window state: fullscreen/windowed, resizes monitor to match window resolution */
-   void ToggleFullscreen() {}
-   /*! Toggle window state: borderless windowed, resizes window to match monitor resolution */
-   void ToggleBorderlessWindowed() {}
-   /*! Set window state: maximized, if resizable */
-   void MaximizeWindow() {}
-   /*! Set window state: minimized, if resizable */
-   void MinimizeWindow() {}
-   /*! Restore window from being minimized/maximized */
-   void RestoreWindow() {}
-   /*! Set icon for window (single image, RGBA 32bit) */
-   void SetWindowIcon( int imageId ) {}
-   /*! Set icon for window (multiple images, RGBA 32bit) */
-   void SetWindowIcons( Vector<S32> imageIds, int count ) {}
-   /*! Set title for window */
-   void SetWindowTitle( string title ) {}
-   /*! Set window position on screen */
-   void SetWindowPosition( int x, int y ) {}
-   /*! Set monitor for the current window */
-   void SetWindowMonitor( int monitor ) {}
-   /*! Set window minimum dimensions (for FLAG_WINDOW_RESIZABLE) */
-   void SetWindowMinSize( int width, int height ) {}
-   /*! Set window maximum dimensions (for FLAG_WINDOW_RESIZABLE) */
-   void SetWindowMaxSize( int width, int height ) {}
-   /*! Set window dimensions */
-   void SetWindowSize( int width, int height ) {}
-   /*! Set window opacity [0.0f..1.0f] */
-   void SetWindowOpacity( float opacity ) {}
-   /*! Set window focused */
-   void SetWindowFocused() {}
-   /*! Get current screen width */
-   int GetScreenWidth() {}
-   /*! Get current screen height */
-   int GetScreenHeight() {}
-   /*! Get current render width (it considers HiDPI) */
-   int GetRenderWidth() {}
-   /*! Get current render height (it considers HiDPI) */
-   int GetRenderHeight() {}
-   /*! Get number of connected monitors */
-   int GetMonitorCount() {}
-   /*! Get current monitor where window is placed */
-   int GetCurrentMonitor() {}
-   /*! Get specified monitor position */
-   Vector2 GetMonitorPosition( int monitor ) {}
-   /*! Get specified monitor width (current video mode used by monitor) */
-   int GetMonitorWidth( int monitor ) {}
-   /*! Get specified monitor height (current video mode used by monitor) */
-   int GetMonitorHeight( int monitor ) {}
-   /*! Get specified monitor physical width in millimetres */
-   int GetMonitorPhysicalWidth( int monitor ) {}
-   /*! Get specified monitor physical height in millimetres */
-   int GetMonitorPhysicalHeight( int monitor ) {}
-   /*! Get specified monitor refresh rate */
-   int GetMonitorRefreshRate( int monitor ) {}
-   /*! Get window position XY on monitor */
-   Vector2 GetWindowPosition() {}
-   /*! Get window scale DPI factor */
-   Vector2 GetWindowScaleDPI() {}
-   /*! Get the human-readable, UTF-8 encoded name of the specified monitor */
-   const char * GetMonitorName( int monitor ) {}
-   /*! Set clipboard text content */
-   void SetClipboardText( string text ) {}
-   /*! Get clipboard text content */
-   const char * GetClipboardText() {}
-   /*! Get clipboard image content */
-   S32 GetClipboardImage() {}
-   /*! Enable waiting for events on EndDrawing(), no automatic event polling */
-   void EnableEventWaiting() {}
-   /*! Disable waiting for events on EndDrawing(), automatic events polling */
-   void DisableEventWaiting() {}
-   /*! Show cursor */
-   void ShowCursor() {}
-   /*! Hide cursor */
-   void HideCursor() {}
-   /*! Check if cursor is not visible */
-   bool IsCursorHidden() {}
-   /*! Enable cursor (unlock cursor) */
-   void EnableCursor() {}
-   /*! Disable cursor (lock cursor) */
-   void DisableCursor() {}
-   /*! Check if cursor is on the screen */
-   bool IsCursorOnScreen() {}
-   /*! Clear background (framebuffer) to color */
-   void ClearBackground( Color color=RAYWHITE ) {}
-   /*! Begin canvas (framebuffer) drawing */
-   void BeginDrawing() {}
-   /*!  End canvas (framebuffer) drawing and swap buffers (double buffering) */
-   void EndDrawing() {}
-   /*! Begin blending mode (e.g. BLEND_ALPHA, BLEND_ADDITIVE, BLEND_MULTIPLIED) */
-   void BeginBlendMode( int mode ) {}
-   /*! End blending mode (reset to default: alpha blending) */
-   void EndBlendMode() {}
-   /*! Begin scissor mode (define screen area for following drawing) */
-   void BeginScissorMode( int x, int y, int width, int height ) {}
-   /*! End scissor mode */
-   void EndScissorMode() {}
-   /*! Set target FPS (maximum) */
-   void SetTargetFPS( int fps ) {}
-   /*! Get time in seconds for last frame drawn (delta time) */
-   F32 GetFrameTime() {}
-   /*! Get elapsed time in seconds since InitWindow() */
-   F64 GetTime() {}
-   /*! Get current FPS */
-   S32 GetFPS() {}
-   /*! Swap back buffer with front buffer (screen drawing) */
-   void SwapScreenBuffer() {}
-   /*! Register all input events */
-   void PollInputEvents() {}
-   /*! Wait for some time (halt program execution) */
-   void WaitTime( double seconds ) {}
-   /*! Set the seed for the random number generator */
-   void SetRandomSeed( unsigned int seed ) {}
-   /*! Get a random value between min and max (both included) */
-   int GetRandomValue( int min, int max ) {}
-   /*! Generate a list of random values. Unline LoadRandomSequence they are NOT uniqe #elfScript custom function. */
-   Vector<S32> GetRandomValues( uint count, int min, int max ) {}
-   /*! Load random values sequence, no values repeated, unload automaticly done.  */
-   Vector<S32> LoadRandomSequence( uint count, int min, int max ) {}
-   /*! Takes a screenshot of current screen (filename extension defines format) */
-   void TakeScreenshot( string fileName ) {}
-   /*! Set up init configuration flags (view FLAGS) */
-   void SetConfigFlags( unsigned int flags ) {}
-   /*! Open URL with default system browser (if available) */
-   void OpenURL( string url ) {}
-   /*! Set the current threshold (minimum) raylib log level (e.g. 2 = LOG_TRACE, 3 = LOG_DEBUG, 4 = LOG_INFO...) */
-   void SetTraceLogLevel( int logLevel ) {}
-   /*! Check if a key has been pressed once */
-   bool IsKeyPressed( int key ) {}
-   /*! Check if a key has been pressed again */
-   bool IsKeyPressedRepeat( int key ) {}
-   /*! Check if a key is being pressed */
-   bool IsKeyDown( int key ) {}
-   /*! Check if a key has been released once */
-   bool IsKeyReleased( int key ) {}
-   /*! Check if a key is NOT being pressed */
-   bool IsKeyUp( int key ) {}
-   /*! Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty */
-   int GetKeyPressed(  void ) {}
-   /*! Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty */
-   int GetCharPressed(  void ) {}
-   /*! Set a custom key to exit program (default is ESC) */
-   void SetExitKey( int key ) {}
-   /*! Check if a gamepad is available */
-   bool IsGamepadAvailable( int gamepad ) {}
-   /*! Get gamepad internal name id */
-   String GetGamepadName( int gamepad ) {}
-   /*! Check if a gamepad button has been pressed once */
-   bool IsGamepadButtonPressed( int gamepad, int button ) {}
-   /*! Check if a gamepad button is being pressed */
-   bool IsGamepadButtonDown( int gamepad, int button ) {}
-   /*! Check if a gamepad button has been released once */
-   bool IsGamepadButtonReleased( int gamepad, int button ) {}
-   /*! Check if a gamepad button is NOT being pressed */
-   bool IsGamepadButtonUp( int gamepad, int button ) {}
-   /*! Get the last gamepad button pressed */
-   S32 GetGamepadButtonPressed() {}
-   /*! Get axis count for a gamepad */
-   S32 GetGamepadAxisCount( int gamepad ) {}
-   /*! Get movement value for a gamepad axis */
-   F32 GetGamepadAxisMovement( int gamepad, int axis ) {}
-   /*! Set internal gamepad mappings (SDL_GameControllerDB) */
-   S32 SetGamepadMappings( string mappings ) {}
-   /*! Set gamepad vibration for both motors (duration in seconds) */
-   void SetGamepadVibration( int gamepad, float leftMotor, float rightMotor, float duration ) {}
-   /*! Check if a mouse button has been pressed once */
-   bool IsMouseButtonPressed( int button ) {}
-   /*! Check if a mouse button is being pressed */
-   bool IsMouseButtonDown( int button ) {}
-   /*! Check if a mouse button has been released once */
-   bool IsMouseButtonReleased( int button ) {}
-   /*!  Check if a mouse button is NOT being pressed */
-   bool IsMouseButtonUp( int button ) {}
-   /*!  Get mouse position X */
-   S32 GetMouseX() {}
-   /*!  Get mouse position Y */
-   S32 GetMouseY() {}
-   /*!  Get mouse position XY */
-   Vector2 GetMousePosition() {}
-   /*!  Get mouse delta XY */
-   Vector2 GetMouseDelta() {}
-   /*! Set mouse position XY on the screen */
-   void SetMousePosition( int x, int y ) {}
-   /*! Set mouse offset (useful for custom rendering resolution scaling) */
-   void SetMouseOffset( int offsetX, int offsetY ) {}
-   /*! Set mouse scaling for its coordinates (useful for custom rendering resolution scaling) */
-   void SetMouseScale( float scaleX, float scaleY ) {}
-   /*!  Get mouse wheel movement for X or Y, whichever is larger */
-   F32 GetMouseWheelMove() {}
-   /*! Get mouse wheel movement for both X and Y as a Vector2 */
-   Vector2 GetMouseWheelMoveV() {}
-   /*! Set mouse cursor icon type (e.g. MOUSE_CURSOR_IBEAM, MOUSE_CURSOR_POINT) */
-   void SetMouseCursor( int cursor ) {}
-   /*! Get touch position X for touch point 0 (relative to screen size) */
-   int GetTouchX() {}
-   /*! Get touch position Y for touch point 0 (relative to screen size) */
-   int GetTouchY() {}
-   /*! Get touch position XY for a touch point index (relative to screen size) */
-   Vector2 GetTouchPosition( int index ) {}
-   /*! Get touch point identifier for given index */
-   int GetTouchPointId( int index ) {}
-   /*! Get number of active touch points */
-   int GetTouchPointCount() {}
-   /*! Enable a set of gestures using flags (bitmask) */
-   void SetGesturesEnabled( int flags ) {}
-   /*! Check if a specific gesture has been detected */
-   bool IsGestureDetected( int gesture ) {}
-   /*! Get latest detected gesture type */
-   int GetGestureDetected() {}
-   /*! Get gesture hold time in seconds */
-   float GetGestureHoldDuration() {}
-   /*! Get gesture drag vector as Vector2 */
-   Vector2 GetGestureDragVector() {}
-   /*! Get gesture drag angle in degrees */
-   float GetGestureDragAngle() {}
-   /*! Get gesture pinch delta vector as Vector2 */
-   Vector2 GetGesturePinchVector() {}
-   /*! Get gesture pinch angle in degrees */
-   float GetGesturePinchAngle() {}
-   /*! Load image from file into CPU memory (RAM) and return the ImageID */
-   S32 LoadImage( String fileName ) {}
-   /*! Unload image from CPU memory (RAM) */
-   void UnloadImage( int imageId ) {}
-   /*! Load image from RAW file data */
-   S32 LoadImageRaw( String fileName, int width, int height, int format, int headerSize ) {}
-   /*! Load image sequence from file. Outputs frames to console. */
-   S32 LoadImageAnim( String fileName ) {}
-   /*! Load image from GPU texture data */
-   S32 LoadImageFromTexture( int textureId ) {}
-   /*! Load image from screen buffer (screenshot) */
-   S32 LoadImageFromScreen() {}
-   /*! Check if an image is valid */
-   bool IsImageValid( int imageId ) {}
-   /*! Export image data to file, returns true on success */
-   bool ExportImage( int imageId, String fileName ) {}
-   /*! Export image as code file defining an array of bytes, returns true on success */
-   bool ExportImageAsCode( int imageId, String fileName ) {}
-   /*! Generate image: plain color */
-   S32 GenImageColor( int width, int height, Color color ) {}
-   /*! Generate image: linear gradient, direction in degrees [0..360], 0=Vertical gradient */
-   S32 GenImageGradientLinear( int width, int height, int direction, Color start, Color end ) {}
-   /*! Generate image: radial gradient */
-   S32 GenImageGradientRadial( int width, int height, float density, Color inner, Color outer ) {}
-   /*! Generate image: square gradient */
-   S32 GenImageGradientSquare( int width, int height, float density, Color inner, Color outer ) {}
-   /*! Generate image: checked */
-   S32 GenImageChecked( int width, int height, int checksX, int checksY, Color col1, Color col2 ) {}
-   /*! Generate image: white noise */
-   S32 GenImageWhiteNoise( int width, int height, float factor ) {}
-   /*! Generate image: perlin noise */
-   S32 GenImagePerlinNoise( int width, int height, int offsetX, int offsetY, float scale ) {}
-   /*! Generate image: cellular algorithm, bigger tileSize means bigger cells */
-   S32 GenImageCellular( int width, int height, int tileSize ) {}
-   /*! Generate image: grayscale image from text data */
-   S32 GenImageText( int width, int height, String text ) {}
-   /*! Create an image duplicate */
-   S32 ImageCopy( int imageId ) {}
-   /*! Create an image from another image piece */
-   S32 ImageFromImage( int imageId, Rectangle rec ) {}
-   /*! Create an image from a selected channel of another image (GRAYSCALE) */
-   S32 ImageFromChannel( int imageId, int selectedChannel ) {}
-   /*! Create an image from text (default font) */
-   S32 ImageText( String text, int fontSize, Color color ) {}
-   /*! Create an image from text (custom sprite font) */
-   S32 ImageTextEx( int fontId, String text, float fontSize, float spacing, Color tint ) {}
-   /*! Convert image data to desired format */
-   void ImageFormat( int imageId, int newFormat ) {}
-   /*! Convert image to POT (power-of-two) */
-   void ImageToPOT( int imageId, Color fill ) {}
-   /*! Crop an image to a defined rectangle */
-   void ImageCrop( int imageId, Rectangle crop ) {}
-   /*! Crop image depending on alpha value */
-   void ImageAlphaCrop( int imageId, float threshold ) {}
-   /*! Clear alpha channel to desired color */
-   void ImageAlphaClear( int imageId, Color color, float threshold ) {}
-   /*! Apply alpha mask to image */
-   void ImageAlphaMask( int imageId, int alphaMaskId ) {}
-   /*! Premultiply alpha channel */
-   void ImageAlphaPremultiply( int imageId ) {}
-   /*! Apply Gaussian blur using a box blur approximation */
-   void ImageBlurGaussian( int imageId, int blurSize ) {}
-   /*! Resize image (Bicubic scaling algorithm) */
-   void ImageResize( int imageId, int newWidth, int newHeight ) {}
-   /*! Resize image (Nearest-Neighbor scaling algorithm) */
-   void ImageResizeNN( int imageId, int newWidth, int newHeight ) {}
-   /*! Resize canvas and fill with color */
-   void ImageResizeCanvas( int imageId, int newWidth, int newHeight, int offsetX, int offsetY, Color fill ) {}
-   /*! Compute all mipmap levels for a provided image */
-   void ImageMipmaps( int imageId ) {}
-   /*! Dither image data to 16bpp or lower */
-   void ImageDither( int imageId, int rBpp, int gBpp, int bBpp, int aBpp ) {}
-   /*! Flip image vertically */
-   void ImageFlipVertical( int imageId ) {}
-   /*! Flip image horizontally */
-   void ImageFlipHorizontal( int imageId ) {}
-   /*! Rotate image by input angle in degrees (-359 to 359) */
-   void ImageRotate( int imageId, int degrees ) {}
-   /*! Rotate image clockwise 90deg */
-   void ImageRotateCW( int imageId ) {}
-   /*! Rotate image counter-clockwise 90deg */
-   void ImageRotateCCW( int imageId ) {}
-   /*! Modify image color: tint */
-   void ImageColorTint( int imageId, Color color ) {}
-   /*! Modify image color: invert */
-   void ImageColorInvert( int imageId ) {}
-   /*! Modify image color: grayscale */
-   void ImageColorGrayscale( int imageId ) {}
-   /*! Modify image color: contrast (-100 to 100) */
-   void ImageColorContrast( int imageId, int contrast ) {}
-   /*! Modify image color: brightness (-255 to 255) */
-   void ImageColorBrightness( int imageId, int brightness ) {}
-   /*! Modify image color: replace color */
-   void ImageColorReplace( int imageId, Color color, Color replace ) {}
-   /*! Load color data from image by id as a Color array (RGBA - 32bit) and return the colorsId */
-   S32 LoadImageColors( int imageId ) {}
-   /*! Get a color from Colors* loaded with LoadImageColors */
-   Color GetImageColorsColor( int colorsId, int index ) {}
-   /*! Unload color data loaded with LoadImageColors() */
-   void UnloadImageColors( int colorsId ) {}
-   /*! Get image alpha border rectangle */
-   Rectangle GetImageAlphaBorder( int imageId, float threshold ) {}
-   /*! Get image pixel color at (x, y) position */
-   Color GetImageColor( int imageId, int x, int y ) {}
-   /*! Clear image background with given color */
-   void ImageClearBackground( int dstId, Color color ) {}
-   /*! Draw pixel within an image */
-   void ImageDrawPixel( int dstId, int posX, int posY, Color color ) {}
-   /*! Draw pixel within an image (Vector version) */
-   void ImageDrawPixelV( int dstId, Vector2 position, Color color ) {}
-   /*! Draw line within an image */
-   void ImageDrawLine( int dstId, int startPosX, int startPosY, int endPosX, int endPosY, Color color ) {}
-   /*! Draw line within an image (Vector version) */
-   void ImageDrawLineV( int dstId, Vector2 start, Vector2 end, Color color ) {}
-   /*! Draw a line defining thickness within an image */
-   void ImageDrawLineEx( int dstId, Vector2 start, Vector2 end, int thick, Color color ) {}
-   /*! Draw a filled circle within an image */
-   void ImageDrawCircle( int dstId, int centerX, int centerY, int radius, Color color ) {}
-   /*! Draw a filled circle within an image (Vector version) */
-   void ImageDrawCircleV( int dstId, Vector2 center, int radius, Color color ) {}
-   /*! Draw circle outline within an image */
-   void ImageDrawCircleLines( int dstId, int centerX, int centerY, int radius, Color color ) {}
-   /*! Draw circle outline within an image (Vector version) */
-   void ImageDrawCircleLinesV( int dstId, Vector2 center, int radius, Color color ) {}
-   /*! Draw rectangle within an image */
-   void ImageDrawRectangle( int dstId, int posX, int posY, int width, int height, Color color ) {}
-   /*! Draw rectangle within an image (Vector version) */
-   void ImageDrawRectangleV( int dstId, Vector2 position, Vector2 size, Color color ) {}
-   /*! Draw rectangle within an image */
-   void ImageDrawRectangleRec( int dstId, Rectangle rec, Color color ) {}
-   /*! Draw rectangle lines within an image */
-   void ImageDrawRectangleLines( int dstId, int posX, int posY, int width, int height, Color color ) {}
-   /*! Draw rectangle lines within an image with extended parameters */
-   void ImageDrawRectangleLinesEx( int dstId, Rectangle rec, int thick, Color color ) {}
-   /*! Draw triangle within an image */
-   void ImageDrawTriangle( int dstId, Vector2 v1, Vector2 v2, Vector2 v3, Color color ) {}
-   /*! Draw triangle with interpolated colors within an image */
-   void ImageDrawTriangleGradient( int dstId, Vector2 v1, Vector2 v2, Vector2 v3, Color c1, Color c2, Color c3 ) {}
-   /*! Draw triangle outline within an image */
-   void ImageDrawTriangleLines( int dstId, Vector2 v1, Vector2 v2, Vector2 v3, Color color ) {}
-   /*! Draw a triangle fan defined by points within an image (pointsValues format: 'x1 y1 x2 y2 ...') */
-   void ImageDrawTriangleFan( int dstId, Vector<F32> pointValues, int pointCount, Color color ) {}
-   /*! Draw a triangle fan defined by points within an image (pointsValues format: 'x1 y1 x2 y2 ...') */
-   void ImageDrawTriangleStrip( int dstId, Vector<F32> pointValues, int pointCount, Color color ) {}
-   /*! Draw a source image within a destination image (tint applied to source) */
-   void ImageDraw( int dstId, int srcId, Rectangle srcRec, Rectangle dstRec, Color tint ) {}
-   /*! Draw text (using default font) within an image (destination) */
-   void ImageDrawText( int dstId, String text, int posX, int posY, int fontSize, Color color ) {}
-   /*! Draw text (custom sprite font) within an image (destination) */
-   void ImageDrawTextEx( int dstId, int fontId, String text, Vector2 position, float fontSize, float spacing, Color tint ) {}
-   /*! Load texture from file into GPU memory (VRAM) and return the TextureID */
-   S32 LoadTexture( String fileName ) {}
-   /*! Unload texture from GPU memory (VRAM) */
-   void UnloadTexture( int textureId ) {}
-   /*! Load texture from image data and return the TextureID */
-   S32 LoadTextureFromImage( int imageId ) {}
-   /*! Load cubemap from image, multiple image cubemap layouts supported */
-   S32 LoadTextureCubemap( int imageId, int layout ) {}
-   /*! Check if a texture is valid (loaded in GPU) */
-   bool IsTextureValid( int textureId ) {}
-   /*! get the texture size int width int height */
-   String getTextureSize( int textureId ) {}
-   /*! get the texture width  */
-   S32 getTextureWidth( int textureId ) {}
-   /*! get the texture height  */
-   S32 getTextureHeight( int textureId ) {}
-   /*! Update GPU texture with data from an Image ID */
-   void UpdateTexture( int textureId, int imageId ) {}
-   /*! Update GPU texture rectangle with data from an Image ID */
-   void UpdateTextureRec( int textureId, Rectangle rec, int imageId ) {}
-   /*! Generate GPU mipmaps for a texture */
-   void GenTextureMipmaps( int textureId ) {}
-   /*! Set texture scaling filter mode (e.g., TEXTURE_FILTER_POINT, TEXTURE_FILTER_BILINEAR) */
-   void SetTextureFilter( int textureId, int filter ) {}
-   /*! Set texture wrapping mode (e.g., TEXTURE_WRAP_REPEAT, TEXTURE_WRAP_CLAMP) */
-   void SetTextureWrap( int textureId, int wrap ) {}
-   /*! Draw a Texture2D using its TextureID */
-   void DrawTexture( int textureId, int posX, int posY, Color tint=WHITE ) {}
-   /*! Draw a Texture2D with position defined as Vector2 */
-   void DrawTextureV( int textureId, Vector2 position, Color tint=WHITE ) {}
-   /*! Draw a Texture2D with extended parameters (rotation, scale, tint) */
-   void DrawTextureEx( int textureId, Vector2 position, float rotation, float scale, Color tint=WHITE ) {}
-   /*! Draw a part of a texture defined by a rectangle */
-   void DrawTextureRec( int textureId, Rectangle source, Vector2 position, Color tint=WHITE ) {}
-   /*! Draw a part of a texture defined by a rectangle with 'pro' parameters */
-   void DrawTexturePro( int textureId, Rectangle source, Rectangle dest, Vector2 origin, float rotation, Color tint=WHITE ) {}
-   /*! Draws a texture using 9-patch / N-patch scaling to prevent UI distortion. */
-   void DrawTextureNPatch( int textureId, Rectangle sourceRec, int left, int top, int right, int bottom, int layout, Rectangle destRec, Vector2 origin, float rotation, Color tint=WHITE ) {}
-   /*! Check if two colors are equal */
-   bool ColorIsEqual( Color col1, Color col2 ) {}
-   /*! Get color with alpha applied, alpha goes from 0.0f to 1.0f */
-   Color Fade( Color color, float alpha ) {}
-   /*! Get hexadecimal value for a Color (0xRRGGBBAA) */
-   int ColorToInt( Color color ) {}
-   /*! Get Color normalized as float [0..1] */
-   Vector4 ColorNormalize( Color color ) {}
-   /*! Get Color from normalized values [0..1] */
-   Color ColorFromNormalized( Vector4 normalized ) {}
-   /*! Get HSV values for a Color, hue [0..360], saturation/value [0..1] */
-   Vector3 ColorToHSV( Color color ) {}
-   /*! Get a Color from HSV values, hue [0..360], saturation/value [0..1] */
-   Color ColorFromHSV( float hue, float saturation, float value ) {}
-   /*! Get color multiplied with another color */
-   Color ColorTint( Color color, Color tint ) {}
-   /*! Get color with brightness correction, brightness factor goes from -1.0f to 1.0f */
-   Color ColorBrightness( Color color, float factor ) {}
-   /*! Get color with contrast correction, contrast values between -1.0f and 1.0f */
-   Color ColorContrast( Color color, float contrast ) {}
-   /*! Get color with alpha applied, alpha goes from 0.0f to 1.0f */
-   Color ColorAlpha( Color color, float alpha ) {}
-   /*! Get src alpha-blended into dst color with tint */
-   Color ColorAlphaBlend( Color dst, Color src, Color tint ) {}
-   /*! Get color lerp interpolation between two colors, factor [0.0f..1.0f] */
-   Color ColorLerp( Color color1, Color color2, float factor ) {}
-   /*! Get Color structure from hexadecimal value (e.g. 0xFF0000FF) */
-   Color GetColor( int hexValue ) {}
-   /*! Get pixel data size in bytes for certain format */
-   int GetPixelDataSize( int width, int height, int format ) {}
-   /*! Get the default Raylib Font and return the FontID */
-   S32 GetFontDefault() {}
-   /*! Load font from file into GPU memory (VRAM) and return the FontID */
-   S32 LoadFont( String fileName ) {}
-   /*! Load font from file with extended parameters. Pass 0 for codepointCount to use default set. */
-   S32 LoadFontEx( String fileName, int fontSize, Vector<S32> codepointValues, int codepointCount ) {}
-   /*! Load font from Image data and return the FontID */
-   S32 LoadFontFromImage( int imageId, Color key, int firstChar ) {}
-   /*! Unload font from GPU memory (VRAM) */
-   void UnloadFont( int fontId ) {}
-   /*! Export font data as a C code file (.h), returns true on success */
-   bool ExportFontAsCode( int fontId, String fileName ) {}
-   /*! Draw current FPS */
-   void DrawFPS( int posX, int posY ) {}
-   /*! Draw text (using default font */
-   void DrawText( string text, int posX, int posY, int fontSize=20, Color color=RAYWHITE, bool doShadow=false, Color shadowColor=DARKGRAY ) {}
-   /*! Draw text using font and additional parameters, fontId 0 means default font */
-   void DrawTextEx( int fontId, string text, Vector2 position, float fontSize=20.f, float spacing=1.f, Color tint=RAYWHITE, bool doShadow=false, Color shadowColor=DARKGRAY ) {}
-   /*! Draw text using Font and pro parameters (rotation) */
-   void DrawTextPro( int fontId, string text, Vector2 position, Vector2 origin, float rotation, float fontSize, float spacing, Color tint=RAYWHITE ) {}
-   /*!  Draw one character (codepoint) */
-   void DrawTextCodepoint( int fontId, int codepoint, Vector2 position, float fontSize, Color tint=RAYWHITE ) {}
-   /*!  Draw one character (codepoint) */
-   void DrawTextCodepoints( int fontId, Vector<S32> codepoints, int codepointCount, Vector2 position, float fontSize, float spacing, Color tint=RAYWHITE ) {}
-   /*! Set vertical line spacing when drawing with line-breaks */
-   void SetTextLineSpacing( int spacing ) {}
-   /*! Measure string width in pixels for the default font */
-   int MeasureText( String text, int fontSize ) {}
-   /*! Measure string width and height as Vector2 for a specific Font */
-   Vector2 MeasureTextEx( int fontId, String text, float fontSize, float spacing ) {}
-   /*! Measure string size for an array of codepoints */
-   Vector2 MeasureTextCodepoints( int fontId, Vector<S32> codepointValues, int length, float fontSize, float spacing ) {}
-   /*! Get glyph index position in font for a codepoint */
-   int GetGlyphIndex( int fontId, int codepoint ) {}
-   /*! Get glyph rectangle in font atlas for a codepoint */
-   Rectangle GetGlyphAtlasRec( int fontId, int codepoint ) {}
-   /*! Get glyph info (offsetX, offsetY, advanceX) for a codepoint */
-   String GetGlyphInfo( int fontId, int codepoint ) {}
-   /*! Begins 2D mode with a Camera2DObject object */
-   void BeginMode2D( int cameraId ) {}
-   /*! End 2D mode with custom camera */
-   void EndMode2D() {}
-   /*! Begins 3D mode with a Camera3DObject */
-   void BeginMode3D( int cameraId ) {}
-   /*! End 3D mode with custom camera */
-   void EndMode3D() {}
-   /*! Set texture and source rectangle to be used on shapes drawing */
-   void SetShapesTexture( int textureId, Rectangle source ) {}
-   /*! Get texture ID currently used for shapes drawing */
-   S32 GetShapesTexture() {}
-   /*! Get texture source rectangle that is used for shapes drawing */
-   Rectangle GetShapesTextureRectangle() {}
-   /*! Draw a pixel using geometry [Can be slow, use with care] */
-   void DrawPixel( int posX, int posY, Color color=RAYWHITE ) {}
-   /*! Draw a pixel using geometry (Vector version) [Can be slow, use with care] */
-   void DrawPixelV( Vector2 position, Color color=RAYWHITE ) {}
-   /*! Draw a line */
-   void DrawLine( int startPosX, int startPosY, int endPosX, int endPosY, Color color=RAYWHITE ) {}
-   /*! Draw a line (using gl lines) */
-   void DrawLineV( Vector2 startPos, Vector2 endPos, Color color=RAYWHITE ) {}
-   /*! Draw a line (using triangles/quads) */
-   void DrawLineEx( Vector2 startPos, Vector2 endPos, float thick, Color color=RAYWHITE ) {}
-   /*! Draw lines sequence (using gl lines) */
-   void DrawLineStrip( Vector<F32> pointValues, int pointCount, Color color=RAYWHITE ) {}
-   /*! Draw line segment cubic-bezier in-out interpolation */
-   void DrawLineBezier( Vector2 startPos, Vector2 endPos, float thick, Color color=RAYWHITE ) {}
-   /*! Draw a dashed line */
-   void DrawLineDashed( Vector2 startPos, Vector2 endPos, int dashSize, int spaceSize, Color color=RAYWHITE ) {}
-   /*! Draw a color-filled circle */
-   void DrawCircle( int centerX, int centerY, float radius, Color color=RAYWHITE ) {}
-   /*! Draw a filled circle within an image (Vector version) */
-   void DrawCircleV( Vector2 center, float radius, Color color=RAYWHITE ) {}
-   /*! Draw a gradient-filled circle */
-   void DrawCircleGradient( Vector2 center, float radius, Color inner, Color outer ) {}
-   /*! Draw a piece of a circle */
-   void DrawCircleSector( Vector2 center, float radius, float startAngle, float endAngle, int segments, Color color=RAYWHITE ) {}
-   /*! Draw circle sector outline */
-   void DrawCircleSectorLines( Vector2 center, float radius, float startAngle, float endAngle, int segments, Color color=RAYWHITE ) {}
-   /*! Draw circle outline */
-   void DrawCircleLines( int centerX, int centerY, float radius, Color color=RAYWHITE ) {}
-   /*! Draw circle outline (Vector version) */
-   void DrawCircleLinesV( Vector2 center, float radius, Color color=RAYWHITE ) {}
-   /*! Draw ellipse */
-   void DrawEllipse( int centerX, int centerY, float radiusH, float radiusV, Color color=RAYWHITE ) {}
-   /*! Draw ellipse (Vector version) */
-   void DrawEllipseV( Vector2 center, float radiusH, float radiusV, Color color=RAYWHITE ) {}
-   /*! Draw ellipse outline */
-   void DrawEllipseLines( int centerX, int centerY, float radiusH, float radiusV, Color color=RAYWHITE ) {}
-   /*! Draw ellipse outline (Vector version) */
-   void DrawEllipseLinesV( Vector2 center, float radiusH, float radiusV, Color color=RAYWHITE ) {}
-   /*! Draw ring */
-   void DrawRing( Vector2 center, float innerRadius, float outerRadius, float startAngle, float endAngle, int segments, Color color=RAYWHITE ) {}
-   /*! Draw ring outline */
-   void DrawRingLines( Vector2 center, float innerRadius, float outerRadius, float startAngle, float endAngle, int segments, Color color=RAYWHITE ) {}
-   /*! Draw a color-filled rectangle */
-   void DrawRectangle( int posX, int posY, int width, int height, Color color=RAYWHITE ) {}
-   /*! Draw a color-filled rectangle (Vector version) */
-   void DrawRectangleV( Vector2 position, Vector2 size, Color color=RAYWHITE ) {}
-   /*! Draw a color-filled rectangle */
-   void DrawRectangleRec( Rectangle rec, Color color=RAYWHITE ) {}
-   /*! Draw a color-filled rectangle with pro parameters */
-   void DrawRectanglePro( Rectangle rec, Vector2 origin, float rotation, Color color=RAYWHITE ) {}
-   /*! Draw a vertical-gradient-filled rectangle */
-   void DrawRectangleGradientV( int posX, int posY, int width, int height, Color top, Color bottom ) {}
-   /*! Draw a horizontal-gradient-filled rectangle */
-   void DrawRectangleGradientH( int posX, int posY, int width, int height, Color left, Color right ) {}
-   /*! Draw a gradient-filled rectangle with custom vertex colors */
-   void DrawRectangleGradientEx( Rectangle rec, Color topLeft, Color bottomLeft, Color bottomRight, Color topRight ) {}
-   /*! Draw rectangle outline */
-   void DrawRectangleLines( int posX, int posY, int width, int height, Color color=RAYWHITE ) {}
-   /*! Draw rectangle outline with extended parameters */
-   void DrawRectangleLinesEx( Rectangle rec, float lineThick, Color color=RAYWHITE ) {}
-   /*! Draw rectangle with rounded edges */
-   void DrawRectangleRounded( Rectangle rec, float roundness, int segments, Color color=RAYWHITE ) {}
-   /*! Draw rectangle lines with rounded edges */
-   void DrawRectangleRoundedLines( Rectangle rec, float roundness, int segments, Color color=RAYWHITE ) {}
-   /*! Draw rectangle lines with rounded edges outline */
-   void DrawRectangleRoundedLinesEx( Rectangle rec, float roundness, int segments, float lineThick, Color color=RAYWHITE ) {}
-   /*! Draw a color-filled triangle (vertex in counter-clockwise order!) */
-   void DrawTriangle( Vector2 v1, Vector2 v2, Vector2 v3, Color color=RAYWHITE ) {}
-   /*! Draw triangle with interpolated colors (vertex in counter-clockwise order!) */
-   void DrawTriangleGradient( Vector2 v1, Vector2 v2, Vector2 v3, Color c1, Color c2, Color c3 ) {}
-   /*! Draw triangle outline (vertex in counter-clockwise order!) */
-   void DrawTriangleLines( Vector2 v1, Vector2 v2, Vector2 v3, Color color=RAYWHITE ) {}
-   /*! Draw a triangle fan defined by points (first vertex is the center) */
-   void DrawTriangleFan( Vector<F32> pointValues, int pointCount, Color color=RAYWHITE ) {}
-   /*! Draw a triangle strip defined by points */
-   void DrawTriangleStrip( Vector<F32> pointValues, int pointCount, Color color=RAYWHITE ) {}
-   /*! Draw a polygon of n sides */
-   void DrawPoly( Vector2 center, int sides, float radius, float rotation, Color color=RAYWHITE ) {}
-   /*! Draw a polygon outline of n sides */
-   void DrawPolyLines( Vector2 center, int sides, float radius, float rotation, Color color=RAYWHITE ) {}
-   /*! Draw a polygon outline of n sides with extended parameters */
-   void DrawPolyLinesEx( Vector2 center, int sides, float radius, float rotation, float lineThick, Color color=RAYWHITE ) {}
-   /*! Draw spline: Linear, minimum 2 points */
-   void DrawSplineLinear( Vector<F32> pointValues, int pointCount, float thick, Color color=RAYWHITE ) {}
-   /*! Draw spline: B-Spline, minimum 4 points */
-   void DrawSplineBasis( Vector<F32> pointValues, int pointCount, float thick, Color color=RAYWHITE ) {}
-   /*! Draw spline: Catmull-Rom, minimum 4 points */
-   void DrawSplineCatmullRom( Vector<F32> pointValues, int pointCount, float thick, Color color=RAYWHITE ) {}
-   /*! Draw spline: Quadratic Bezier, minimum 3 points (1 control point): [p1, c2, p3, c4...] */
-   void DrawSplineBezierQuadratic( Vector<F32> pointValues, int pointCount, float thick, Color color=RAYWHITE ) {}
-   /*! Draw spline: Cubic Bezier, minimum 4 points (2 control points): [p1, c2, c3, p4, c5, c6...] */
-   void DrawSplineBezierCubic( Vector<F32> pointValues, int pointCount, float thick, Color color=RAYWHITE ) {}
-   /*! Draw spline segment: Linear, 2 points */
-   void DrawSplineSegmentLinear( Vector2 p1, Vector2 p2, float thick, Color color=RAYWHITE ) {}
-   /*! Draw spline segment: B-Spline, 4 points */
-   void DrawSplineSegmentBasis( Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float thick, Color color=RAYWHITE ) {}
-   /*! Draw spline segment: Catmull-Rom, 4 points */
-   void DrawSplineSegmentCatmullRom( Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float thick, Color color=RAYWHITE ) {}
-   /*! Draw spline segment: Quadratic Bezier, 2 points, 1 control point */
-   void DrawSplineSegmentBezierQuadratic( Vector2 p1, Vector2 c2, Vector2 p3, float thick, Color color=RAYWHITE ) {}
-   /*! Draw spline segment: Cubic Bezier, 2 points, 2 control points */
-   void DrawSplineSegmentBezierCubic( Vector2 p1, Vector2 c2, Vector2 c3, Vector2 p4, float thick, Color color=RAYWHITE ) {}
-   /*! Get (evaluate) spline point: Linear */
-   Vector2 GetSplinePointLinear( Vector2 startPos, Vector2 endPos, float t ) {}
-   /*! Get (evaluate) spline point: B-Spline */
-   Vector2 GetSplinePointBasis( Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float t ) {}
-   /*! Get (evaluate) spline point: Catmull-Rom */
-   Vector2 GetSplinePointCatmullRom( Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float t ) {}
-   /*! Get (evaluate) spline point: Quadratic Bezier */
-   Vector2 GetSplinePointBezierQuadratic( Vector2 p1, Vector2 c2, Vector2 p3, float t ) {}
-   /*! Get (evaluate) spline point: Cubic Bezier */
-   Vector2 GetSplinePointBezierCubic( Vector2 p1, Vector2 c2, Vector2 c3, Vector2 p4, float t ) {}
-   /*! Check collision between two rectangles */
-   bool CheckCollisionRecs( Rectangle rec1, Rectangle rec2 ) {}
-   /*! Check collision between two circles */
-   bool CheckCollisionCircles( Vector2 center1, float radius1, Vector2 center2, float radius2 ) {}
-   /*! Check collision between circle and rectangle */
-   bool CheckCollisionCircleRec( Vector2 center, float radius, Rectangle rec ) {}
-   /*! Check if circle collides with a line created between two points [p1] and [p2] */
-   bool CheckCollisionCircleLine( Vector2 center, float radius, Vector2 p1, Vector2 p2 ) {}
-   /*! Check if point is inside rectangle */
-   bool CheckCollisionPointRec( Vector2 point, Rectangle rec ) {}
-   /*! Check if point is inside circle */
-   bool CheckCollisionPointCircle( Vector2 point, Vector2 center, float radius ) {}
-   /*! Check if point is inside a triangle */
-   bool CheckCollisionPointTriangle( Vector2 point, Vector2 p1, Vector2 p2, Vector2 p3 ) {}
-   /*! Check if point belongs to line created between two points [p1] and [p2] with defined margin in pixels [threshold] */
-   bool CheckCollisionPointLine( Vector2 point, Vector2 p1, Vector2 p2, int threshold ) {}
-   /*! Check if point is within a polygon described by array of vertices */
-   bool CheckCollisionPointPoly( Vector2 point, Vector<F32> pointValues, int pointCount ) {}
-   /*! Check the collision between two lines. Returns 'x y' string if colliding, or empty string if not. */
-   Vector2 CheckCollisionLines( Vector2 startPos1, Vector2 endPos1, Vector2 startPos2, Vector2 endPos2 ) {}
-   /*! Get collision rectangle for two rectangles collision */
-   Rectangle GetCollisionRec( Rectangle rec1, Rectangle rec2 ) {}
-   /*! Draw a line in 3D world space */
-   void DrawLine3D( Vector3 startPos, Vector3 endPos, Color color ) {}
-   /*! Draw a point in 3D space, actually a small line */
-   void DrawPoint3D( Vector3 position, Color color ) {}
-   /*! Draw a circle in 3D world space */
-   void DrawCircle3D( Vector3 center, float radius, Vector3 rotationAxis, float rotationAngle, Color color ) {}
-   /*! Draw a color-filled triangle (vertex in counter-clockwise order!) */
-   void DrawTriangle3D( Vector3 v1, Vector3 v2, Vector3 v3, Color color ) {}
-   /*! Draw a triangle strip defined by points */
-   void DrawTriangleStrip3D( Vector<F32> pointValues, int pointCount, Color color ) {}
-   /*! Draw cube */
-   void DrawCube( Vector3 position, float width, float height, float length, Color color ) {}
-   /*! Draw cube (Vector version) */
-   void DrawCubeV( Vector3 position, Vector3 size, Color color ) {}
-   /*! Draw cube wires */
-   void DrawCubeWires( Vector3 position, float width, float height, float length, Color color ) {}
-   /*! Draw cube wires (Vector version) */
-   void DrawCubeWiresV( Vector3 position, Vector3 size, Color color ) {}
-   /*! Draw sphere */
-   void DrawSphere( Vector3 centerPos, float radius, Color color ) {}
-   /*! Draw sphere with extended parameters */
-   void DrawSphereEx( Vector3 centerPos, float radius, int rings, int slices, Color color ) {}
-   /*! Draw sphere wires */
-   void DrawSphereWires( Vector3 centerPos, float radius, int rings, int slices, Color color ) {}
-   /*! Draw a cylinder/cone */
-   void DrawCylinder( Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color ) {}
-   /*! Draw a cylinder with base at startPos and top at endPos */
-   void DrawCylinderEx( Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color ) {}
-   /*! Draw a cylinder/cone wires */
-   void DrawCylinderWires( Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color ) {}
-   /*! Draw a cylinder wires with base at startPos and top at endPos */
-   void DrawCylinderWiresEx( Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int slices, Color color ) {}
-   /*! Draw a capsule with the center of its sphere caps at startPos and endPos */
-   void DrawCapsule( Vector3 startPos, Vector3 endPos, float radius, int rings, int slices, Color color ) {}
-   /*! Draw capsule wireframe with the center of its sphere caps at startPos and endPos */
-   void DrawCapsuleWires( Vector3 startPos, Vector3 endPos, float radius, int rings, int slices, Color color ) {}
-   /*! Draw a plane XZ */
-   void DrawPlane( Vector3 centerPos, Vector2 size, Color color ) {}
-   /*! Draw a ray line using the TypeRay format */
-   void DrawRay( Ray ray, Color color ) {}
-   /*! Draw a grid (centered at (0, 0, 0) */
-   void DrawGrid( int slices, float spacing ) {}
-   /*! Load model from files (meshes and materials) and return ModelID */
-   S32 LoadModel( String fileName ) {}
-   /*! Load model from generated mesh (default material) and return ModelID */
-   S32 LoadModelFromMesh( int meshId ) {}
-   /*! Gets the material count from a model by 
-GetModelMapTexture(modelId, [mapMap=MATERIAL_MAP_DIFFUSE]) */
-   S32 GetModelMatrialCount( int modelId, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
-   /*! Gets the texture ID from a model material map.
-GetModelMapTexture(modelId, [matIndex=0], [mapMap=MATERIAL_MAP_DIFFUSE]) */
-   S32 GetModelMapTexture( int modelId, int matIndex=0, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
-   /*! set a texture for a model material map like model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;SetModelMapTexture($model, $texture) << matIndex default 0,  matMap default MATERIAL_MAP_DIFFUSE  */
-   bool SetModelMapTexture( int modelId, int textureId, int matIndex=0, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
-   /*! Gets the color from a model material map.
-GetModelMapColor(modelId, [matIndex=0], [mapMap=MATERIAL_MAP_DIFFUSE]) */
-   Color GetModelMapColor( int modelId, int matIndex=0, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
-   /*! set a color for a modal material map like model.materials[0].maps[MATERIAL_MAP_DIFFUSE].color = BLUE;SetModelMapColor($model, BLUE) << matIndex default 0,  matMap default MATERIAL_MAP_DIFFUSE  */
-   bool SetModelMapColor( int modelId, Color color, int matIndex=0, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
-   /*! Gets the float value from a model material map.
-GetModelMapValue(modelId, [matIndex=0], [mapMap=MATERIAL_MAP_DIFFUSE]) */
-   F32 GetModelMapValue( int modelId, int matIndex=0, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
-   /*! Sets the float value for a model material map (e.g., roughness or metalness factor).
-SetModelMapValue(modelId, value [, matIndex=0, mapMap=MATERIAL_MAP_DIFFUSE]) */
-   bool SetModelMapValue( int modelId, float value, int matIndex=0, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
-   /*! Gets the shader ID from a model material.
-GetModelShader(modelId [, matIndex=0]) */
-   S32 GetModelShader( int modelId, int matIndex=0 ) {}
-   /*! Sets a shader for a model material like model.materials[matIndex].shader = shader;
-SetModelShader(modelId, shaderId [, matIndex=0]) */
-   bool SetModelShader( int modelId, int shaderId, int matIndex=0 ) {}
-   /*! Check if a model is valid (loaded in GPU, VAO/VBOs) */
-   bool IsModelValid( int modelId ) {}
-   /*! Unload model (including meshes) from memory (RAM and/or VRAM) */
-   void UnloadModel( int modelId ) {}
-   /*! Compute model bounding box limits (considers all meshes) */
-   BoundingBox GetModelBoundingBox( int modelId ) {}
-   /*! Draw a 3D model with position, scale and tint color */
-   void DrawModel( int modelId, Vector3 position, float scale, Color tint=WHITE ) {}
-   /*! Draw a 3D model with extended transform parameters */
-   void DrawModelEx( int modelId, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint=WHITE ) {}
-   /*! Draw a 3D model wireframe */
-   void DrawModelWires( int modelId, Vector3 position, float scale, Color tint=WHITE ) {}
-   /*! Draw a 3D model wireframe with extended transform parameters */
-   void DrawModelWiresEx( int modelId, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint=WHITE ) {}
-   /*! Draw a 3D bounding box wireframe */
-   void DrawBoundingBox( BoundingBox box, Color color ) {}
-   /*! Draw a 2D billboard texture in 3D space facing the camera */
-   void DrawBillboard( int cameraId, int textureId, Vector3 position, float scale, Color tint=WHITE ) {}
-   /*! Draw a part of a 2D billboard texture defined by a source rectangle */
-   void DrawBillboardRec( int cameraId, int textureId, Rectangle source, Vector3 position, Vector2 size, Color tint=WHITE ) {}
-   /*! Draw a billboard texture with pro transform parameters */
-   void DrawBillboardPro( int cameraId, int textureId, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, float rotation, Color tint=WHITE ) {}
-   /*! Upload mesh vertex data to GPU (VRAM) */
-   void UploadMesh( int meshId, bool dynamic ) {}
-   /*! Update mesh vertex data in GPU for a specific buffer index using a float list */
-   void UpdateMeshBuffer( int meshId, int index, Vector<F32> dataValues, int dataSize, int offset ) {}
-   /*! Unload mesh data from CPU and GPU memory */
-   void UnloadMesh( int meshId ) {}
-   /*! Returns a 3D identity matrix */
-   Matrix MatrixIdentity() {}
-   /*! Returns a translation matrix */
-   Matrix MatrixTranslate( float x, float y, float z ) {}
-   /*! Returns a rotation matrix from XYZ angles (in radians) */
-   Matrix MatrixRotateXYZ( Vector3 angleRadians ) {}
-   /*! Multiplies two matrices together */
-   Matrix MatrixMultiply( Matrix left, Matrix right ) {}
-   /*! Draw a 3d mesh with material and transform matrix */
-   void DrawMesh( int meshId, int materialId, Matrix transform ) {}
-   /*! Compute mesh bounding box limits */
-   BoundingBox GetMeshBoundingBox( int meshId ) {}
-   /*! Compute mesh tangents for normal-mapping */
-   void GenMeshTangents( int meshId ) {}
-   /*! Export mesh data to file (.obj), returns true on success */
-   bool ExportMesh( int meshId, String fileName ) {}
-   /*! Export mesh as code file (.h) defining vertex attribute arrays */
-   bool ExportMeshAsCode( int meshId, String fileName ) {}
-   /*! Generate polygonal mesh and return MeshID */
-   S32 GenMeshPoly( int sides, float radius ) {}
-   /*! Generate plane mesh (with subdivisions) and return MeshID */
-   S32 GenMeshPlane( float width, float length, int resX, int resZ ) {}
-   /*! Generate cuboid mesh and return MeshID */
-   S32 GenMeshCube( float width, float height, float length ) {}
-   /*! Generate sphere mesh (standard sphere) and return MeshID */
-   S32 GenMeshSphere( float radius, int rings, int slices ) {}
-   /*! Generate half-sphere mesh (no bottom cap) and return MeshID */
-   S32 GenMeshHemiSphere( float radius, int rings, int slices ) {}
-   /*! Generate cylinder mesh and return MeshID */
-   S32 GenMeshCylinder( float radius, float height, int slices ) {}
-   /*! Generate cone/pyramid mesh and return MeshID */
-   S32 GenMeshCone( float radius, float height, int slices ) {}
-   /*! Generate torus mesh and return MeshID */
-   S32 GenMeshTorus( float radius, float size, int radSeg, int sides ) {}
-   /*! Generate trefoil knot mesh and return MeshID */
-   S32 GenMeshKnot( float radius, float size, int radSeg, int sides ) {}
-   /*! Generate heightmap mesh from image data and return MeshID */
-   S32 GenMeshHeightmap( int imageId, Vector3 size ) {}
-   /*! Generate cubes-based map mesh from image data and return MeshID */
-   S32 GenMeshCubicmap( int imageId, Vector3 cubeSize ) {}
-   /*! Check if a material is valid */
-   bool IsMaterialValid( int materialId ) {}
-   /*! Unload material from GPU memory (VRAM) */
-   void UnloadMaterial( int materialId ) {}
-   /*! Set texture for a material map type (e.g. MATERIAL_MAP_DIFFUSE) */
-   void SetMaterialTexture( int materialId, int mapType, int textureId ) {}
-   /*! Set material for a specific mesh index inside a model */
-   void SetModelMeshMaterial( int modelId, int meshId, int materialId ) {}
-   /*! Check collision between two spheres */
-   bool CheckCollisionSpheres( Vector3 center1, float radius1, Vector3 center2, float radius2 ) {}
-   /*! Check collision between two bounding boxes */
-   bool CheckCollisionBoxes( BoundingBox box1, BoundingBox box2 ) {}
-   /*! Check collision between box and sphere */
-   bool CheckCollisionBoxSphere( BoundingBox box, Vector3 center, float radius ) {}
-   /*! Returns hit info string 'px py pz nx ny nz dist' or empty string */
-   const char* GetRayCollisionSphere( Ray ray, Vector3 center, float radius ) {}
-   /*! Returns hit info string 'px py pz nx ny nz dist' or empty string */
-   const char* GetRayCollisionBox( Ray ray, BoundingBox box ) {}
-   /*! Returns hit info string from 3D mesh collision */
-   const char* GetRayCollisionMesh( Ray ray, int meshId, Matrix transform ) {}
-   /*! Returns hit info string from 3D triangle collision */
-   const char* GetRayCollisionTriangle( Ray ray, Vector3 p1, Vector3 p2, Vector3 p3 ) {}
-   /*! Returns hit info string from 3D quad collision */
-   const char* GetRayCollisionQuad( Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4 ) {}
-   /*! Load model animations from file and return an AnimationBlockID */
-   S32 LoadModelAnimations( String fileName ) {}
-   /*! Update model animation pose for a specific frame index */
-   void UpdateModelAnimation( int modelId, int animBlockId, int animIndex, int frame ) {}
-   /*! Unload model animation array data from memory */
-   void UnloadModelAnimations( int animBlockId ) {}
-   /*! Get total number of animations inside an AnimationBlock */
-   int GetModelAnimationCount( int animBlockId ) {}
-   /*! Generates a 3D cube model from dimensions and returns its modelId. */
-   S32 GenModelCube( float width, float height, float length ) {}
-   /*! Generates a 3D sphere model and returns its modelId. */
-   S32 GenModelSphere( float radius, int rings, int slices ) {}
-   /*! Generates a 3D cylinder model and returns its modelId. */
-   S32 GenModelCylinder( float radius, float height, int slices ) {}
-   /*! Initialize audio device and context */
-   void InitAudioDevice() {}
-   /*! Close the audio device and context */
-   void CloseAudioDevice() {}
-   /*! Check if audio device has been initialized successfully */
-   bool IsAudioDeviceReady() {}
-   /*! Set master volume (listener), value between 0.0 and 1.0 */
-   void SetMasterVolume( float volume ) {}
-   /*! Get master volume (listener) */
-   float GetMasterVolume() {}
-   /*! Load wave data from file and return WaveID */
-   S32 LoadWave( String fileName ) {}
-   /*! Check if wave data is valid */
-   bool IsWaveValid( int waveId ) {}
-   /*! Load sound from file and return SoundID */
-   S32 LoadSound( String fileName ) {}
-   /*! Load sound from wave data and return SoundID */
-   S32 LoadSoundFromWave( int waveId ) {}
-   /*! Load sound alias (shares sample data but can play independently) and return a new SoundID */
-   S32 LoadSoundAlias( int sourceSoundId ) {}
-   /*! Check if a sound is valid */
-   bool IsSoundValid( int soundId ) {}
-   /*! Unload wave data from memory */
-   void UnloadWave( int waveId ) {}
-   /*! Unload sound from memory */
-   void UnloadSound( int soundId ) {}
-   /*! Unload sound alias */
-   void UnloadSoundAlias( int aliasSoundId ) {}
-   /*! Export wave data to file (.wav), returns true on success */
-   bool ExportWave( int waveId, String fileName ) {}
-   /*! Export wave sample data to code (.h), returns true on success */
-   bool ExportWaveAsCode( int waveId, String fileName ) {}
-   /*! Play a sound using its SoundID */
-   void PlaySound( int soundId ) {}
-   /*! Stop playing a sound */
-   void StopSound( int soundId ) {}
-   /*! Pause a sound */
-   void PauseSound( int soundId ) {}
-   /*! Resume a paused sound */
-   void ResumeSound( int soundId ) {}
-   /*! Check if a sound is currently playing */
-   bool IsSoundPlaying( int soundId ) {}
-   /*! Set volume for a sound (0.0 to 1.0) */
-   void SetSoundVolume( int soundId, float volume ) {}
-   /*! Set pitch/speed for a sound (1.0 is base) */
-   void SetSoundPitch( int soundId, float pitch ) {}
-   /*! Set pan for a sound (-1.0 left, 0.0 center, 1.0 right) */
-   void SetSoundPan( int soundId, float pan ) {}
-   /*! Copy a wave to a new wave and return WaveID */
-   S32 WaveCopy( int waveId ) {}
-   /*! Crop a wave to defined frames range */
-   void WaveCrop( int waveId, int initFrame, int finalFrame ) {}
-   /*! Convert wave data to desired format */
-   void WaveFormat( int waveId, int sampleRate, int sampleSize, int channels ) {}
-   /*! Load music stream from file and return MusicID */
-   S32 LoadMusicStream( String fileName ) {}
-   /*! Check if a music stream is valid */
-   bool IsMusicValid( int musicId ) {}
-   /*! Unload music stream from VRAM and RAM */
-   void UnloadMusicStream( int musicId ) {}
-   /*! Start playing a music stream */
-   void PlayMusicStream( int musicId ) {}
-   /*! Check if music is currently playing */
-   bool IsMusicStreamPlaying( int musicId ) {}
-   /*! Update buffers for music streaming (MUST be called every frame!) */
-   void UpdateMusicStream( int musicId ) {}
-   /*! Stop music playing */
-   void StopMusicStream( int musicId ) {}
-   /*! Pause music playing */
-   void PauseMusicStream( int musicId ) {}
-   /*! Resume playing paused music */
-   void ResumeMusicStream( int musicId ) {}
-   /*! Seek music to a specific position in seconds */
-   void SeekMusicStream( int musicId, float position ) {}
-   /*! Set volume for music stream (0.0 to 1.0) */
-   void SetMusicVolume( int musicId, float volume ) {}
-   /*! Set pitch/speed for music stream */
-   void SetMusicPitch( int musicId, float pitch ) {}
-   /*! Set pan for music stream (-1.0 left, 0.0 center, 1.0 right) */
-   void SetMusicPan( int musicId, float pan ) {}
-   /*! Get total music time length in seconds */
-   float GetMusicTimeLength( int musicId ) {}
-   /*! Get current music time played in seconds */
-   float GetMusicTimePlayed( int musicId ) {}
-   /*! Set default buffer size for new audio streams (in samples) */
-   void SetAudioStreamBufferSizeDefault( int size ) {}
-   /*! Begin custom shader drawing using a ShaderID */
-   void BeginShaderMode( int shaderId ) {}
-   /*! End custom shader drawing and reset to the default Raylib shader */
-   void EndShaderMode() {}
-   /*! Load shader from files and return ShaderID */
-   S32 LoadShader( String vsFileName, String fsFileName ) {}
-   /*! Load shader from code strings and return ShaderID */
-   S32 LoadShaderFromMemory( String vsCode, String fsCode ) {}
-   /*! Check if a shader is valid (loaded on GPU) */
-   bool IsShaderValid( int shaderId ) {}
-   /*! Get shader uniform location index */
-   int GetShaderLocation( int shaderId, String uniformName ) {}
-   /*! set shader uniform location by index */
-   bool SetShaderLocation( int shaderId, int shaderLocationIndex, int shaderLocation ) {}
-   /*! set shader uniform location by uniformName */
-   bool SetShaderLocationByUniformName( int shaderId, int shaderLocationIndex, String uniformName ) {}
-   /*! Get shader uniform location from shader locs  */
-   S32 GetShaderLocsLocation( int shaderId, int shaderLocationIndex ) {}
-   /*! Get shader attribute location index */
-   int GetShaderLocationAttrib( int shaderId, String attribName ) {}
-   /*! Sets a shader uniform value parsed from a space-separated string based on uniformType. */
-   bool SetShaderValue( int shaderId, int locIndex, String valueStr, int uniformType ) {}
-   /*! Set shader uniform array/vector using a flat float list */
-   void SetShaderValueV( int shaderId, int locIndex, Vector<F32> dataValues, int uniformType, int count ) {}
-   /*! Set shader uniform value for a 4x4 matrix */
-   void SetShaderValueMatrix( int shaderId, int locIndex, Matrix mat ) {}
-   /*! Set shader uniform value and bind a Texture2D ID */
-   void SetShaderValueTexture( int shaderId, int locIndex, int textureId ) {}
-   /*! Unload shader from GPU memory (VRAM) */
-   void UnloadShader( int shaderId ) {}
-   /*! Load text data from file and return it as a string */
-   const char* LoadFileText( String fileName ) {}
-   /*! Save text data to a file, returns true on success */
-   bool SaveFileText( String fileName, String text ) {}
-   /*! Check if file exists */
-   bool FileExists( String fileName ) {}
-   /*! Check if a directory path exists */
-   bool DirectoryExists( String dirPath ) {}
-   /*! Replace text in an existing file. Returns count of replacements. */
-   int FileTextReplace( String fileName, String search, String replacement ) {}
-   /*! Find text in existing file, returns character index or -1 if not found */
-   int FileTextFindIndex( String fileName, String search ) {}
-   /*! Rename a file. Returns true on success. */
-   bool FileRename( String fileName, String fileRename ) {}
-   /*! Delete a file. Returns true on success. */
-   bool FileRemove( String fileName ) {}
-   /*! Copy a file from one path to another. Returns true on success. */
-   bool FileCopy( String srcPath, String dstPath ) {}
-   /*! Move a file from one directory to another. Returns true on success. */
-   bool FileMove( String srcPath, String dstPath ) {}
-   /*! Get file length in bytes */
-   int GetFileLength( String fileName ) {}
-   /*! Get extension for a filename string (includes dot: '.png') */
-   const char* GetFileExtension( String fileName ) {}
-   /*! Get filename for a path string */
-   const char* getFilename( String filePath ) {}
-   /*! Get filename string without extension */
-   const char* GetFileNameWithoutExt( String filePath ) {}
-   /*! Create directories (including full path requested), returns true on success */
-   bool MakeDirectory( String dirPath ) {}
-   /*! Get the total file count in a directory */
-   int GetDirectoryFileCount( String dirPath ) {}
-   /*! Get file count with extension filtering and recursive directory scan. Use 'DIR' in filter to include directories. */
-   int GetDirectoryFileCountEx( String basePath, String filter, bool scanSubdirs ) {}
-   /*! Adds two Vector3 values together. */
-   Vector3 Vector3Add( Vector3 v1, Vector3 v2 ) {}
-   /*! Subtracts v2 from v1. */
-   Vector3 Vector3Subtract( Vector3 v1, Vector3 v2 ) {}
-   /*! Scales a Vector3 by a float multiplier. */
-   Vector3 Vector3Scale( Vector3 v, float scale ) {}
-   /*! Normalizes a Vector3 to a length of 1.0. */
-   Vector3 Vector3Normalize( Vector3 v ) {}
-   /*! Returns the length of a Vector3. */
-   F32 Vector3Length( Vector3 v ) {}
-   /*! Returns the distance between two Vector3 points. */
-   F32 Vector3Distance( Vector3 v1, Vector3 v2 ) {}
+   /*! Call draw on all objects */
+   void ClientContainerDrawObjects() {}
+   /*! Casts a ray into the container and returns the closest hit SceneObject and collision info. */
+   const char* ClientContainerRayCast( Ray ray ) {}
+   /*! Returns true if no SceneObject intersects the given bounding box. */
+   bool ClientContainerBoxEmpty( Vector3 minBounds, Vector3 maxBounds ) {}
+   /*! Returns a SimSet ID containing all SceneObjects within the specified bounding box.
+NOTE: You should delete the returned SimSet when done to avoid leaks! */
+   S32 ClientContainerGetBoxObjects( Vector3 minBounds, Vector3 maxBounds ) {}
+   /*! For Debug ... use ContainerGetBoxObjects with a big box to get all objects in as a SimSet  */
+   void ClientContainerListObjects() {}
    /*! Create or reinit global BatchRender */
    void BatchCreate( int count ) {}
    /*! push variables $b[stack]x, y, z, w */
@@ -3193,17 +2209,6 @@ SetModelShader(modelId, shaderId [, matIndex=0]) */
    bool BatchDrawLines( Color color=DARKPURPLE ) {}
    /*! Draw lines from the global BatchRender 3th stack is used for colors */
    bool BatchDrawColoredLines( Color color=DARKPURPLE ) {}
-   /*! Call draw on all objects */
-   void ClientContainerDrawObjects() {}
-   /*! Casts a ray into the container and returns the closest hit SceneObject and collision info. */
-   const char* ClientContainerRayCast( Ray ray ) {}
-   /*! Returns true if no SceneObject intersects the given bounding box. */
-   bool ClientContainerBoxEmpty( Vector3 minBounds, Vector3 maxBounds ) {}
-   /*! Returns a SimSet ID containing all SceneObjects within the specified bounding box.
-NOTE: You should delete the returned SimSet when done to avoid leaks! */
-   S32 ClientContainerGetBoxObjects( Vector3 minBounds, Vector3 maxBounds ) {}
-   /*! For Debug ... use ContainerGetBoxObjects with a big box to get all objects in as a SimSet  */
-   void ClientContainerListObjects() {}
    /*! @name Clipboard
    
    Miscellaneous functions to control the clipboard and clear the console.
@@ -4683,12 +3688,1001 @@ This does not create the actual file. It simply creates a random name for a file
    /*! Returns whether the value is an exact power of two.
 @param v Input value.@returns Whether the specified value is an exact power of two.@ingroup Math */
    bool mIsPow2( int v ) {}
-   /*! enableWinConsole(bool); */
-   void enableWinConsole( bool _enable ) {}
    /*! @brief Export all declared console classes to the console.
 
 @param dumpScript Optional parameter specifying whether or not classes defined in script should be dumped.
 @param dumpEngine Optional parameter specifying whether or not classes defined in the engine should be dumped.
 @ingroup Docu */
    bool exportConsoleDocu( String fileName, bool forDoxyGen=false, bool append=false, bool dumpScript=true, bool dumpEngine=true ) {}
+   /*! Initialize window and OpenGL context */
+   void InitWindow( int width, int height, String title ) {}
+   /*! Close window and unload OpenGL context */
+   void CloseWindow() {}
+   /*! Check if application should close (KEY_ESCAPE pressed or windows close icon clicked) */
+   bool WindowShouldClose() {}
+   /*! Check if window has been initialized successfully */
+   bool IsWindowReady() {}
+   /*! Check if window is currently fullscreen */
+   bool IsWindowFullscreen() {}
+   /*! Check if window is currently hidden */
+   bool IsWindowHidden() {}
+   /*! Check if window is currently minimized */
+   bool IsWindowMinimized() {}
+   /*! Check if window is currently maximized */
+   bool IsWindowMaximized() {}
+   /*! Check if window is currently focused */
+   bool IsWindowFocused() {}
+   /*! Check if window has been resized last frame */
+   bool IsWindowResized() {}
+   /*! Check if one specific window flag is enabled */
+   bool IsWindowState( unsigned int flag ) {}
+   /*! Set window configuration state using flags */
+   void SetWindowState( unsigned int flags ) {}
+   /*! Clear window configuration state flags */
+   void ClearWindowState( unsigned int flags ) {}
+   /*! Toggle window state: fullscreen/windowed, resizes monitor to match window resolution */
+   void ToggleFullscreen() {}
+   /*! Toggle window state: borderless windowed, resizes window to match monitor resolution */
+   void ToggleBorderlessWindowed() {}
+   /*! Set window state: maximized, if resizable */
+   void MaximizeWindow() {}
+   /*! Set window state: minimized, if resizable */
+   void MinimizeWindow() {}
+   /*! Restore window from being minimized/maximized */
+   void RestoreWindow() {}
+   /*! Set icon for window (single image, RGBA 32bit) */
+   void SetWindowIcon( int imageId ) {}
+   /*! Set icon for window (multiple images, RGBA 32bit) */
+   void SetWindowIcons( Vector<S32> imageIds, int count ) {}
+   /*! Set title for window */
+   void SetWindowTitle( string title ) {}
+   /*! Set window position on screen */
+   void SetWindowPosition( int x, int y ) {}
+   /*! Set monitor for the current window */
+   void SetWindowMonitor( int monitor ) {}
+   /*! Set window minimum dimensions (for FLAG_WINDOW_RESIZABLE) */
+   void SetWindowMinSize( int width, int height ) {}
+   /*! Set window maximum dimensions (for FLAG_WINDOW_RESIZABLE) */
+   void SetWindowMaxSize( int width, int height ) {}
+   /*! Set window dimensions */
+   void SetWindowSize( int width, int height ) {}
+   /*! Set window opacity [0.0f..1.0f] */
+   void SetWindowOpacity( float opacity ) {}
+   /*! Set window focused */
+   void SetWindowFocused() {}
+   /*! Get current screen width */
+   int GetScreenWidth() {}
+   /*! Get current screen height */
+   int GetScreenHeight() {}
+   /*! Get current render width (it considers HiDPI) */
+   int GetRenderWidth() {}
+   /*! Get current render height (it considers HiDPI) */
+   int GetRenderHeight() {}
+   /*! Get number of connected monitors */
+   int GetMonitorCount() {}
+   /*! Get current monitor where window is placed */
+   int GetCurrentMonitor() {}
+   /*! Get specified monitor position */
+   Vector2 GetMonitorPosition( int monitor ) {}
+   /*! Get specified monitor width (current video mode used by monitor) */
+   int GetMonitorWidth( int monitor ) {}
+   /*! Get specified monitor height (current video mode used by monitor) */
+   int GetMonitorHeight( int monitor ) {}
+   /*! Get specified monitor physical width in millimetres */
+   int GetMonitorPhysicalWidth( int monitor ) {}
+   /*! Get specified monitor physical height in millimetres */
+   int GetMonitorPhysicalHeight( int monitor ) {}
+   /*! Get specified monitor refresh rate */
+   int GetMonitorRefreshRate( int monitor ) {}
+   /*! Get window position XY on monitor */
+   Vector2 GetWindowPosition() {}
+   /*! Get window scale DPI factor */
+   Vector2 GetWindowScaleDPI() {}
+   /*! Get the human-readable, UTF-8 encoded name of the specified monitor */
+   const char * GetMonitorName( int monitor ) {}
+   /*! Set clipboard text content */
+   void SetClipboardText( string text ) {}
+   /*! Get clipboard text content */
+   const char * GetClipboardText() {}
+   /*! Get clipboard image content */
+   S32 GetClipboardImage() {}
+   /*! Enable waiting for events on EndDrawing(), no automatic event polling */
+   void EnableEventWaiting() {}
+   /*! Disable waiting for events on EndDrawing(), automatic events polling */
+   void DisableEventWaiting() {}
+   /*! Show cursor */
+   void ShowCursor() {}
+   /*! Hide cursor */
+   void HideCursor() {}
+   /*! Check if cursor is not visible */
+   bool IsCursorHidden() {}
+   /*! Enable cursor (unlock cursor) */
+   void EnableCursor() {}
+   /*! Disable cursor (lock cursor) */
+   void DisableCursor() {}
+   /*! Check if cursor is on the screen */
+   bool IsCursorOnScreen() {}
+   /*! Clear background (framebuffer) to color */
+   void ClearBackground( Color color=RAYWHITE ) {}
+   /*! Begin canvas (framebuffer) drawing */
+   void BeginDrawing() {}
+   /*!  End canvas (framebuffer) drawing and swap buffers (double buffering) */
+   void EndDrawing() {}
+   /*! Begins drawing to render texture */
+   void BeginTextureMode( int renderTextureId ) {}
+   /*!  End drawing to render texture */
+   void EndTextureMode() {}
+   /*! Begin blending mode (e.g. BLEND_ALPHA, BLEND_ADDITIVE, BLEND_MULTIPLIED) */
+   void BeginBlendMode( int mode ) {}
+   /*! End blending mode (reset to default: alpha blending) */
+   void EndBlendMode() {}
+   /*! Begin scissor mode (define screen area for following drawing) */
+   void BeginScissorMode( int x, int y, int width, int height ) {}
+   /*! End scissor mode */
+   void EndScissorMode() {}
+   /*! Set target FPS (maximum) */
+   void SetTargetFPS( int fps ) {}
+   /*! Get time in seconds for last frame drawn (delta time) */
+   F32 GetFrameTime() {}
+   /*! Get elapsed time in seconds since InitWindow() */
+   F64 GetTime() {}
+   /*! Get current FPS */
+   S32 GetFPS() {}
+   /*! Swap back buffer with front buffer (screen drawing) */
+   void SwapScreenBuffer() {}
+   /*! Register all input events */
+   void PollInputEvents() {}
+   /*! Wait for some time (halt program execution) */
+   void WaitTime( double seconds ) {}
+   /*! Set the seed for the random number generator */
+   void SetRandomSeed( unsigned int seed ) {}
+   /*! Get a random value between min and max (both included) */
+   int GetRandomValue( int min, int max ) {}
+   /*! Generate a list of random values. Unline LoadRandomSequence they are NOT uniqe #elfScript custom function. */
+   Vector<S32> GetRandomValues( uint count, int min, int max ) {}
+   /*! Load random values sequence, no values repeated, unload automaticly done.  */
+   Vector<S32> LoadRandomSequence( uint count, int min, int max ) {}
+   /*! Takes a screenshot of current screen (filename extension defines format) */
+   void TakeScreenshot( string fileName ) {}
+   /*! Set up init configuration flags (view FLAGS) */
+   void SetConfigFlags( unsigned int flags ) {}
+   /*! Open URL with default system browser (if available) */
+   void OpenURL( string url ) {}
+   /*! Set the current threshold (minimum) raylib log level (e.g. 2 = LOG_TRACE, 3 = LOG_DEBUG, 4 = LOG_INFO...) */
+   void SetTraceLogLevel( int logLevel ) {}
+   /*! Check if a key has been pressed once */
+   bool IsKeyPressed( int key ) {}
+   /*! Check if a key has been pressed again */
+   bool IsKeyPressedRepeat( int key ) {}
+   /*! Check if a key is being pressed */
+   bool IsKeyDown( int key ) {}
+   /*! Check if a key has been released once */
+   bool IsKeyReleased( int key ) {}
+   /*! Check if a key is NOT being pressed */
+   bool IsKeyUp( int key ) {}
+   /*! Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty */
+   int GetKeyPressed(  void ) {}
+   /*! Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty */
+   int GetCharPressed(  void ) {}
+   /*! Set a custom key to exit program (default is ESC) */
+   void SetExitKey( int key ) {}
+   /*! Check if a gamepad is available */
+   bool IsGamepadAvailable( int gamepad ) {}
+   /*! Get gamepad internal name id */
+   String GetGamepadName( int gamepad ) {}
+   /*! Check if a gamepad button has been pressed once */
+   bool IsGamepadButtonPressed( int gamepad, int button ) {}
+   /*! Check if a gamepad button is being pressed */
+   bool IsGamepadButtonDown( int gamepad, int button ) {}
+   /*! Check if a gamepad button has been released once */
+   bool IsGamepadButtonReleased( int gamepad, int button ) {}
+   /*! Check if a gamepad button is NOT being pressed */
+   bool IsGamepadButtonUp( int gamepad, int button ) {}
+   /*! Get the last gamepad button pressed */
+   S32 GetGamepadButtonPressed() {}
+   /*! Get axis count for a gamepad */
+   S32 GetGamepadAxisCount( int gamepad ) {}
+   /*! Get movement value for a gamepad axis */
+   F32 GetGamepadAxisMovement( int gamepad, int axis ) {}
+   /*! Set internal gamepad mappings (SDL_GameControllerDB) */
+   S32 SetGamepadMappings( string mappings ) {}
+   /*! Set gamepad vibration for both motors (duration in seconds) */
+   void SetGamepadVibration( int gamepad, float leftMotor, float rightMotor, float duration ) {}
+   /*! Check if a mouse button has been pressed once */
+   bool IsMouseButtonPressed( int button ) {}
+   /*! Check if a mouse button is being pressed */
+   bool IsMouseButtonDown( int button ) {}
+   /*! Check if a mouse button has been released once */
+   bool IsMouseButtonReleased( int button ) {}
+   /*!  Check if a mouse button is NOT being pressed */
+   bool IsMouseButtonUp( int button ) {}
+   /*!  Get mouse position X */
+   S32 GetMouseX() {}
+   /*!  Get mouse position Y */
+   S32 GetMouseY() {}
+   /*!  Get mouse position XY */
+   Vector2 GetMousePosition() {}
+   /*!  Get mouse delta XY */
+   Vector2 GetMouseDelta() {}
+   /*! Set mouse position XY on the screen */
+   void SetMousePosition( int x, int y ) {}
+   /*! Set mouse offset (useful for custom rendering resolution scaling) */
+   void SetMouseOffset( int offsetX, int offsetY ) {}
+   /*! Set mouse scaling for its coordinates (useful for custom rendering resolution scaling) */
+   void SetMouseScale( float scaleX, float scaleY ) {}
+   /*!  Get mouse wheel movement for X or Y, whichever is larger */
+   F32 GetMouseWheelMove() {}
+   /*! Get mouse wheel movement for both X and Y as a Vector2 */
+   Vector2 GetMouseWheelMoveV() {}
+   /*! Set mouse cursor icon type (e.g. MOUSE_CURSOR_IBEAM, MOUSE_CURSOR_POINT) */
+   void SetMouseCursor( int cursor ) {}
+   /*! Get touch position X for touch point 0 (relative to screen size) */
+   int GetTouchX() {}
+   /*! Get touch position Y for touch point 0 (relative to screen size) */
+   int GetTouchY() {}
+   /*! Get touch position XY for a touch point index (relative to screen size) */
+   Vector2 GetTouchPosition( int index ) {}
+   /*! Get touch point identifier for given index */
+   int GetTouchPointId( int index ) {}
+   /*! Get number of active touch points */
+   int GetTouchPointCount() {}
+   /*! Enable a set of gestures using flags (bitmask) */
+   void SetGesturesEnabled( int flags ) {}
+   /*! Check if a specific gesture has been detected */
+   bool IsGestureDetected( int gesture ) {}
+   /*! Get latest detected gesture type */
+   int GetGestureDetected() {}
+   /*! Get gesture hold time in seconds */
+   float GetGestureHoldDuration() {}
+   /*! Get gesture drag vector as Vector2 */
+   Vector2 GetGestureDragVector() {}
+   /*! Get gesture drag angle in degrees */
+   float GetGestureDragAngle() {}
+   /*! Get gesture pinch delta vector as Vector2 */
+   Vector2 GetGesturePinchVector() {}
+   /*! Get gesture pinch angle in degrees */
+   float GetGesturePinchAngle() {}
+   /*! Load image from file into CPU memory (RAM) and return the ImageID */
+   S32 LoadImage( String fileName ) {}
+   /*! Unload image from CPU memory (RAM) */
+   void UnloadImage( int imageId ) {}
+   /*! Load image from RAW file data */
+   S32 LoadImageRaw( String fileName, int width, int height, int format, int headerSize ) {}
+   /*! Load image sequence from file. Outputs frames to console. */
+   S32 LoadImageAnim( String fileName ) {}
+   /*! Load image from GPU texture data */
+   S32 LoadImageFromTexture( int textureId ) {}
+   /*! Load image from screen buffer (screenshot) */
+   S32 LoadImageFromScreen() {}
+   /*! Check if an image is valid */
+   bool IsImageValid( int imageId ) {}
+   /*! Export image data to file, returns true on success */
+   bool ExportImage( int imageId, String fileName ) {}
+   /*! Export image as code file defining an array of bytes, returns true on success */
+   bool ExportImageAsCode( int imageId, String fileName ) {}
+   /*! Generate image: plain color */
+   S32 GenImageColor( int width, int height, Color color ) {}
+   /*! Generate image: linear gradient, direction in degrees [0..360], 0=Vertical gradient */
+   S32 GenImageGradientLinear( int width, int height, int direction, Color start, Color end ) {}
+   /*! Generate image: radial gradient */
+   S32 GenImageGradientRadial( int width, int height, float density, Color inner, Color outer ) {}
+   /*! Generate image: square gradient */
+   S32 GenImageGradientSquare( int width, int height, float density, Color inner, Color outer ) {}
+   /*! Generate image: checked */
+   S32 GenImageChecked( int width, int height, int checksX, int checksY, Color col1, Color col2 ) {}
+   /*! Generate image: white noise */
+   S32 GenImageWhiteNoise( int width, int height, float factor ) {}
+   /*! Generate image: perlin noise */
+   S32 GenImagePerlinNoise( int width, int height, int offsetX, int offsetY, float scale ) {}
+   /*! Generate image: cellular algorithm, bigger tileSize means bigger cells */
+   S32 GenImageCellular( int width, int height, int tileSize ) {}
+   /*! Generate image: grayscale image from text data */
+   S32 GenImageText( int width, int height, String text ) {}
+   /*! Create an image duplicate */
+   S32 ImageCopy( int imageId ) {}
+   /*! Create an image from another image piece */
+   S32 ImageFromImage( int imageId, Rectangle rec ) {}
+   /*! Create an image from a selected channel of another image (GRAYSCALE) */
+   S32 ImageFromChannel( int imageId, int selectedChannel ) {}
+   /*! Create an image from text (default font) */
+   S32 ImageText( String text, int fontSize, Color color ) {}
+   /*! Create an image from text (custom sprite font) */
+   S32 ImageTextEx( int fontId, String text, float fontSize, float spacing, Color tint ) {}
+   /*! Convert image data to desired format */
+   void ImageFormat( int imageId, int newFormat ) {}
+   /*! Convert image to POT (power-of-two) */
+   void ImageToPOT( int imageId, Color fill ) {}
+   /*! Crop an image to a defined rectangle */
+   void ImageCrop( int imageId, Rectangle crop ) {}
+   /*! Crop image depending on alpha value */
+   void ImageAlphaCrop( int imageId, float threshold ) {}
+   /*! Clear alpha channel to desired color */
+   void ImageAlphaClear( int imageId, Color color, float threshold ) {}
+   /*! Apply alpha mask to image */
+   void ImageAlphaMask( int imageId, int alphaMaskId ) {}
+   /*! Premultiply alpha channel */
+   void ImageAlphaPremultiply( int imageId ) {}
+   /*! Apply Gaussian blur using a box blur approximation */
+   void ImageBlurGaussian( int imageId, int blurSize ) {}
+   /*! Resize image (Bicubic scaling algorithm) */
+   void ImageResize( int imageId, int newWidth, int newHeight ) {}
+   /*! Resize image (Nearest-Neighbor scaling algorithm) */
+   void ImageResizeNN( int imageId, int newWidth, int newHeight ) {}
+   /*! Resize canvas and fill with color */
+   void ImageResizeCanvas( int imageId, int newWidth, int newHeight, int offsetX, int offsetY, Color fill ) {}
+   /*! Compute all mipmap levels for a provided image */
+   void ImageMipmaps( int imageId ) {}
+   /*! Dither image data to 16bpp or lower */
+   void ImageDither( int imageId, int rBpp, int gBpp, int bBpp, int aBpp ) {}
+   /*! Flip image vertically */
+   void ImageFlipVertical( int imageId ) {}
+   /*! Flip image horizontally */
+   void ImageFlipHorizontal( int imageId ) {}
+   /*! Rotate image by input angle in degrees (-359 to 359) */
+   void ImageRotate( int imageId, int degrees ) {}
+   /*! Rotate image clockwise 90deg */
+   void ImageRotateCW( int imageId ) {}
+   /*! Rotate image counter-clockwise 90deg */
+   void ImageRotateCCW( int imageId ) {}
+   /*! Modify image color: tint */
+   void ImageColorTint( int imageId, Color color ) {}
+   /*! Modify image color: invert */
+   void ImageColorInvert( int imageId ) {}
+   /*! Modify image color: grayscale */
+   void ImageColorGrayscale( int imageId ) {}
+   /*! Modify image color: contrast (-100 to 100) */
+   void ImageColorContrast( int imageId, int contrast ) {}
+   /*! Modify image color: brightness (-255 to 255) */
+   void ImageColorBrightness( int imageId, int brightness ) {}
+   /*! Modify image color: replace color */
+   void ImageColorReplace( int imageId, Color color, Color replace ) {}
+   /*! Load color data from image by id as a Color array (RGBA - 32bit) and return the colorsId */
+   S32 LoadImageColors( int imageId ) {}
+   /*! Get a color from Colors* loaded with LoadImageColors */
+   Color GetImageColorsColor( int colorsId, int index ) {}
+   /*! Unload color data loaded with LoadImageColors() */
+   void UnloadImageColors( int colorsId ) {}
+   /*! Get image alpha border rectangle */
+   Rectangle GetImageAlphaBorder( int imageId, float threshold ) {}
+   /*! Get image pixel color at (x, y) position */
+   Color GetImageColor( int imageId, int x, int y ) {}
+   /*! Clear image background with given color */
+   void ImageClearBackground( int dstId, Color color ) {}
+   /*! Draw pixel within an image */
+   void ImageDrawPixel( int dstId, int posX, int posY, Color color ) {}
+   /*! Draw pixel within an image (Vector version) */
+   void ImageDrawPixelV( int dstId, Vector2 position, Color color ) {}
+   /*! Draw line within an image */
+   void ImageDrawLine( int dstId, int startPosX, int startPosY, int endPosX, int endPosY, Color color ) {}
+   /*! Draw line within an image (Vector version) */
+   void ImageDrawLineV( int dstId, Vector2 start, Vector2 end, Color color ) {}
+   /*! Draw a line defining thickness within an image */
+   void ImageDrawLineEx( int dstId, Vector2 start, Vector2 end, int thick, Color color ) {}
+   /*! Draw a filled circle within an image */
+   void ImageDrawCircle( int dstId, int centerX, int centerY, int radius, Color color ) {}
+   /*! Draw a filled circle within an image (Vector version) */
+   void ImageDrawCircleV( int dstId, Vector2 center, int radius, Color color ) {}
+   /*! Draw circle outline within an image */
+   void ImageDrawCircleLines( int dstId, int centerX, int centerY, int radius, Color color ) {}
+   /*! Draw circle outline within an image (Vector version) */
+   void ImageDrawCircleLinesV( int dstId, Vector2 center, int radius, Color color ) {}
+   /*! Draw rectangle within an image */
+   void ImageDrawRectangle( int dstId, int posX, int posY, int width, int height, Color color ) {}
+   /*! Draw rectangle within an image (Vector version) */
+   void ImageDrawRectangleV( int dstId, Vector2 position, Vector2 size, Color color ) {}
+   /*! Draw rectangle within an image */
+   void ImageDrawRectangleRec( int dstId, Rectangle rec, Color color ) {}
+   /*! Draw rectangle lines within an image */
+   void ImageDrawRectangleLines( int dstId, int posX, int posY, int width, int height, Color color ) {}
+   /*! Draw rectangle lines within an image with extended parameters */
+   void ImageDrawRectangleLinesEx( int dstId, Rectangle rec, int thick, Color color ) {}
+   /*! Draw triangle within an image */
+   void ImageDrawTriangle( int dstId, Vector2 v1, Vector2 v2, Vector2 v3, Color color ) {}
+   /*! Draw triangle with interpolated colors within an image */
+   void ImageDrawTriangleGradient( int dstId, Vector2 v1, Vector2 v2, Vector2 v3, Color c1, Color c2, Color c3 ) {}
+   /*! Draw triangle outline within an image */
+   void ImageDrawTriangleLines( int dstId, Vector2 v1, Vector2 v2, Vector2 v3, Color color ) {}
+   /*! Draw a triangle fan defined by points within an image (pointsValues format: 'x1 y1 x2 y2 ...') */
+   void ImageDrawTriangleFan( int dstId, Vector<F32> pointValues, int pointCount, Color color ) {}
+   /*! Draw a triangle fan defined by points within an image (pointsValues format: 'x1 y1 x2 y2 ...') */
+   void ImageDrawTriangleStrip( int dstId, Vector<F32> pointValues, int pointCount, Color color ) {}
+   /*! Draw a source image within a destination image (tint applied to source) */
+   void ImageDraw( int dstId, int srcId, Rectangle srcRec, Rectangle dstRec, Color tint ) {}
+   /*! Draw text (using default font) within an image (destination) */
+   void ImageDrawText( int dstId, String text, int posX, int posY, int fontSize, Color color ) {}
+   /*! Draw text (custom sprite font) within an image (destination) */
+   void ImageDrawTextEx( int dstId, int fontId, String text, Vector2 position, float fontSize, float spacing, Color tint ) {}
+   /*! Load texture from file into GPU memory (VRAM) and return the TextureID */
+   S32 LoadTexture( String fileName ) {}
+   /*! Unload texture from GPU memory (VRAM) */
+   void UnloadTexture( int textureId ) {}
+   /*! Load texture from image data and return the TextureID */
+   S32 LoadTextureFromImage( int imageId ) {}
+   /*! Load cubemap from image, multiple image cubemap layouts supported */
+   S32 LoadTextureCubemap( int imageId, int layout ) {}
+   /*! Check if a texture is valid (loaded in GPU) */
+   bool IsTextureValid( int textureId ) {}
+   /*! get the texture size int width int height */
+   String getTextureSize( int textureId ) {}
+   /*! get the texture width  */
+   S32 getTextureWidth( int textureId ) {}
+   /*! get the texture height  */
+   S32 getTextureHeight( int textureId ) {}
+   /*! Update GPU texture with data from an Image ID */
+   void UpdateTexture( int textureId, int imageId ) {}
+   /*! Update GPU texture rectangle with data from an Image ID */
+   void UpdateTextureRec( int textureId, Rectangle rec, int imageId ) {}
+   /*! Generate GPU mipmaps for a texture */
+   void GenTextureMipmaps( int textureId ) {}
+   /*! Set texture scaling filter mode (e.g., TEXTURE_FILTER_POINT, TEXTURE_FILTER_BILINEAR) */
+   void SetTextureFilter( int textureId, int filter ) {}
+   /*! Set texture wrapping mode (e.g., TEXTURE_WRAP_REPEAT, TEXTURE_WRAP_CLAMP) */
+   void SetTextureWrap( int textureId, int wrap ) {}
+   /*! Draw a Texture2D using its TextureID */
+   void DrawTexture( int textureId, int posX, int posY, Color tint=WHITE ) {}
+   /*! Draw a Texture2D with position defined as Vector2 */
+   void DrawTextureV( int textureId, Vector2 position, Color tint=WHITE ) {}
+   /*! Draw a Texture2D with extended parameters (rotation, scale, tint) */
+   void DrawTextureEx( int textureId, Vector2 position, float rotation, float scale, Color tint=WHITE ) {}
+   /*! Draw a part of a texture defined by a rectangle */
+   void DrawTextureRec( int textureId, Rectangle source, Vector2 position, Color tint=WHITE ) {}
+   /*! Draw a part of a texture defined by a rectangle with 'pro' parameters */
+   void DrawTexturePro( int textureId, Rectangle source, Rectangle dest, Vector2 origin, float rotation, Color tint=WHITE ) {}
+   /*! Draws a texture using 9-patch / N-patch scaling to prevent UI distortion. */
+   void DrawTextureNPatch( int textureId, Rectangle sourceRec, int left, int top, int right, int bottom, int layout, Rectangle destRec, Vector2 origin, float rotation, Color tint=WHITE ) {}
+   /*! Check if two colors are equal */
+   bool ColorIsEqual( Color col1, Color col2 ) {}
+   /*! Get color with alpha applied, alpha goes from 0.0f to 1.0f */
+   Color Fade( Color color, float alpha ) {}
+   /*! Get hexadecimal value for a Color (0xRRGGBBAA) */
+   int ColorToInt( Color color ) {}
+   /*! Get Color normalized as float [0..1] */
+   Vector4 ColorNormalize( Color color ) {}
+   /*! Get Color from normalized values [0..1] */
+   Color ColorFromNormalized( Vector4 normalized ) {}
+   /*! Get HSV values for a Color, hue [0..360], saturation/value [0..1] */
+   Vector3 ColorToHSV( Color color ) {}
+   /*! Get a Color from HSV values, hue [0..360], saturation/value [0..1] */
+   Color ColorFromHSV( float hue, float saturation, float value ) {}
+   /*! Get color multiplied with another color */
+   Color ColorTint( Color color, Color tint ) {}
+   /*! Get color with brightness correction, brightness factor goes from -1.0f to 1.0f */
+   Color ColorBrightness( Color color, float factor ) {}
+   /*! Get color with contrast correction, contrast values between -1.0f and 1.0f */
+   Color ColorContrast( Color color, float contrast ) {}
+   /*! Get color with alpha applied, alpha goes from 0.0f to 1.0f */
+   Color ColorAlpha( Color color, float alpha ) {}
+   /*! Get src alpha-blended into dst color with tint */
+   Color ColorAlphaBlend( Color dst, Color src, Color tint ) {}
+   /*! Get color lerp interpolation between two colors, factor [0.0f..1.0f] */
+   Color ColorLerp( Color color1, Color color2, float factor ) {}
+   /*! Get Color structure from hexadecimal value (e.g. 0xFF0000FF) */
+   Color GetColor( int hexValue ) {}
+   /*! Get pixel data size in bytes for certain format */
+   int GetPixelDataSize( int width, int height, int format ) {}
+   /*! Get the default Raylib Font and return the FontID */
+   S32 GetFontDefault() {}
+   /*! Load font from file into GPU memory (VRAM) and return the FontID */
+   S32 LoadFont( String fileName ) {}
+   /*! Load font from file with extended parameters. Pass 0 for codepointCount to use default set. */
+   S32 LoadFontEx( String fileName, int fontSize, Vector<S32> codepointValues, int codepointCount ) {}
+   /*! Load font from Image data and return the FontID */
+   S32 LoadFontFromImage( int imageId, Color key, int firstChar ) {}
+   /*! Unload font from GPU memory (VRAM) */
+   void UnloadFont( int fontId ) {}
+   /*! Export font data as a C code file (.h), returns true on success */
+   bool ExportFontAsCode( int fontId, String fileName ) {}
+   /*! Draw current FPS */
+   void DrawFPS( int posX, int posY ) {}
+   /*! Draw text (using default font */
+   void DrawText( string text, int posX, int posY, int fontSize=20, Color color=RAYWHITE, bool doShadow=false, Color shadowColor=DARKGRAY ) {}
+   /*! Draw text using font and additional parameters, fontId 0 means default font */
+   void DrawTextEx( int fontId, string text, Vector2 position, float fontSize=20.f, float spacing=1.f, Color tint=RAYWHITE, bool doShadow=false, Color shadowColor=DARKGRAY ) {}
+   /*! Draw text using Font and pro parameters (rotation) */
+   void DrawTextPro( int fontId, string text, Vector2 position, Vector2 origin, float rotation, float fontSize, float spacing, Color tint=RAYWHITE ) {}
+   /*!  Draw one character (codepoint) */
+   void DrawTextCodepoint( int fontId, int codepoint, Vector2 position, float fontSize, Color tint=RAYWHITE ) {}
+   /*!  Draw one character (codepoint) */
+   void DrawTextCodepoints( int fontId, Vector<S32> codepoints, int codepointCount, Vector2 position, float fontSize, float spacing, Color tint=RAYWHITE ) {}
+   /*! Set vertical line spacing when drawing with line-breaks */
+   void SetTextLineSpacing( int spacing ) {}
+   /*! Measure string width in pixels for the default font */
+   int MeasureText( String text, int fontSize ) {}
+   /*! Measure string width and height as Vector2 for a specific Font */
+   Vector2 MeasureTextEx( int fontId, String text, float fontSize, float spacing ) {}
+   /*! Measure string size for an array of codepoints */
+   Vector2 MeasureTextCodepoints( int fontId, Vector<S32> codepointValues, int length, float fontSize, float spacing ) {}
+   /*! Get glyph index position in font for a codepoint */
+   int GetGlyphIndex( int fontId, int codepoint ) {}
+   /*! Get glyph rectangle in font atlas for a codepoint */
+   Rectangle GetGlyphAtlasRec( int fontId, int codepoint ) {}
+   /*! Get glyph info (offsetX, offsetY, advanceX) for a codepoint */
+   String GetGlyphInfo( int fontId, int codepoint ) {}
+   /*! Begins 2D mode with a Camera2DObject object */
+   void BeginMode2D( int cameraId ) {}
+   /*! End 2D mode with custom camera */
+   void EndMode2D() {}
+   /*! Begins 3D mode with a Camera3DObject */
+   void BeginMode3D( int cameraId ) {}
+   /*! End 3D mode with custom camera */
+   void EndMode3D() {}
+   /*! Set texture and source rectangle to be used on shapes drawing */
+   void SetShapesTexture( int textureId, Rectangle source ) {}
+   /*! Get texture ID currently used for shapes drawing */
+   S32 GetShapesTexture() {}
+   /*! Get texture source rectangle that is used for shapes drawing */
+   Rectangle GetShapesTextureRectangle() {}
+   /*! Draw a pixel using geometry [Can be slow, use with care] */
+   void DrawPixel( int posX, int posY, Color color=RAYWHITE ) {}
+   /*! Draw a pixel using geometry (Vector version) [Can be slow, use with care] */
+   void DrawPixelV( Vector2 position, Color color=RAYWHITE ) {}
+   /*! Draw a line */
+   void DrawLine( int startPosX, int startPosY, int endPosX, int endPosY, Color color=RAYWHITE ) {}
+   /*! Draw a line (using gl lines) */
+   void DrawLineV( Vector2 startPos, Vector2 endPos, Color color=RAYWHITE ) {}
+   /*! Draw a line (using triangles/quads) */
+   void DrawLineEx( Vector2 startPos, Vector2 endPos, float thick, Color color=RAYWHITE ) {}
+   /*! Draw lines sequence (using gl lines) */
+   void DrawLineStrip( Vector<F32> pointValues, int pointCount, Color color=RAYWHITE ) {}
+   /*! Draw line segment cubic-bezier in-out interpolation */
+   void DrawLineBezier( Vector2 startPos, Vector2 endPos, float thick, Color color=RAYWHITE ) {}
+   /*! Draw a dashed line */
+   void DrawLineDashed( Vector2 startPos, Vector2 endPos, int dashSize, int spaceSize, Color color=RAYWHITE ) {}
+   /*! Draw a color-filled circle */
+   void DrawCircle( int centerX, int centerY, float radius, Color color=RAYWHITE ) {}
+   /*! Draw a filled circle within an image (Vector version) */
+   void DrawCircleV( Vector2 center, float radius, Color color=RAYWHITE ) {}
+   /*! Draw a gradient-filled circle */
+   void DrawCircleGradient( Vector2 center, float radius, Color inner, Color outer ) {}
+   /*! Draw a piece of a circle */
+   void DrawCircleSector( Vector2 center, float radius, float startAngle, float endAngle, int segments, Color color=RAYWHITE ) {}
+   /*! Draw circle sector outline */
+   void DrawCircleSectorLines( Vector2 center, float radius, float startAngle, float endAngle, int segments, Color color=RAYWHITE ) {}
+   /*! Draw circle outline */
+   void DrawCircleLines( int centerX, int centerY, float radius, Color color=RAYWHITE ) {}
+   /*! Draw circle outline (Vector version) */
+   void DrawCircleLinesV( Vector2 center, float radius, Color color=RAYWHITE ) {}
+   /*! Draw ellipse */
+   void DrawEllipse( int centerX, int centerY, float radiusH, float radiusV, Color color=RAYWHITE ) {}
+   /*! Draw ellipse (Vector version) */
+   void DrawEllipseV( Vector2 center, float radiusH, float radiusV, Color color=RAYWHITE ) {}
+   /*! Draw ellipse outline */
+   void DrawEllipseLines( int centerX, int centerY, float radiusH, float radiusV, Color color=RAYWHITE ) {}
+   /*! Draw ellipse outline (Vector version) */
+   void DrawEllipseLinesV( Vector2 center, float radiusH, float radiusV, Color color=RAYWHITE ) {}
+   /*! Draw ring */
+   void DrawRing( Vector2 center, float innerRadius, float outerRadius, float startAngle, float endAngle, int segments, Color color=RAYWHITE ) {}
+   /*! Draw ring outline */
+   void DrawRingLines( Vector2 center, float innerRadius, float outerRadius, float startAngle, float endAngle, int segments, Color color=RAYWHITE ) {}
+   /*! Draw a color-filled rectangle */
+   void DrawRectangle( int posX, int posY, int width, int height, Color color=RAYWHITE ) {}
+   /*! Draw a color-filled rectangle (Vector version) */
+   void DrawRectangleV( Vector2 position, Vector2 size, Color color=RAYWHITE ) {}
+   /*! Draw a color-filled rectangle */
+   void DrawRectangleRec( Rectangle rec, Color color=RAYWHITE ) {}
+   /*! Draw a color-filled rectangle with pro parameters */
+   void DrawRectanglePro( Rectangle rec, Vector2 origin, float rotation, Color color=RAYWHITE ) {}
+   /*! Draw a vertical-gradient-filled rectangle */
+   void DrawRectangleGradientV( int posX, int posY, int width, int height, Color top, Color bottom ) {}
+   /*! Draw a horizontal-gradient-filled rectangle */
+   void DrawRectangleGradientH( int posX, int posY, int width, int height, Color left, Color right ) {}
+   /*! Draw a gradient-filled rectangle with custom vertex colors */
+   void DrawRectangleGradientEx( Rectangle rec, Color topLeft, Color bottomLeft, Color bottomRight, Color topRight ) {}
+   /*! Draw rectangle outline */
+   void DrawRectangleLines( int posX, int posY, int width, int height, Color color=RAYWHITE ) {}
+   /*! Draw rectangle outline with extended parameters */
+   void DrawRectangleLinesEx( Rectangle rec, float lineThick, Color color=RAYWHITE ) {}
+   /*! Draw rectangle with rounded edges */
+   void DrawRectangleRounded( Rectangle rec, float roundness, int segments, Color color=RAYWHITE ) {}
+   /*! Draw rectangle lines with rounded edges */
+   void DrawRectangleRoundedLines( Rectangle rec, float roundness, int segments, Color color=RAYWHITE ) {}
+   /*! Draw rectangle lines with rounded edges outline */
+   void DrawRectangleRoundedLinesEx( Rectangle rec, float roundness, int segments, float lineThick, Color color=RAYWHITE ) {}
+   /*! Draw a color-filled triangle (vertex in counter-clockwise order!) */
+   void DrawTriangle( Vector2 v1, Vector2 v2, Vector2 v3, Color color=RAYWHITE ) {}
+   /*! Draw triangle with interpolated colors (vertex in counter-clockwise order!) */
+   void DrawTriangleGradient( Vector2 v1, Vector2 v2, Vector2 v3, Color c1, Color c2, Color c3 ) {}
+   /*! Draw triangle outline (vertex in counter-clockwise order!) */
+   void DrawTriangleLines( Vector2 v1, Vector2 v2, Vector2 v3, Color color=RAYWHITE ) {}
+   /*! Draw a triangle fan defined by points (first vertex is the center) */
+   void DrawTriangleFan( Vector<F32> pointValues, int pointCount, Color color=RAYWHITE ) {}
+   /*! Draw a triangle strip defined by points */
+   void DrawTriangleStrip( Vector<F32> pointValues, int pointCount, Color color=RAYWHITE ) {}
+   /*! Draw a polygon of n sides */
+   void DrawPoly( Vector2 center, int sides, float radius, float rotation, Color color=RAYWHITE ) {}
+   /*! Draw a polygon outline of n sides */
+   void DrawPolyLines( Vector2 center, int sides, float radius, float rotation, Color color=RAYWHITE ) {}
+   /*! Draw a polygon outline of n sides with extended parameters */
+   void DrawPolyLinesEx( Vector2 center, int sides, float radius, float rotation, float lineThick, Color color=RAYWHITE ) {}
+   /*! Draw spline: Linear, minimum 2 points */
+   void DrawSplineLinear( Vector<F32> pointValues, int pointCount, float thick, Color color=RAYWHITE ) {}
+   /*! Draw spline: B-Spline, minimum 4 points */
+   void DrawSplineBasis( Vector<F32> pointValues, int pointCount, float thick, Color color=RAYWHITE ) {}
+   /*! Draw spline: Catmull-Rom, minimum 4 points */
+   void DrawSplineCatmullRom( Vector<F32> pointValues, int pointCount, float thick, Color color=RAYWHITE ) {}
+   /*! Draw spline: Quadratic Bezier, minimum 3 points (1 control point): [p1, c2, p3, c4...] */
+   void DrawSplineBezierQuadratic( Vector<F32> pointValues, int pointCount, float thick, Color color=RAYWHITE ) {}
+   /*! Draw spline: Cubic Bezier, minimum 4 points (2 control points): [p1, c2, c3, p4, c5, c6...] */
+   void DrawSplineBezierCubic( Vector<F32> pointValues, int pointCount, float thick, Color color=RAYWHITE ) {}
+   /*! Draw spline segment: Linear, 2 points */
+   void DrawSplineSegmentLinear( Vector2 p1, Vector2 p2, float thick, Color color=RAYWHITE ) {}
+   /*! Draw spline segment: B-Spline, 4 points */
+   void DrawSplineSegmentBasis( Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float thick, Color color=RAYWHITE ) {}
+   /*! Draw spline segment: Catmull-Rom, 4 points */
+   void DrawSplineSegmentCatmullRom( Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float thick, Color color=RAYWHITE ) {}
+   /*! Draw spline segment: Quadratic Bezier, 2 points, 1 control point */
+   void DrawSplineSegmentBezierQuadratic( Vector2 p1, Vector2 c2, Vector2 p3, float thick, Color color=RAYWHITE ) {}
+   /*! Draw spline segment: Cubic Bezier, 2 points, 2 control points */
+   void DrawSplineSegmentBezierCubic( Vector2 p1, Vector2 c2, Vector2 c3, Vector2 p4, float thick, Color color=RAYWHITE ) {}
+   /*! Get (evaluate) spline point: Linear */
+   Vector2 GetSplinePointLinear( Vector2 startPos, Vector2 endPos, float t ) {}
+   /*! Get (evaluate) spline point: B-Spline */
+   Vector2 GetSplinePointBasis( Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float t ) {}
+   /*! Get (evaluate) spline point: Catmull-Rom */
+   Vector2 GetSplinePointCatmullRom( Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float t ) {}
+   /*! Get (evaluate) spline point: Quadratic Bezier */
+   Vector2 GetSplinePointBezierQuadratic( Vector2 p1, Vector2 c2, Vector2 p3, float t ) {}
+   /*! Get (evaluate) spline point: Cubic Bezier */
+   Vector2 GetSplinePointBezierCubic( Vector2 p1, Vector2 c2, Vector2 c3, Vector2 p4, float t ) {}
+   /*! Check collision between two rectangles */
+   bool CheckCollisionRecs( Rectangle rec1, Rectangle rec2 ) {}
+   /*! Check collision between two circles */
+   bool CheckCollisionCircles( Vector2 center1, float radius1, Vector2 center2, float radius2 ) {}
+   /*! Check collision between circle and rectangle */
+   bool CheckCollisionCircleRec( Vector2 center, float radius, Rectangle rec ) {}
+   /*! Check if circle collides with a line created between two points [p1] and [p2] */
+   bool CheckCollisionCircleLine( Vector2 center, float radius, Vector2 p1, Vector2 p2 ) {}
+   /*! Check if point is inside rectangle */
+   bool CheckCollisionPointRec( Vector2 point, Rectangle rec ) {}
+   /*! Check if point is inside circle */
+   bool CheckCollisionPointCircle( Vector2 point, Vector2 center, float radius ) {}
+   /*! Check if point is inside a triangle */
+   bool CheckCollisionPointTriangle( Vector2 point, Vector2 p1, Vector2 p2, Vector2 p3 ) {}
+   /*! Check if point belongs to line created between two points [p1] and [p2] with defined margin in pixels [threshold] */
+   bool CheckCollisionPointLine( Vector2 point, Vector2 p1, Vector2 p2, int threshold ) {}
+   /*! Check if point is within a polygon described by array of vertices */
+   bool CheckCollisionPointPoly( Vector2 point, Vector<F32> pointValues, int pointCount ) {}
+   /*! Check the collision between two lines. Returns 'x y' string if colliding, or empty string if not. */
+   Vector2 CheckCollisionLines( Vector2 startPos1, Vector2 endPos1, Vector2 startPos2, Vector2 endPos2 ) {}
+   /*! Get collision rectangle for two rectangles collision */
+   Rectangle GetCollisionRec( Rectangle rec1, Rectangle rec2 ) {}
+   /*! Draw a line in 3D world space */
+   void DrawLine3D( Vector3 startPos, Vector3 endPos, Color color ) {}
+   /*! Draw a point in 3D space, actually a small line */
+   void DrawPoint3D( Vector3 position, Color color ) {}
+   /*! Draw a circle in 3D world space */
+   void DrawCircle3D( Vector3 center, float radius, Vector3 rotationAxis, float rotationAngle, Color color ) {}
+   /*! Draw a color-filled triangle (vertex in counter-clockwise order!) */
+   void DrawTriangle3D( Vector3 v1, Vector3 v2, Vector3 v3, Color color ) {}
+   /*! Draw a triangle strip defined by points */
+   void DrawTriangleStrip3D( Vector<F32> pointValues, int pointCount, Color color ) {}
+   /*! Draw cube */
+   void DrawCube( Vector3 position, float width, float height, float length, Color color ) {}
+   /*! Draw cube (Vector version) */
+   void DrawCubeV( Vector3 position, Vector3 size, Color color ) {}
+   /*! Draw cube wires */
+   void DrawCubeWires( Vector3 position, float width, float height, float length, Color color ) {}
+   /*! Draw cube wires (Vector version) */
+   void DrawCubeWiresV( Vector3 position, Vector3 size, Color color ) {}
+   /*! Draw sphere */
+   void DrawSphere( Vector3 centerPos, float radius, Color color ) {}
+   /*! Draw sphere with extended parameters */
+   void DrawSphereEx( Vector3 centerPos, float radius, int rings, int slices, Color color ) {}
+   /*! Draw sphere wires */
+   void DrawSphereWires( Vector3 centerPos, float radius, int rings, int slices, Color color ) {}
+   /*! Draw a cylinder/cone */
+   void DrawCylinder( Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color ) {}
+   /*! Draw a cylinder with base at startPos and top at endPos */
+   void DrawCylinderEx( Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color ) {}
+   /*! Draw a cylinder/cone wires */
+   void DrawCylinderWires( Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color ) {}
+   /*! Draw a cylinder wires with base at startPos and top at endPos */
+   void DrawCylinderWiresEx( Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int slices, Color color ) {}
+   /*! Draw a capsule with the center of its sphere caps at startPos and endPos */
+   void DrawCapsule( Vector3 startPos, Vector3 endPos, float radius, int rings, int slices, Color color ) {}
+   /*! Draw capsule wireframe with the center of its sphere caps at startPos and endPos */
+   void DrawCapsuleWires( Vector3 startPos, Vector3 endPos, float radius, int rings, int slices, Color color ) {}
+   /*! Draw a plane XZ */
+   void DrawPlane( Vector3 centerPos, Vector2 size, Color color ) {}
+   /*! Draw a ray line using the TypeRay format */
+   void DrawRay( Ray ray, Color color ) {}
+   /*! Draw a grid (centered at (0, 0, 0) */
+   void DrawGrid( int slices, float spacing ) {}
+   /*! Load model from files (meshes and materials) and return ModelID */
+   S32 LoadModel( String fileName ) {}
+   /*! Load model from generated mesh (default material) and return ModelID */
+   S32 LoadModelFromMesh( int meshId ) {}
+   /*! Gets the material count from a model by 
+GetModelMapTexture(modelId, [mapMap=MATERIAL_MAP_DIFFUSE]) */
+   S32 GetModelMatrialCount( int modelId, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
+   /*! Gets the texture ID from a model material map.
+GetModelMapTexture(modelId, [matIndex=0], [mapMap=MATERIAL_MAP_DIFFUSE]) */
+   S32 GetModelMapTexture( int modelId, int matIndex=0, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
+   /*! set a texture for a model material map like model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;SetModelMapTexture($model, $texture) << matIndex default 0,  matMap default MATERIAL_MAP_DIFFUSE  */
+   bool SetModelMapTexture( int modelId, int textureId, int matIndex=0, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
+   /*! Gets the color from a model material map.
+GetModelMapColor(modelId, [matIndex=0], [mapMap=MATERIAL_MAP_DIFFUSE]) */
+   Color GetModelMapColor( int modelId, int matIndex=0, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
+   /*! set a color for a modal material map like model.materials[0].maps[MATERIAL_MAP_DIFFUSE].color = BLUE;SetModelMapColor($model, BLUE) << matIndex default 0,  matMap default MATERIAL_MAP_DIFFUSE  */
+   bool SetModelMapColor( int modelId, Color color, int matIndex=0, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
+   /*! Gets the float value from a model material map.
+GetModelMapValue(modelId, [matIndex=0], [mapMap=MATERIAL_MAP_DIFFUSE]) */
+   F32 GetModelMapValue( int modelId, int matIndex=0, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
+   /*! Sets the float value for a model material map (e.g., roughness or metalness factor).
+SetModelMapValue(modelId, value [, matIndex=0, mapMap=MATERIAL_MAP_DIFFUSE]) */
+   bool SetModelMapValue( int modelId, float value, int matIndex=0, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
+   /*! Gets the shader ID from a model material.
+GetModelShader(modelId [, matIndex=0]) */
+   S32 GetModelShader( int modelId, int matIndex=0 ) {}
+   /*! Sets a shader for a model material like model.materials[matIndex].shader = shader;
+SetModelShader(modelId, shaderId [, matIndex=0]) */
+   bool SetModelShader( int modelId, int shaderId, int matIndex=0 ) {}
+   /*! Check if a model is valid (loaded in GPU, VAO/VBOs) */
+   bool IsModelValid( int modelId ) {}
+   /*! Unload model (including meshes) from memory (RAM and/or VRAM) */
+   void UnloadModel( int modelId ) {}
+   /*! Compute model bounding box limits (considers all meshes) */
+   BoundingBox GetModelBoundingBox( int modelId ) {}
+   /*! Draw a 3D model with position, scale and tint color */
+   void DrawModel( int modelId, Vector3 position, float scale, Color tint=WHITE ) {}
+   /*! Draw a 3D model with extended transform parameters */
+   void DrawModelEx( int modelId, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint=WHITE ) {}
+   /*! Draw a 3D model wireframe */
+   void DrawModelWires( int modelId, Vector3 position, float scale, Color tint=WHITE ) {}
+   /*! Draw a 3D model wireframe with extended transform parameters */
+   void DrawModelWiresEx( int modelId, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint=WHITE ) {}
+   /*! Draw a 3D bounding box wireframe */
+   void DrawBoundingBox( BoundingBox box, Color color ) {}
+   /*! Draw a 2D billboard texture in 3D space facing the camera */
+   void DrawBillboard( int cameraId, int textureId, Vector3 position, float scale, Color tint=WHITE ) {}
+   /*! Draw a part of a 2D billboard texture defined by a source rectangle */
+   void DrawBillboardRec( int cameraId, int textureId, Rectangle source, Vector3 position, Vector2 size, Color tint=WHITE ) {}
+   /*! Draw a billboard texture with pro transform parameters */
+   void DrawBillboardPro( int cameraId, int textureId, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, float rotation, Color tint=WHITE ) {}
+   /*! Upload mesh vertex data to GPU (VRAM) */
+   void UploadMesh( int meshId, bool dynamic ) {}
+   /*! Update mesh vertex data in GPU for a specific buffer index using a float list */
+   void UpdateMeshBuffer( int meshId, int index, Vector<F32> dataValues, int dataSize, int offset ) {}
+   /*! Unload mesh data from CPU and GPU memory */
+   void UnloadMesh( int meshId ) {}
+   /*! Returns a 3D identity matrix */
+   Matrix MatrixIdentity() {}
+   /*! Returns a translation matrix */
+   Matrix MatrixTranslate( float x, float y, float z ) {}
+   /*! Returns a rotation matrix from XYZ angles (in radians) */
+   Matrix MatrixRotateXYZ( Vector3 angleRadians ) {}
+   /*! Multiplies two matrices together */
+   Matrix MatrixMultiply( Matrix left, Matrix right ) {}
+   /*! Draw a 3d mesh with material and transform matrix */
+   void DrawMesh( int meshId, int materialId, Matrix transform ) {}
+   /*! Compute mesh bounding box limits */
+   BoundingBox GetMeshBoundingBox( int meshId ) {}
+   /*! Compute mesh tangents for normal-mapping */
+   void GenMeshTangents( int meshId ) {}
+   /*! Export mesh data to file (.obj), returns true on success */
+   bool ExportMesh( int meshId, String fileName ) {}
+   /*! Export mesh as code file (.h) defining vertex attribute arrays */
+   bool ExportMeshAsCode( int meshId, String fileName ) {}
+   /*! Generate polygonal mesh and return MeshID */
+   S32 GenMeshPoly( int sides, float radius ) {}
+   /*! Generate plane mesh (with subdivisions) and return MeshID */
+   S32 GenMeshPlane( float width, float length, int resX, int resZ ) {}
+   /*! Generate cuboid mesh and return MeshID */
+   S32 GenMeshCube( float width, float height, float length ) {}
+   /*! Generate sphere mesh (standard sphere) and return MeshID */
+   S32 GenMeshSphere( float radius, int rings, int slices ) {}
+   /*! Generate half-sphere mesh (no bottom cap) and return MeshID */
+   S32 GenMeshHemiSphere( float radius, int rings, int slices ) {}
+   /*! Generate cylinder mesh and return MeshID */
+   S32 GenMeshCylinder( float radius, float height, int slices ) {}
+   /*! Generate cone/pyramid mesh and return MeshID */
+   S32 GenMeshCone( float radius, float height, int slices ) {}
+   /*! Generate torus mesh and return MeshID */
+   S32 GenMeshTorus( float radius, float size, int radSeg, int sides ) {}
+   /*! Generate trefoil knot mesh and return MeshID */
+   S32 GenMeshKnot( float radius, float size, int radSeg, int sides ) {}
+   /*! Generate heightmap mesh from image data and return MeshID */
+   S32 GenMeshHeightmap( int imageId, Vector3 size ) {}
+   /*! Generate cubes-based map mesh from image data and return MeshID */
+   S32 GenMeshCubicmap( int imageId, Vector3 cubeSize ) {}
+   /*! Check if a material is valid */
+   bool IsMaterialValid( int materialId ) {}
+   /*! Unload material from GPU memory (VRAM) */
+   void UnloadMaterial( int materialId ) {}
+   /*! Set texture for a material map type (e.g. MATERIAL_MAP_DIFFUSE) */
+   void SetMaterialTexture( int materialId, int mapType, int textureId ) {}
+   /*! Set material for a specific mesh index inside a model */
+   void SetModelMeshMaterial( int modelId, int meshId, int materialId ) {}
+   /*! Check collision between two spheres */
+   bool CheckCollisionSpheres( Vector3 center1, float radius1, Vector3 center2, float radius2 ) {}
+   /*! Check collision between two bounding boxes */
+   bool CheckCollisionBoxes( BoundingBox box1, BoundingBox box2 ) {}
+   /*! Check collision between box and sphere */
+   bool CheckCollisionBoxSphere( BoundingBox box, Vector3 center, float radius ) {}
+   /*! Returns hit info string 'px py pz nx ny nz dist' or empty string */
+   const char* GetRayCollisionSphere( Ray ray, Vector3 center, float radius ) {}
+   /*! Returns hit info string 'px py pz nx ny nz dist' or empty string */
+   const char* GetRayCollisionBox( Ray ray, BoundingBox box ) {}
+   /*! Returns hit info string from 3D mesh collision */
+   const char* GetRayCollisionMesh( Ray ray, int meshId, Matrix transform ) {}
+   /*! Returns hit info string from 3D triangle collision */
+   const char* GetRayCollisionTriangle( Ray ray, Vector3 p1, Vector3 p2, Vector3 p3 ) {}
+   /*! Returns hit info string from 3D quad collision */
+   const char* GetRayCollisionQuad( Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4 ) {}
+   /*! Load model animations from file and return an AnimationBlockID */
+   S32 LoadModelAnimations( String fileName ) {}
+   /*! Update model animation pose for a specific frame index */
+   void UpdateModelAnimation( int modelId, int animBlockId, int animIndex, int frame ) {}
+   /*! Unload model animation array data from memory */
+   void UnloadModelAnimations( int animBlockId ) {}
+   /*! Get total number of animations inside an AnimationBlock */
+   int GetModelAnimationCount( int animBlockId ) {}
+   /*! Generates a 3D cube model from dimensions and returns its modelId. */
+   S32 GenModelCube( float width, float height, float length ) {}
+   /*! Generates a 3D sphere model and returns its modelId. */
+   S32 GenModelSphere( float radius, int rings, int slices ) {}
+   /*! Generates a 3D cylinder model and returns its modelId. */
+   S32 GenModelCylinder( float radius, float height, int slices ) {}
+   /*! Initialize audio device and context */
+   void InitAudioDevice() {}
+   /*! Close the audio device and context */
+   void CloseAudioDevice() {}
+   /*! Check if audio device has been initialized successfully */
+   bool IsAudioDeviceReady() {}
+   /*! Set master volume (listener), value between 0.0 and 1.0 */
+   void SetMasterVolume( float volume ) {}
+   /*! Get master volume (listener) */
+   float GetMasterVolume() {}
+   /*! Load wave data from file and return WaveID */
+   S32 LoadWave( String fileName ) {}
+   /*! Check if wave data is valid */
+   bool IsWaveValid( int waveId ) {}
+   /*! Load sound from file and return SoundID */
+   S32 LoadSound( String fileName ) {}
+   /*! Load sound from wave data and return SoundID */
+   S32 LoadSoundFromWave( int waveId ) {}
+   /*! Load sound alias (shares sample data but can play independently) and return a new SoundID */
+   S32 LoadSoundAlias( int sourceSoundId ) {}
+   /*! Check if a sound is valid */
+   bool IsSoundValid( int soundId ) {}
+   /*! Unload wave data from memory */
+   void UnloadWave( int waveId ) {}
+   /*! Unload sound from memory */
+   void UnloadSound( int soundId ) {}
+   /*! Unload sound alias */
+   void UnloadSoundAlias( int aliasSoundId ) {}
+   /*! Export wave data to file (.wav), returns true on success */
+   bool ExportWave( int waveId, String fileName ) {}
+   /*! Export wave sample data to code (.h), returns true on success */
+   bool ExportWaveAsCode( int waveId, String fileName ) {}
+   /*! Play a sound using its SoundID */
+   void PlaySound( int soundId ) {}
+   /*! Stop playing a sound */
+   void StopSound( int soundId ) {}
+   /*! Pause a sound */
+   void PauseSound( int soundId ) {}
+   /*! Resume a paused sound */
+   void ResumeSound( int soundId ) {}
+   /*! Check if a sound is currently playing */
+   bool IsSoundPlaying( int soundId ) {}
+   /*! Set volume for a sound (0.0 to 1.0) */
+   void SetSoundVolume( int soundId, float volume ) {}
+   /*! Set pitch/speed for a sound (1.0 is base) */
+   void SetSoundPitch( int soundId, float pitch ) {}
+   /*! Set pan for a sound (-1.0 left, 0.0 center, 1.0 right) */
+   void SetSoundPan( int soundId, float pan ) {}
+   /*! Copy a wave to a new wave and return WaveID */
+   S32 WaveCopy( int waveId ) {}
+   /*! Crop a wave to defined frames range */
+   void WaveCrop( int waveId, int initFrame, int finalFrame ) {}
+   /*! Convert wave data to desired format */
+   void WaveFormat( int waveId, int sampleRate, int sampleSize, int channels ) {}
+   /*! Load music stream from file and return MusicID */
+   S32 LoadMusicStream( String fileName ) {}
+   /*! Check if a music stream is valid */
+   bool IsMusicValid( int musicId ) {}
+   /*! Unload music stream from VRAM and RAM */
+   void UnloadMusicStream( int musicId ) {}
+   /*! Start playing a music stream */
+   void PlayMusicStream( int musicId ) {}
+   /*! Check if music is currently playing */
+   bool IsMusicStreamPlaying( int musicId ) {}
+   /*! Update buffers for music streaming (MUST be called every frame!) */
+   void UpdateMusicStream( int musicId ) {}
+   /*! Stop music playing */
+   void StopMusicStream( int musicId ) {}
+   /*! Pause music playing */
+   void PauseMusicStream( int musicId ) {}
+   /*! Resume playing paused music */
+   void ResumeMusicStream( int musicId ) {}
+   /*! Seek music to a specific position in seconds */
+   void SeekMusicStream( int musicId, float position ) {}
+   /*! Set volume for music stream (0.0 to 1.0) */
+   void SetMusicVolume( int musicId, float volume ) {}
+   /*! Set pitch/speed for music stream */
+   void SetMusicPitch( int musicId, float pitch ) {}
+   /*! Set pan for music stream (-1.0 left, 0.0 center, 1.0 right) */
+   void SetMusicPan( int musicId, float pan ) {}
+   /*! Get total music time length in seconds */
+   float GetMusicTimeLength( int musicId ) {}
+   /*! Get current music time played in seconds */
+   float GetMusicTimePlayed( int musicId ) {}
+   /*! Set default buffer size for new audio streams (in samples) */
+   void SetAudioStreamBufferSizeDefault( int size ) {}
+   /*! Begin custom shader drawing using a ShaderID */
+   void BeginShaderMode( int shaderId ) {}
+   /*! End custom shader drawing and reset to the default Raylib shader */
+   void EndShaderMode() {}
+   /*! Load shader from files and return ShaderID */
+   S32 LoadShader( String vsFileName, String fsFileName ) {}
+   /*! Load shader from code strings and return ShaderID */
+   S32 LoadShaderFromMemory( String vsCode, String fsCode ) {}
+   /*! Check if a shader is valid (loaded on GPU) */
+   bool IsShaderValid( int shaderId ) {}
+   /*! Get shader uniform location index */
+   int GetShaderLocation( int shaderId, String uniformName ) {}
+   /*! set shader uniform location by index */
+   bool SetShaderLocation( int shaderId, int shaderLocationIndex, int shaderLocation ) {}
+   /*! set shader uniform location by uniformName */
+   bool SetShaderLocationByUniformName( int shaderId, int shaderLocationIndex, String uniformName ) {}
+   /*! Get shader uniform location from shader locs  */
+   S32 GetShaderLocsLocation( int shaderId, int shaderLocationIndex ) {}
+   /*! Get shader attribute location index */
+   int GetShaderLocationAttrib( int shaderId, String attribName ) {}
+   /*! Sets a shader uniform value parsed from a space-separated string based on uniformType. */
+   bool SetShaderValue( int shaderId, int locIndex, String valueStr, int uniformType ) {}
+   /*! Set shader uniform array/vector using a flat float list */
+   void SetShaderValueV( int shaderId, int locIndex, Vector<F32> dataValues, int uniformType, int count ) {}
+   /*! Set shader uniform value for a 4x4 matrix */
+   void SetShaderValueMatrix( int shaderId, int locIndex, Matrix mat ) {}
+   /*! Set shader uniform value and bind a Texture2D ID */
+   void SetShaderValueTexture( int shaderId, int locIndex, int textureId ) {}
+   /*! Unload shader from GPU memory (VRAM) */
+   void UnloadShader( int shaderId ) {}
+   /*! Load text data from file and return it as a string */
+   const char* LoadFileText( String fileName ) {}
+   /*! Save text data to a file, returns true on success */
+   bool SaveFileText( String fileName, String text ) {}
+   /*! Check if file exists */
+   bool FileExists( String fileName ) {}
+   /*! Check if a directory path exists */
+   bool DirectoryExists( String dirPath ) {}
+   /*! Replace text in an existing file. Returns count of replacements. */
+   int FileTextReplace( String fileName, String search, String replacement ) {}
+   /*! Find text in existing file, returns character index or -1 if not found */
+   int FileTextFindIndex( String fileName, String search ) {}
+   /*! Rename a file. Returns true on success. */
+   bool FileRename( String fileName, String fileRename ) {}
+   /*! Delete a file. Returns true on success. */
+   bool FileRemove( String fileName ) {}
+   /*! Copy a file from one path to another. Returns true on success. */
+   bool FileCopy( String srcPath, String dstPath ) {}
+   /*! Move a file from one directory to another. Returns true on success. */
+   bool FileMove( String srcPath, String dstPath ) {}
+   /*! Get file length in bytes */
+   int GetFileLength( String fileName ) {}
+   /*! Get extension for a filename string (includes dot: '.png') */
+   const char* GetFileExtension( String fileName ) {}
+   /*! Get filename for a path string */
+   const char* GetFileName( String filePath ) {}
+   /*! Get filename string without extension */
+   const char* GetFileNameWithoutExt( String filePath ) {}
+   /*! Create directories (including full path requested), returns true on success */
+   bool MakeDirectory( String dirPath ) {}
+   /*! Get the total file count in a directory */
+   int GetDirectoryFileCount( String dirPath ) {}
+   /*! Get file count with extension filtering and recursive directory scan. Use 'DIR' in filter to include directories. */
+   int GetDirectoryFileCountEx( String basePath, String filter, bool scanSubdirs ) {}
+   /*! Adds two Vector3 values together. */
+   Vector3 Vector3Add( Vector3 v1, Vector3 v2 ) {}
+   /*! Subtracts v2 from v1. */
+   Vector3 Vector3Subtract( Vector3 v1, Vector3 v2 ) {}
+   /*! Scales a Vector3 by a float multiplier. */
+   Vector3 Vector3Scale( Vector3 v, float scale ) {}
+   /*! Normalizes a Vector3 to a length of 1.0. */
+   Vector3 Vector3Normalize( Vector3 v ) {}
+   /*! Returns the length of a Vector3. */
+   F32 Vector3Length( Vector3 v ) {}
+   /*! Returns the distance between two Vector3 points. */
+   F32 Vector3Distance( Vector3 v1, Vector3 v2 ) {}
 };
