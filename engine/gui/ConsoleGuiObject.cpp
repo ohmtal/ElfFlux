@@ -56,35 +56,6 @@ namespace ConsoleGui {
             gConsolePtr->logs[slot].type = finalLevel;
         }
 
-        // U32 unitCount = StringUnit::getUnitCount(line, "\n");
-        //
-        // for (U32 i = 0; i < unitCount; i++) {
-        //     char* finalBuffer = (char*)dMalloc(256);
-        //     dMemset(finalBuffer, 0, 256);
-        //
-        //     // Holt die einzelne Zeile direkt in deinen finalBuffer
-        //     StringUnit::getUnit(line, i, "\n", finalBuffer, 256);
-        //
-        //     gConsolePtr->logs[gConsolePtr->log_index++] = (Log){
-        //         .text = finalBuffer,
-        //         .type = finalLevel
-        //     };
-        // }
-
-
-//         bool isMultiLine = dStrchr(line, '\n');
-//         //FIXME multie line needs multiple entries:
-// StringUnit
-//         char* finalBuffer = (char*)dMalloc(256);
-//         dMemset(finalBuffer, 0, 256);
-//         dSprintf(finalBuffer, 256, "%s",  line);
-//
-//
-//         gConsolePtr->logs[gConsolePtr->log_index++] =
-//         (Log){
-//             .text = finalBuffer
-//             , .type = finalLevel
-//         };
     }
     //-----------------------------------------------------------------------------
     void  ConsoleHandler(const char* command)
