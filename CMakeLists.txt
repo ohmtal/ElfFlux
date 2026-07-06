@@ -106,13 +106,32 @@ else()
 endif()
 
 
+# -------- Imgui + rlImgui
+set(IMGGUI_DIR "${CMAKE_CURRENT_LIST_DIR}/lib/imgui")
+set(RLIMGGUI_DIR "${CMAKE_CURRENT_LIST_DIR}/lib/rlImGui")
+
+set(IMGUI_SRC
+    ${IMGGUI_DIR}/imgui.cpp
+    ${IMGGUI_DIR}/imgui_draw.cpp
+    ${IMGGUI_DIR}/imgui_widgets.cpp
+    ${IMGGUI_DIR}/imgui_tables.cpp
+    # also demo ?
+    # ${IMGGUI_DIR}/imgui_demo.cpp
+    # ------
+    ${RLIMGGUI_DIR}/rlImGui.cpp
+)
+
+
 
 # ------------- Main
 add_executable(${PROJECT_NAME}
     ${PROJECT_SRC}
     ${ELFSCRIPT_SRC}
     ${RAYLIB_ELFSCRIPT_SRC}
+    ${IMGUI_SRC}
 )
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC IMGUI_DEFINE_MATH_OPERATORS)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/src/
@@ -120,6 +139,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/lib/
     ${ELFSCRIPT_INCLUDES}
     ${RAYELF_DIR}/src
+    ${IMGGUI_DIR}
+    ${RLIMGGUI_DIR}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
