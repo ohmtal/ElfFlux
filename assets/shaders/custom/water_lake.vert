@@ -14,9 +14,13 @@ out vec3 fragPosition;
 out vec2 fragTexCoord;
 out vec3 fragNormal;
 
+// Testparams :
+const float waveHeight = 0.5;
+//
+
 void main()
 {
-    float tinyWave = sin(vertexPosition.x * 0.2 + time) * cos(vertexPosition.z * 0.2 + time) * 0.1;
+    float tinyWave = sin(vertexPosition.x * 0.2 + time) * cos(vertexPosition.z * 0.2 + time) * waveHeight;
     vec3 displacedPosition = vertexPosition + vec3(0.0, tinyWave, 0.0);
 
     fragPosition = vec3(matModel * vec4(displacedPosition, 1.0));

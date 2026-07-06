@@ -1,3 +1,5 @@
+exec("assets/include/CameraFree.cs");
+//----------------------------------------------------------------------
 function createTerrainDemo() {
     %obj = new ScriptObject() {
         class = "TerrainDemo";
@@ -13,6 +15,7 @@ function TerrainDemo::onAdd(%this) {
 
     // ---- camera
     %this.camera = new Camera3DObject(CAMERA) {
+        class = "CameraFree";
         position = "-36.0 41.0 -57.0";    // Camera position
         target = "0.0 0.5 0.0";      // Camera looking at point
         up = "0.0 1.0 0.0";          // Camera up vector (rotation towards target)
@@ -131,45 +134,6 @@ function TerrainDemo::OnRemove(%this) {
 
 }
 //----------------------------------------------------------------------
-function Camera3DObject::updateFly(%this, %dt)
-{
-    %speed = isKeyDown(KEY_LEFT_SHIFT) ? %this.moveSpeed * 2.0 : %this.moveSpeed;
-    if (isKeyDown(KEY_W)) %this.moveForward(%dt * %speed, false);
-    if (isKeyDown(KEY_S)) %this.moveForward(-%dt * %speed, false);
-    if (isKeyDown(KEY_D)) %this.moveRight(%dt * %speed, false);
-    if (isKeyDown(KEY_A)) %this.moveRight(-%dt * %speed, false);
-    if (isKeyDown(KEY_E)) %this.moveUp(%dt * %speed);
-    if (isKeyDown(KEY_Q)) %this.moveUp(-%dt * %speed);
-
-    if (IsCursorHidden())
-    {
-        // === SMOOTH MOUSE ROTATION ===
-        %mouseDelta = GetMouseDelta();
-        %deltaX = %mouseDelta.x;
-        %deltaY = %mouseDelta.y;
-
-        %sensitivity = 0.0015;
-
-        %this.targetYaw   = -%deltaX * %this.panSpeed * %sensitivity;
-        %this.targetPitch = -%deltaY * %this.panSpeed * %sensitivity;
-
-        %smoothFactor = 15.0 * %dt;
-        if (%smoothFactor > 1.0) %smoothFactor = 1.0; // Absicherung
-
-        if (%this.targetYaw != 0 || %this.targetPitch != 0) {
-
-            %currentYaw = %this.targetYaw * %smoothFactor;
-            %currentPitch = %this.targetPitch * %smoothFactor;
-
-            %this.yaw(%currentYaw, false);
-            %this.pitch(%currentPitch, true, false, false);
-
-            %this.targetYaw   -= %currentYaw;
-            %this.targetPitch -= %currentPitch;
-        }
-    }
-}
-//----------------------------------------------------------------------
 function TerrainDemo::updateSun(%this, %dt)
 {
     %sunSpeed = 5.0;
@@ -225,8 +189,8 @@ function TerrainDemo::updateSun(%this, %dt)
 //----------------------------------------------------------------------
 function TerrainDemo::Render(%this) {
 
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))  DisableCursor();
-    else if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) EnableCursor();
+    // if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))  DisableCursor();
+    // else if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) EnableCursor();
 
     if (!IsCursorHidden() && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) %this.onMouseLeftClick();
 
@@ -235,7 +199,7 @@ function TerrainDemo::Render(%this) {
     %ter = %this.terrain;
 
     %dt = getFrameTime();
-    %cam.updateFly(%dt);
+    %cam.update(%dt);
     %this.updateSun(%dt);
 
     %cam.Begin();

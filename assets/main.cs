@@ -1,5 +1,5 @@
 // Main Script
-$MODULES = "WaterPlane TerrainDemo gridtest";
+$MODULES = "WaterPlaneDemo TerrainDemo gridtest";
 // $MODULES = $MODULES SPC "lights_script models_first_person_maze textures_sprite_animation";
 // $MODULES = $MODULES SPC "textures_background_scrolling Eyes";
 // $MODULES = $MODULES SPC "textures_mouse_painting";
@@ -142,7 +142,7 @@ function updateDocu() {
         echo ("- In vim you can simple open it alongside the other file to use autocomplete");
         echo (" In VSCode / VSCodium you can install the Script Package (FIXME add URL)");
         echo (" and it should work automaticly as long you have it opened.");
-        echo (" FIXME: fine out and docu on how to get it work when it's closed.");
+        echo (" FIXME: find out and docu on how to get it work when it's closed.");
     } else {
          error("Failed to export" SPC %file SPC "!");
     }

@@ -13,18 +13,19 @@ uniform vec3 viewPos;
 
 out vec4 finalColor;
 
+// Testparams :
+// const float waveHeight = 0.5;
+//
+
+
 void main()
 {
-    // Lake water color palette (Deep dark teal to calm blue)
     vec4 lakeDark = vec4(0.01, 0.12, 0.22, 0.9);
     vec4 lakeLight = vec4(0.05, 0.28, 0.42, 0.9);
 
-    // TRICK: Scroll the noise map in two completely different diagonal ways
-    // This creates independent ripples instead of a grid
     vec2 speedA = vec2(time * 0.015, time * 0.005);
     vec2 speedB = vec2(time * -0.008, time * 0.012);
 
-    // Scale the texture coordinate to make the ripples smaller and more frequent (lake style)
     vec2 uvA = fragTexCoord * 8.0 + speedA;
     vec2 uvB = fragTexCoord * 12.5 + speedB;
 
@@ -58,11 +59,13 @@ void main()
     vec3 specularLight = sunColor.rgb * specularFactor * 2.0;
 
     // Ambient sky light contribution
-    vec3 ambientLight = vec3(0.05, 0.1, 0.15);
-    vec3 diffuseLight = sunColor.rgb * max(dot(normal, lightDir), 0.0) * 0.3;
+     vec3 ambientLight = vec3(0.95, 0.8, 0.75);
+    vec3 diffuseLight = sunColor.rgb * max(dot(normal, lightDir), 0.0) * 0.8; //0.3
 
     // Combine everything
     vec3 finalRGB = waterColor.rgb * (ambientLight + diffuseLight) + specularLight;
 
     finalColor = vec4(finalRGB, waterColor.a);
+//     finalColor = vec4(finalRGB, 0.4);
+
 }
