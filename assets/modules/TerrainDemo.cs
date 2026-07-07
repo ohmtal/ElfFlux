@@ -53,10 +53,10 @@ function TerrainDemo::loadGreenManModel(%this,%spawnPoint) {
     // add/update shader on static models
     // FIXME does not work, not sure why not .... << it's on 1 !
     SetModelShader($greenManModel, %this.Sun.sunShader, 1);
-    // mhhh wh
-    // SetModelShader($greenManHat, %this.Sun.sunShader, 0);
-    // SetModelShader($greenManSword, %this.Sun.sunShader, 0);
-    // SetModelShader($greenManShield, %this.Sun.sunShader, 0);
+    // mhhh strange
+    SetModelShader($greenManHat, %this.Sun.sunShader, 1);
+    SetModelShader($greenManSword, %this.Sun.sunShader, 1);
+    SetModelShader($greenManShield, %this.Sun.sunShader, 1);
 
 
 
