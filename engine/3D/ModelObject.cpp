@@ -4,6 +4,7 @@
 //-----------------------------------------------------------------------------
 // FIXME mount to bone matix still not right ... far away from mountpoint and
 //       animation reversed!!!!!!.....
+// check https://github.com/raysan5/raylib/blob/master/examples/models/models_bone_socket.c
 // TODO on moving objects: refreshWorldBox when position changed!
 //-----------------------------------------------------------------------------
 
@@ -167,6 +168,7 @@ void ModelObject::drawTransformed(const Matrix& parentTransform) {
     ModelObject* mountParent = nullptr;
     if (mTransientParent) mountParent = dynamic_cast<ModelObject*>(mTransientParent);
 
+    // FIXME check https://github.com/raysan5/raylib/blob/master/examples/models/models_bone_socket.c
     if (mountParent && mMountBoneIndex >= 0) {
         Model* parentModel = ElfResource::ModelMap.get(mountParent->mModelId);
 
@@ -177,7 +179,8 @@ void ModelObject::drawTransformed(const Matrix& parentTransform) {
             Matrix boneAndParent = MatrixMultiply(boneTransform, parentTransform);
             globalTransform = MatrixMultiply(this->getWorldTransform(), boneAndParent);
 
-            // cant see this ...DrawCube(Vector3Transform((Vector3){ 0, 0, 0 }, boneTransform), 10.f, 10.1f, 10.1f, RED);
+            // cant see this ...
+            DrawCube(Vector3Transform((Vector3){ 0, 0, 0 }, boneTransform), 10.f, 10.1f, 10.1f, RED);
 
             //---
             // globalTransform = MatrixMultiply(this->getWorldTransform(), boneTransform);
