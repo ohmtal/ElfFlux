@@ -1,5 +1,5 @@
 // Main Script
-$MODULES = "TerrainDemo WaterPlaneDemo gridtest";
+$MODULES = "TerrainDemo ModelViewer WaterPlaneDemo gridtest";
 // $MODULES = $MODULES SPC "lights_script models_first_person_maze textures_sprite_animation";
 // $MODULES = $MODULES SPC "textures_background_scrolling Eyes";
 // $MODULES = $MODULES SPC "textures_mouse_painting";

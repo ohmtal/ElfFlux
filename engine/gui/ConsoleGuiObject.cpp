@@ -171,5 +171,10 @@ namespace ConsoleGui {
 
     }
 
+    DefineEngineMethod(ConsoleGuiObject, isOpen, bool, (), , "") {
+        if (!gConsolePtr) return false;
+        return gConsolePtr->is_open;
+    }
+
 } //namespace
 

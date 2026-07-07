@@ -60,8 +60,9 @@ public:
     void refreshWorldBox() override;
 
     bool playAnimationOnce(S32 animIndex, S32 animFPS, bool force);
-protected:
+
     ModelAnimation* getCurrentAnimation();
+    S32 getAnimationCount();
     F32 getCurrentAnimFrame() { return mCurrentAnimFrame; }
 private:
     F32 mCurrentAnimFrame = 0.0f;
@@ -107,11 +108,20 @@ bool ModelObject::playAnimationOnce(S32 animIndex, S32 animFPS, bool force) {
     return true;
 }
 //-----------------------------------------------------------------------------
+S32 ModelObject::getAnimationCount() {
+    if (mAnimationBlockId > 0) {
+         ElfResource::ElfAnimationBlock* block = ElfResource::ModelAnimationMap.get(mAnimationBlockId);
+         if (!block || block->anims == nullptr) return 0;
+         return block->count;
+    }
+    return 0;
+}
+//-----------------------------------------------------------------------------
 ModelAnimation* ModelObject::getCurrentAnimation() {
     if (mAnimationBlockId > 0 && mAnimationFPS > 0 && mAnimationIndex >= 0) {
         ElfResource::ElfAnimationBlock* block = ElfResource::ModelAnimationMap.get(mAnimationBlockId);
 
-        if (block && block->anims != nullptr && mAnimationIndex < (int)block->count) {
+        if (block && block->anims != nullptr && mAnimationIndex < block->count) {
             return &block->anims[mAnimationIndex];
         }
     }
@@ -222,6 +232,19 @@ void ModelObject::drawTransformed(const Matrix& parentTransform) {
 DefineEngineMethod(ModelObject, draw, void, (), , "Draws this object instance and all its children polymorphically.") {
     object->draw();
 }
+
+DefineEngineMethod(ModelObject, getAnimationCount, S32, (), , "Get the count of the current animations") {
+    return object->getAnimationCount();
+}
+
+DefineEngineMethod(ModelObject, getAnimationName, String, (), , "Get the name of the current animations") {
+    ModelAnimation* anim = object->getCurrentAnimation();
+    if (anim) {
+        return anim->name;
+    }
+    return "";
+}
+
 
 DefineEngineMethod(ModelObject, playOnce, bool, (S32 animationIndex, S32 animationFPS, bool force), (25,false)
     , "Play a animation once. The current animation will be restored after finished."

@@ -148,9 +148,9 @@ function TerrainDemo::loadKenneyModel(%this, %spawnPoint) {
 
     %count = GetModelMaterialCount($kenneyModel, MATERIAL_MAP_ALBEDO);
     echo("KENNEY MODEL MATERIAL COUNT IS:" SPC %count);
+    SetModelMapColor($kenneyModel, WHITE);
     for (%i = 0; %i < %count; %i++) {
         SetModelMapTexture($kenneyModel,$skinZombie, %i, MATERIAL_MAP_ALBEDO);
-        SetModelMapColor($kenneyModel, WHITE);
         SetModelShader($kenneyModel, %this.Sun.sunShader, %i);
     }
 
@@ -290,7 +290,6 @@ function TerrainDemo::OnRemove(%this) {
     %this.levelObjects.deleteObjects();
     %this.levelObjects.delete();
     %this.gui.delete();
-
 
 }
 
