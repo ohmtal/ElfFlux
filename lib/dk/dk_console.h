@@ -23,7 +23,7 @@ extern "C"
 
 #if !defined(LOG_SIZE)
 // insane 1080x1080 lines ?! => 1.166.400 Slots x 1024 bytes WTF!
-#define DKCONSOLE_LOG_SIZE 512 //1080 * 1080 // size of log buffer
+#define DKCONSOLE_LOG_SIZE 3000 //1080 * 1080 // size of log buffer
 #endif
 
 #if !defined(DKCONSOLE_LINELENGTH)

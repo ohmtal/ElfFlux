@@ -1,11 +1,3 @@
-class  GridTest {
-  public:
-   Script newTerrain( string this )...) {}
-   Script init( string this )...) {}
-   Script render( string this )...) {}
-   Script onRemove( string this )...) {}
-   Script onAdd( string this )...) {}
-};
 /*!
 @brief Base class for almost all objects involved in the simulation.
 @ingroup Console
@@ -570,7 +562,6 @@ class  terrain : public TerrainObject {
 };
 class  Camera3DObject : public SimObject {
   public:
-   Script updateFly( string this, string dt )...) {}
    /*! Update camera position for selected mode (e.g. $CAMERA_FIRST_PERSON, $CAMERA_FREE) */
    void update( int mode ) {}
    /*! Update camera movement/rotation with pro parameters */
@@ -655,11 +646,15 @@ class  Camera3DObject : public SimObject {
     */
    int projection;
 };
+class  CameraFree : public Camera3DObject {
+  public:
+   Script update( string this, string dt )...) {}
+};
 /// Stub class
 /// 
 /// @note This is a stub class to ensure a proper class hierarchy. No 
 ///       information was available for this class.
-class  camera : public Camera3DObject {
+class  camera : public CameraFree {
   public:
 };
 /*!
@@ -702,7 +697,19 @@ class  TerrainDemo : public ScriptObject {
    Script onMouseLeftClick( string this )...) {}
    Script spawnScriptTree( string this, string worldPos )...) {}
    Script render( string this )...) {}
-   Script updateSun( string this, string dt )...) {}
+   Script onRemove( string this )...) {}
+   Script onAdd( string this )...) {}
+};
+class  waterPlane : public ScriptObject {
+  public:
+   Script update( string this, string dt )...) {}
+   Script draw( string this, string dt )...) {}
+   Script onRemove( string this )...) {}
+   Script onAdd( string this )...) {}
+};
+class  Sun : public ScriptObject {
+  public:
+   Script update( string this, string dt )...) {}
    Script onRemove( string this )...) {}
    Script onAdd( string this )...) {}
 };
@@ -806,7 +813,6 @@ class  ModelObject : public SceneObject {
 };
 class  Grid : public SimObject {
   public:
-   Script addRandomMud( string this )...) {}
    /*! param: area: x y w h, F32 SquareSize */
    bool init( Rectangle area, float squareSize ) {}
    /*! get count of nodes */
@@ -2171,8 +2177,9 @@ class  Camera2DObject : public SimObject {
    float zoom;
 };
 namespace Global {
-   Script creategridtest()...) {}
    Script createTerrainDemo()...) {}
+   Script createWaterPlane( string type, string sunObject, string cameraObject, string size, string position )...) {}
+   Script createSun( string terrainRadiusNeg, string sunModel )...) {}
    Script updateDocu()...) {}
    Script rl()...) {}
    Script MainLoop()...) {}
@@ -4609,6 +4616,10 @@ SetModelShader(modelId, shaderId [, matIndex=0]) */
    float GetMusicTimePlayed( int musicId ) {}
    /*! Set default buffer size for new audio streams (in samples) */
    void SetAudioStreamBufferSizeDefault( int size ) {}
+   /*! Convert Color to float values */
+   Vector4 ColorToVector4( Color col ) {}
+   /*! Convert Color to float values */
+   Color Vector4ToColor( Vector4 vec ) {}
    /*! Begin custom shader drawing using a ShaderID */
    void BeginShaderMode( int shaderId ) {}
    /*! End custom shader drawing and reset to the default Raylib shader */

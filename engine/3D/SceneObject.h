@@ -43,7 +43,10 @@ public:
 
     static void initPersistFields();
 
+    void addObject( SimObject* object ) override;
+
 protected:
+    SceneObject* mTransientParent = nullptr; // mount parent only used in rendering and reseted again
    void updateWorldBox(const BoundingBox& localBox, const Matrix& worldTransform);
 
 

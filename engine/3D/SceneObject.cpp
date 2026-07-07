@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 //-----------------------------------------------------------------------------
 // Inspired by TGE's SceneObject / Container System
+
 //-----------------------------------------------------------------------------
 #include "SceneObject.h"
 #include "SceneContainer.h"
@@ -25,6 +26,14 @@ void SceneObject::initPersistFields() {
     addField("Scale", TypeVector3, Offset(mScale, SceneObject));
     addField("Visible", TypeBool, Offset(mVisible, SceneObject));
     Parent::initPersistFields();
+}
+//-----------------------------------------------------------------------------
+void SceneObject::addObject( SimObject* object ) {
+    // object is added as child remove it from container!!
+    SceneObject* sceneobj = dynamic_cast<SceneObject*>(object);
+    if (sceneobj) gClientSceneContainer.unregisterObject(sceneobj);
+
+    Parent::addObject(object);
 }
 //-----------------------------------------------------------------------------
 
@@ -69,22 +78,31 @@ void SceneObject::draw() {
         if (!obj) continue;
         SceneObject* child = dynamic_cast<SceneObject*>(obj);
         if (child) {
+            child->mTransientParent = this;
             child->drawTransformed(this->getWorldTransform());
+            child->mTransientParent = nullptr;
         }
     }
     unlock();
 }
 //-----------------------------------------------------------------------------
+
+
 void SceneObject::drawTransformed(const Matrix& parentTransform) {
     lock();
     for (SimSet::iterator itr = begin(); itr != end(); ++itr) {
         SimObject* obj = *itr;
         if (!obj) continue;
 
+        //FIXME something is wrong here !! or not ...
         SceneObject* child = dynamic_cast<SceneObject*>(obj);
         if (child) {
-            Matrix globalTransform = MatrixMultiply(child->getWorldTransform(), parentTransform);
-            child->drawTransformed(globalTransform);
+            //NOT! Matrix globalTransform = MatrixMultiply(child->getWorldTransform(), parentTransform);
+            // set parent for bone animation
+            child->mTransientParent = this;
+            child->drawTransformed(parentTransform);
+            //reset mountparent ...
+            child->mTransientParent = nullptr;
         }
     }
     unlock();
@@ -106,4 +124,9 @@ RayCollision SceneObject::castRay(Ray ray) {
 
 //-----------------------------------------------------------------------------
 
+
+
+DefineEngineMethod(SceneObject, refresh, void, (), , "refresh the worldbox, needs to be called when position / scale is changed") {
+    object->refreshWorldBox();
+}
 }//namespace

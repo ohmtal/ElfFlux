@@ -1,4 +1,27 @@
 exec("assets/include/CameraFree.cs");
+exec("assets/include/Sun.cs");
+exec("assets/include/WaterPlane.cs");
+
+
+//----------------------------------------------------------------------
+// ---- Global Modeldefs
+// TreeBuilder as global reusable model:
+if ( $TreeTrunkModel * 1 == 0)
+{
+    $TreeTrunkModel = GenModelCube(0.4, 2.0, 0.4);
+    $TreeCrownModel = GenModelSphere(1.2, 16, 16);
+
+    SetModelMapColor($TreeTrunkModel, "100 65 30 255", 0, 0);
+    SetModelMapColor($TreeCrownModel, "40 120 40 255", 0, 0);
+
+
+    $SunBillboardModel = GenModelSphere(10.0, 16, 16); // big one
+    SetModelMapColor($SunBillboardModel, "255 255 200 255", 0, 0); // yellow
+
+
+    $AppleTreeModel = LoadModel("assets/3d/appletree/appletree.obj");
+
+}
 //----------------------------------------------------------------------
 function createTerrainDemo() {
     %obj = new ScriptObject() {
@@ -27,7 +50,7 @@ function TerrainDemo::onAdd(%this) {
     };
 
     // ---- Terrain
-    %terSize = 1024 * 4;
+    %terSize = 1024 * 2;
     %yVal = %terSize / 256 * 16;
 
     %this.terrain = new TerrainObject(TERRAIN) {
@@ -41,68 +64,41 @@ function TerrainDemo::onAdd(%this) {
     warn("Terrain size is: " SPC %this.terrain.Size);
     %this.terrainRadiusNeg =  %this.terrain.Size / -2.0;
     %this.terrain.Position = %this.terrainRadiusNeg SPC 0 SPC %this.terrainRadiusNeg;
-
-
     %this.levelObjects.add(%this.terrain);
 
-    // ---- Modeldefs
-    // TreeBuilder as global reusable model:
-    if ( $TreeTrunkModel * 1 == 0)
-    {
-        $TreeTrunkModel = GenModelCube(0.4, 2.0, 0.4);
-        $TreeCrownModel = GenModelSphere(1.2, 16, 16);
-
-        SetModelMapColor($TreeTrunkModel, "100 65 30 255", 0, 0);
-        SetModelMapColor($TreeCrownModel, "40 120 40 255", 0, 0);
 
 
-        $SunBillboardModel = GenModelSphere(10.0, 16, 16); // big one
-        SetModelMapColor($SunBillboardModel, "255 255 200 255", 0, 0); // yellow
+
+    // ---- Sun
+    %this.Sun = createSun(%this.terrainRadiusNeg, $SunBillboardModel,"-0.5 -1.0 -0.2");
+    if (!isObject(%this.Sun)) return false;
+    %this.levelObjects.add(%this.Sun);
 
 
-        $AppleTreeModel = LoadModel("assets/3d/appletree/appletree.obj");
-
-    }
-
-    // ---- Sun shader
-    //
-    %this.sunDirection = "-0.5 -1.0 -0.2";
-
-    %this.sunShader = LoadShader(
-        "assets/shaders/custom/sun.vert",
-        "assets/shaders/custom/sun.frag"
-    );
-    echo("** Loader shaderId:" SPC %this.sunShader);
-    %sunDirLoc   = GetShaderLocation(%this.sunShader, "sunDirection");
-    %sunColorLoc = GetShaderLocation(%this.sunShader, "sunColor");
-
-    SetShaderValue(%this.sunShader, %sunDirLoc, Vector3Normalize(%this.sunDirection), 2);
-    SetShaderValue(%this.sunShader, %sunColorLoc, "1.0 0.95 0.85", 3); //normalized
-
-    SetModelShader(%this.terrain.getModelId(), %this.sunShader, 0);
+    SetModelShader(%this.terrain.getModelId(), %this.Sun.sunShader, 0);
 
     // add/update shader on static models
-    SetModelShader($TreeTrunkModel, %this.sunShader, 0);
-    SetModelShader($TreeCrownModel, %this.sunShader, 0);
+    SetModelShader($TreeTrunkModel, %this.Sun.sunShader, 0);
+    SetModelShader($TreeCrownModel, %this.Sun.sunShader, 0);
 
-    // ---- Visual Sun
-    // scale against terrain radius
-    %scale = mAbs(%this.terrainRadiusNeg) / 1024 * 3;
-    %this.sun = new ModelObject() {
-        Position = "0 0 0";
-        ModelId =$SunBillboardModel;
-        Scale = %scale SPC %scale SPC %scale;
-    };
-    %this.levelObjects.add(%this.sun);
+
+    // water plane
+    %this.waterPlane = createWaterPlane("lake"
+        , %this.Sun
+        , %this.camera
+        , %terSize SPC %terSize SPC "150 150"
+        , "0 15 0"
+        // , %this.terrainRadiusNeg SPC 30 SPC %this.terrainRadiusNeg
+    );
+    %this.levelObjects.add(%this.waterPlane);
 
 
     // --- Apple Tree Test -----
-    //FIXME transparency / shader
-    %count = GetModelMatrialCount($AppleTreeModel, MATERIAL_MAP_DIFFUSE);
-    for (%i = 0; %i < %count; %i++) SetModelShader($AppleTreeModel, %this.sunShader, %i);
+    %count = GetModelMaterialCount($AppleTreeModel, MATERIAL_MAP_DIFFUSE);
+    for (%i = 0; %i < %count; %i++) SetModelShader($AppleTreeModel, %this.Sun.sunShader, %i);
 
     %this.appleTree = new ModelObject() {
-        Position = %this.camera.position; //for testing )
+        Position = Vector3add(%this.camera.position, "120 0 120"); //for testing )
         ModelId = $AppleTreeModel;
         Scale = "3 3 3";
     };
@@ -110,9 +106,76 @@ function TerrainDemo::onAdd(%this) {
     %this.DropToGround(%this.appleTree);
 
 
+    // player Test !!!
 
-    // ---- Day night
-    %this.sunTime = 0.0; // 0.0 .. 360.0
+    // global! -  keep in memory until app ends ... (auto cleaned up by resource manager)
+    if ($kenneyModel * 1 == 0) {
+        %path = "assets/models/kenney_animated-characters-retro/";
+        %file = "characterMedium.gltf";
+        $kenneyModel = LoadModel(%path @ %file);
+        $kennyAnimations = LoadModelAnimations(%path @ %file);
+        $skinZombie = LoadTexture(%path @ "Skins/zombieMaleA.png");
+
+        /*! set a texture for a model material map like model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;SetModelMapTexture($model, $texture) << matIndex default 0,  matMap default MATERIAL_MAP_DIFFUSE  */
+        // bool SetModelMapTexture( int modelId, int textureId, int matIndex=0, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
+
+        SetModelMapTexture($kenneyModel,$skinZombie/*, 0, MATERIAL_MAP_ALBEDO*/); // << model.materials[0].maps[MATERIAL_MAP_ALBEDO].texture = skinZombie;
+        SetModelMapColor($kenneyModel, WHITE);
+    }
+
+    %spawnPoint = "-26 17 -102";
+    %this.player = new ModelObject(Player) {
+        Position = %spawnPoint;
+        ModelId = $kenneyModel;
+        Scale = "0.01 0.01 0.01";
+        AnimationBlockId = $kennyAnimations;
+        AnimationIndex = 2; //run
+        AnimationFPS = 15;
+    };
+
+    // mount test FIXME doing strange things !! :: doubled and mount matrix not correct
+    %mountPoint = GetModelBoneIndexByName($kenneyModel, "RightHandIndex3_end");
+
+    %weapon = new ModelObject() {
+        Position ="0 0 0";
+        ModelId = $AppleTreeModel;
+        Scale = "3 3 3";
+        MountBoneIndex = %mountPoint;
+    };
+    // %weapon = %this.appleTree.clone();
+    // %weapon.position = "0 0 0";
+    // %weapon.scale ="10 10 10";
+    // %weapon.MountBoneIndex = %mountPoint;
+    // %weapon.refresh();
+    %this.player.add(%weapon);
+
+
+
+    %count = GetModelMaterialCount($kenneyModel, MATERIAL_MAP_DIFFUSE);
+    echo("KENNEY MODEL MATERIAL COUNT IS:" SPC %count);
+    for (%i = 0; %i < %count; %i++) {
+        SetModelMapTexture($kenneyModel,$skinZombie, %i, MATERIAL_MAP_ALBEDO);
+        SetModelMapColor($kenneyModel, WHITE);
+        SetModelShader($kenneyModel, %this.Sun.sunShader, %i);
+    }
+
+    // %this.player.animation = $kennyAnimations;
+    // //
+    // %frame = 0; //
+    // UpdateModelAnimation( %this.player.ModelId, %this.player.animation, 0, %frame );
+    warn("MODELID:" SPC %this.player.ModelId SPC "animation id:"
+         SPC %this.player.animation SPC "animation count:" SPC GetModelAnimationCount(%this.player.animation)
+         SPC "texture id:" SPC $skinZombie
+         SPC "mountpoint" SPC %mountPoint
+         SPC "weapon" SPC %weapon.getId()
+    );
+
+
+
+    %this.levelObjects.add(%this.player);
+    %this.levelObjects.add(%weapon);
+    %this.DropToGround(%this.player);
+
 
 
     %this.gui = new Gui() {
@@ -130,80 +193,31 @@ function TerrainDemo::OnRemove(%this) {
     %this.levelObjects.delete();
     %this.gui.delete();
 
-    UnloadShader(%this.sunShader);
 
-}
-//----------------------------------------------------------------------
-function TerrainDemo::updateSun(%this, %dt)
-{
-    %sunSpeed = 5.0;
-    %this.sunTime += %dt * %sunSpeed;
-    if (%this.sunTime > 360.0) %this.sunTime -= 360.0;
-
-    %rad = %this.sunTime * 0.0174532925; // DEG2RAD
-
-    %sunX = mCos(%rad);
-    %sunY = mSin(%rad);
-    %sunZ = -0.2;
-
-    %lightDirection = %sunX SPC (-%sunY) SPC %sunZ;
-    %this.sunDirection = Vector3Normalize(%lightDirection);
-
-    %sunDirLoc = GetShaderLocation(%this.sunShader, "sunDirection");
-    SetShaderValue(%this.sunShader, %sunDirLoc, %this.sunDirection, 2);
-
-    %camPos = %this.camera.position;
-    %sunOffset = Vector3Scale(%this.sunDirection, %this.terrainRadiusNeg);
-    %this.sun.position = Vector3Add(%camPos, %sunOffset);
-
-    if (%sunY > 0.0)
-    {
-        %blend = %sunY;
-        if (%blend > 1.0) %blend = 1.0;
-
-        %r = mClamp((1.0 - %blend) * 200 + %blend * 60, 0, 255);
-        %g = mClamp((1.0 - %blend) * 120 + %blend * 140, 0, 255);
-        %b = mClamp((1.0 - %blend) * 80 + %blend * 230, 0, 255);
-
-        %this.skyColor = %r SPC %g SPC %b;
-
-        %sunColorLoc = GetShaderLocation(%this.sunShader, "sunColor");
-        SetShaderValue(%this.sunShader, %sunColorLoc, "1.0 0.95 0.85", 3);
-    }
-    else
-    {
-        %blend = mAbs(%sunY) * 4.0;
-        if (%blend > 1.0) %blend = 1.0;
-
-        %r = mClamp((1.0 - %blend) * 60, 0, 255);
-        %g = mClamp((1.0 - %blend) * 140 + %blend * 10, 0, 255);
-        %b = mClamp((1.0 - %blend) * 230 + %blend * 25, 0, 255);
-
-        %this.skyColor = %r SPC %g SPC %b;
-
-        %sunColorLoc = GetShaderLocation(%this.sunShader, "sunColor");
-        SetShaderValue(%this.sunShader, %sunColorLoc, "0.1 0.12 0.2", 3);
-    }
 }
 
 //----------------------------------------------------------------------
 function TerrainDemo::Render(%this) {
+    %sun = %this.sun;
+    %waterPlane = %this.waterPlane;
 
-    // if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))  DisableCursor();
-    // else if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) EnableCursor();
-
+    if (!isObject(%waterPlane)) return false;
     if (!IsCursorHidden() && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) %this.onMouseLeftClick();
 
-    ClearBackground(%this.skyColor);
+    ClearBackground(%sun.skyColor);
     %cam = %this.camera;
     %ter = %this.terrain;
 
+
     %dt = getFrameTime();
     %cam.update(%dt);
-    %this.updateSun(%dt);
+    %sun.update(%dt);
+    %waterPlane.update(%dt);
 
     %cam.Begin();
-      ClientContainerDrawObjects();
+        %waterPlane.draw();
+        ClientContainerDrawObjects();
+
     %cam.End();
 
 
@@ -214,7 +228,7 @@ function TerrainDemo::Render(%this) {
     %gui.spacing ="10 3";
     %gui.Write("cam pos:" SPC %cam.position, 10, WHITE);
     %gui.Write("cam tar:" SPC %cam.target, 10, WHITE);
-    %gui.Write("time   :" SPC %this.sunTime, 10, WHITE);
+    %gui.Write("time   :" SPC %sun.sunTime, 10, WHITE);
 
 }
 
@@ -277,7 +291,7 @@ function TerrainDemo::onMouseLeftClick(%this)
     // FIXME gui for selecting what to spawn
     // %tree = %this.spawnScriptTree(%hitPoint);
 
-
+    // AppleTree
     %tree = %this.appleTree.clone();
     %tree.position = %hitPoint;
     %this.levelObjects.add(%tree);
