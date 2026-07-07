@@ -8,6 +8,7 @@ function CameraFree::update(%this, %dt)
     %speed = isKeyDown(KEY_LEFT_SHIFT) ? %this.moveSpeed * 2.0 : %this.moveSpeed;
     if (%speed == 0) %this.moveSpeed = 100.0;
 
+    //FIXME bad idea on console input !! need a focus system and a alternate isKeyDown...
     if (isKeyDown(KEY_W)) %this.moveForward(%dt * %speed, false);
     if (isKeyDown(KEY_S)) %this.moveForward(-%dt * %speed, false);
     if (isKeyDown(KEY_D)) %this.moveRight(%dt * %speed, false);

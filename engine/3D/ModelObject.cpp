@@ -2,9 +2,6 @@
 // Copyright (c) 2026 Thomas Hühn (XXTH)
 // SPDX-License-Identifier: MIT
 //-----------------------------------------------------------------------------
-// FIXME mount to bone matix still not right ... far away from mountpoint and
-//       animation reversed!!!!!!.....
-// check https://github.com/raysan5/raylib/blob/master/examples/models/models_bone_socket.c
 // TODO on moving objects: refreshWorldBox when position changed!
 //-----------------------------------------------------------------------------
 
@@ -63,13 +60,15 @@ public:
     void refreshWorldBox() override;
 
     bool playAnimationOnce(S32 animIndex, S32 animFPS, bool force);
+protected:
+    ModelAnimation* getCurrentAnimation();
+    F32 getCurrentAnimFrame() { return mCurrentAnimFrame; }
 private:
     F32 mCurrentAnimFrame = 0.0f;
 
     S32 mFallbackAnimationIndex = -1; //index of default animation when playonce is used
     S32 mFallbackAnimationFPS = 25;
     bool mAnimationPlayOnce = false; //will fallback to mDefaultAnimationIndex
-
 };
 //-----------------------------------------------------------------------------
 IMPLEMENT_CONOBJECT(ModelObject);
@@ -108,6 +107,18 @@ bool ModelObject::playAnimationOnce(S32 animIndex, S32 animFPS, bool force) {
     return true;
 }
 //-----------------------------------------------------------------------------
+ModelAnimation* ModelObject::getCurrentAnimation() {
+    if (mAnimationBlockId > 0 && mAnimationFPS > 0 && mAnimationIndex >= 0) {
+        ElfResource::ElfAnimationBlock* block = ElfResource::ModelAnimationMap.get(mAnimationBlockId);
+
+        if (block && block->anims != nullptr && mAnimationIndex < (int)block->count) {
+            return &block->anims[mAnimationIndex];
+        }
+    }
+    return nullptr;
+
+}
+//-----------------------------------------------------------------------------
 void ModelObject::draw() {
     if (mModelId <= 0) {
         Parent::draw();
@@ -118,27 +129,23 @@ void ModelObject::draw() {
     if (!baseModel || baseModel->meshCount <= 0) return;
 
     // --- ANIMATIONS >>>>>>
-    if (mAnimationBlockId > 0 && mAnimationFPS > 0 && mAnimationIndex >= 0) {
-        ElfResource::ElfAnimationBlock* block = ElfResource::ModelAnimationMap.get(mAnimationBlockId);
+    ModelAnimation* currentAnim = getCurrentAnimation();
+    if (currentAnim != nullptr) {
 
-        if (block && block->anims != nullptr && mAnimationIndex < (int)block->count) {
-            ModelAnimation currentAnim = block->anims[mAnimationIndex];
+        ::UpdateModelAnimation(*baseModel, *currentAnim, (S32)mCurrentAnimFrame);
+        mCurrentAnimFrame += ::GetFrameTime() * (float)mAnimationFPS;
 
-            ::UpdateModelAnimation(*baseModel, currentAnim, (S32)mCurrentAnimFrame);
+        if (mCurrentAnimFrame >= (float)currentAnim->keyframeCount) {
+            mCurrentAnimFrame = 0.0f;
 
-            mCurrentAnimFrame += ::GetFrameTime() * (float)mAnimationFPS;
-
-            if (mCurrentAnimFrame >= (float)currentAnim.keyframeCount) {
-                mCurrentAnimFrame = 0.0f;
-
-                if (mAnimationPlayOnce) {
-                    // restore previous animation
-                    mAnimationIndex = mFallbackAnimationIndex;
-                    mAnimationFPS = mFallbackAnimationFPS;
-                    mAnimationPlayOnce = false;
-                }
+            if (mAnimationPlayOnce) {
+                // restore previous animation
+                mAnimationIndex = mFallbackAnimationIndex;
+                mAnimationFPS = mFallbackAnimationFPS;
+                mAnimationPlayOnce = false;
             }
         }
+
     }
     // <<<<<< ANIMATIONS ---
 
@@ -168,46 +175,35 @@ void ModelObject::drawTransformed(const Matrix& parentTransform) {
     ModelObject* mountParent = nullptr;
     if (mTransientParent) mountParent = dynamic_cast<ModelObject*>(mTransientParent);
 
-    // FIXME check https://github.com/raysan5/raylib/blob/master/examples/models/models_bone_socket.c
+
     if (mountParent && mMountBoneIndex >= 0) {
+        bool mountTransFormHandled = false;
         Model* parentModel = ElfResource::ModelMap.get(mountParent->mModelId);
 
         if (parentModel && mMountBoneIndex < parentModel->skeleton.boneCount) {
-            Matrix boneTransform = parentModel->boneMatrices[mMountBoneIndex];
-            //--- closest ... lol .. maybe the bone is wrong ?!
-            // FIXME can i render the bones ???
-            Matrix boneAndParent = MatrixMultiply(boneTransform, parentTransform);
-            globalTransform = MatrixMultiply(this->getWorldTransform(), boneAndParent);
+            ModelAnimation* curAnim = mountParent->getCurrentAnimation();
+            if (curAnim) {
+                S32 curFrame = (S32)mountParent->getCurrentAnimFrame();
+                Transform *transform = &curAnim->keyframePoses[curFrame][mMountBoneIndex];
+                Quaternion inRotation = parentModel->skeleton.bindPose[mMountBoneIndex].rotation;
+                Quaternion outRotation = transform->rotation;
+                // Calculate socket rotation (angle between bone in initial pose and same bone in current animation frame)
+                Quaternion rotate = QuaternionMultiply(outRotation, QuaternionInvert(inRotation));
+                Matrix matrixTransform = QuaternionToMatrix(rotate);
+                // Translate socket to its position in the current animation
+                matrixTransform = MatrixMultiply(matrixTransform, MatrixTranslate(transform->translation.x, transform->translation.y, transform->translation.z));
+                // Transform the socket using the transform of the character (angle and translate)
+                // but also respect the own model values:
+                Matrix boneAndParent = MatrixMultiply(matrixTransform, parentTransform);
+                globalTransform = MatrixMultiply(this->getWorldTransform(), boneAndParent);
 
-            // cant see this ...
-            DrawCube(Vector3Transform((Vector3){ 0, 0, 0 }, boneTransform), 10.f, 10.1f, 10.1f, RED);
+                mountTransFormHandled = true;
 
-            //---
-            // globalTransform = MatrixMultiply(this->getWorldTransform(), boneTransform);
-            //---
-            // globalTransform = boneTransform;
-        // NOTE attempt 2:
-        // if (parentModel && mMountBoneIndex < parentModel->skeleton.boneCount) {
-        //     Matrix boneTransform = parentModel->boneMatrices[mMountBoneIndex];
-        //
-        //     Vector3 m0 = { boneTransform.m0, boneTransform.m1, boneTransform.m2 };
-        //     Vector3 m1 = { boneTransform.m4, boneTransform.m5, boneTransform.m6 };
-        //     Vector3 m2 = { boneTransform.m8, boneTransform.m9, boneTransform.m10 };
-        //
-        //     m0 = Vector3Normalize(m0);
-        //     m1 = Vector3Normalize(m1);
-        //     m2 = Vector3Normalize(m2);
-        //
-        //     boneTransform.m0 = m0.x; boneTransform.m1 = m0.y; boneTransform.m2 = m0.z;
-        //     boneTransform.m4 = m1.x; boneTransform.m5 = m1.y; boneTransform.m6 = m1.z;
-        //     boneTransform.m8 = m2.x; boneTransform.m9 = m2.y; boneTransform.m10 = m2.z;
-        //     // --------------------------------------------------------
-        //
-        //     Matrix boneAndWeapon = MatrixMultiply(this->getWorldTransform(), boneTransform);
-        //
-        //     globalTransform = MatrixMultiply(boneAndWeapon, parentTransform);
+            }
+        }
 
-        } else {
+
+        if (!mountTransFormHandled) {
             globalTransform = MatrixMultiply(this->getWorldTransform(), parentTransform);
         }
     } else {

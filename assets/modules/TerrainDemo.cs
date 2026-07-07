@@ -31,6 +31,166 @@ function createTerrainDemo() {
     return %obj;
 }
 //----------------------------------------------------------------------
+function TerrainDemo::loadGreenManModel(%this,%spawnPoint) {
+
+    if ($greenManModel * 1 == 0) {
+        %path = "assets/models/gltf/";
+        %file = "greenman.glb";
+        $greenManModel = LoadModel(%path @ %file);
+        $greenManAnimations = LoadModelAnimations(%path @ %file);
+
+        %file = "greenman_hat.glb";
+        $greenManHat = LoadModel(%path @ %file);
+
+        %file = "greenman_sword.glb";
+        $greenManSword = LoadModel(%path @ %file);
+
+        %file = "greenman_shield.glb";
+        $greenManShield = LoadModel(%path @ %file);
+
+    }
+
+    // add/update shader on static models
+    // FIXME does not work, not sure why not .... << it's on 1 !
+    SetModelShader($greenManModel, %this.Sun.sunShader, 1);
+    // mhhh wh
+    // SetModelShader($greenManHat, %this.Sun.sunShader, 0);
+    // SetModelShader($greenManSword, %this.Sun.sunShader, 0);
+    // SetModelShader($greenManShield, %this.Sun.sunShader, 0);
+
+
+
+    if (%spawnPoint $= "" ) %spawnPoint = "-14.0 35.0 -108.0";
+    %obj = new ModelObject() {
+        Position = %spawnPoint;
+        ModelId = $greenManModel;
+        Scale = "1.3 1.3 1.3";
+        AnimationBlockId = $greenManAnimations;
+        AnimationIndex = 1;
+        AnimationFPS = 60;
+    };
+
+    // socket_hat
+    // socket_hand_L
+    // socket_hand_R
+
+    %socket_hat = GetModelBoneIndexByName($greenManModel, "socket_hat");
+    warn("socket_hat bone index = " SPC %socket_hat );
+
+    %hat = new ModelObject() {
+        Position ="0 0.05 0";
+        ModelId = $greenManHat;
+        Scale = "1 1 1";
+        MountBoneIndex = %socket_hat;
+    };
+    %this.levelObjects.add(%hat);
+    %obj.add(%hat); //mount
+
+    %socket_hand_L = GetModelBoneIndexByName($greenManModel, "socket_hand_L");
+    warn("socket_hand_L bone index = " SPC %socket_hand_L );
+
+    %shield = new ModelObject() {
+        Position ="0 0.0 0";
+        ModelId = $greenManShield;
+        Scale = "1 1 1";
+        MountBoneIndex = %socket_hand_L;
+    };
+    %this.levelObjects.add(%shield);
+    %obj.add(%shield); //mount
+
+    %socket_hand_R = GetModelBoneIndexByName($greenManModel, "socket_hand_R");
+    warn("socket_hand_R bone index = " SPC %socket_hand_R );
+
+
+
+    %weapon = new ModelObject() {
+        Position ="0 0 0";
+        ModelId = $greenManSword;
+        Scale = "1 1 1";
+        MountBoneIndex = %socket_hand_R;
+    };
+    %this.levelObjects.add(%weapon);
+    %obj.add(%weapon); //mount
+
+
+
+// FIXME attach shader ....
+
+    %this.levelObjects.add(%obj);
+    %this.DropToGround(%obj);
+
+    return %obj;
+}
+//----------------------------------------------------------------------
+function TerrainDemo::loadKenneyModel(%this, %spawnPoint) {
+
+    // global! -  keep in memory until app ends ... (auto cleaned up by resource manager)
+    if ($kenneyModel * 1 == 0) {
+        %path = "assets/models/kenney_animated-characters-retro/";
+        %file = "characterMedium.gltf";
+        $kenneyModel = LoadModel(%path @ %file);
+        $kennyAnimations = LoadModelAnimations(%path @ %file);
+        $skinZombie = LoadTexture(%path @ "Skins/zombieMaleA.png");
+        SetModelMapTexture($kenneyModel,$skinZombie/*, 0, MATERIAL_MAP_ALBEDO*/); // << model.materials[0].maps[MATERIAL_MAP_ALBEDO].texture = skinZombie;
+        SetModelMapColor($kenneyModel, WHITE);
+    }
+
+    if (%spawnPoint $= "" ) %spawnPoint = "-26 17 -102";
+    %obj = new ModelObject() {
+        Position = %spawnPoint;
+        ModelId = $kenneyModel;
+        Scale = "0.01 0.01 0.01";
+        AnimationBlockId = $kennyAnimations;
+        AnimationIndex = 2; //run
+        AnimationFPS = 25;
+    };
+
+
+    %count = GetModelMaterialCount($kenneyModel, MATERIAL_MAP_ALBEDO);
+    echo("KENNEY MODEL MATERIAL COUNT IS:" SPC %count);
+    for (%i = 0; %i < %count; %i++) {
+        SetModelMapTexture($kenneyModel,$skinZombie, %i, MATERIAL_MAP_ALBEDO);
+        SetModelMapColor($kenneyModel, WHITE);
+        SetModelShader($kenneyModel, %this.Sun.sunShader, %i);
+    }
+
+
+    // mount test FIXME doing strange things !! :: doubled and mount matrix not correct
+    %mountPoint = GetModelBoneIndexByName($kenneyModel, "RightHandIndex3_end");
+
+    %weapon = new ModelObject() {
+        Position ="0 0 0";
+        ModelId = $AppleTreeModel;
+        Scale = "20 20 20";  // need to be scaled to parent size
+        Rotation = "90 0 0"; //rotate
+        MountBoneIndex = %mountPoint;
+    };
+    $MOUNTTREE = %weapon;
+    %obj.add(%weapon);
+
+
+
+
+    // %obj.animation = $kennyAnimations;
+    // //
+    // %frame = 0; //
+    // UpdateModelAnimation( %obj.ModelId, %obj.animation, 0, %frame );
+    warn("MODELID:" SPC %obj.ModelId SPC "animation id:"
+    SPC %obj.animation SPC "animation count:" SPC GetModelAnimationCount(%obj.animation)
+    SPC "texture id:" SPC $skinZombie
+    SPC "mountpoint" SPC %mountPoint
+    SPC "weapon" SPC %weapon.getId()
+    );
+
+    %this.levelObjects.add(%weapon);
+    %this.levelObjects.add(%obj);
+    %this.DropToGround(%obj);
+    // <<<<<<<<<<<< kenny model
+
+
+    return %obj;
+}
+//----------------------------------------------------------------------
 function TerrainDemo::onAdd(%this) {
     // keep objects here to cleanup, we also have all
     // Terrain/Model objects in ClientContainer
@@ -107,74 +267,12 @@ function TerrainDemo::onAdd(%this) {
 
 
     // player Test !!!
-
-    // global! -  keep in memory until app ends ... (auto cleaned up by resource manager)
-    if ($kenneyModel * 1 == 0) {
-        %path = "assets/models/kenney_animated-characters-retro/";
-        %file = "characterMedium.gltf";
-        $kenneyModel = LoadModel(%path @ %file);
-        $kennyAnimations = LoadModelAnimations(%path @ %file);
-        $skinZombie = LoadTexture(%path @ "Skins/zombieMaleA.png");
-
-        /*! set a texture for a model material map like model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;SetModelMapTexture($model, $texture) << matIndex default 0,  matMap default MATERIAL_MAP_DIFFUSE  */
-        // bool SetModelMapTexture( int modelId, int textureId, int matIndex=0, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
-
-        SetModelMapTexture($kenneyModel,$skinZombie/*, 0, MATERIAL_MAP_ALBEDO*/); // << model.materials[0].maps[MATERIAL_MAP_ALBEDO].texture = skinZombie;
-        SetModelMapColor($kenneyModel, WHITE);
-    }
-
-    %spawnPoint = "-26 17 -102";
-    %this.player = new ModelObject(Player) {
-        Position = %spawnPoint;
-        ModelId = $kenneyModel;
-        Scale = "0.01 0.01 0.01";
-        AnimationBlockId = $kennyAnimations;
-        AnimationIndex = 2; //run
-        AnimationFPS = 15;
-    };
-
-    // mount test FIXME doing strange things !! :: doubled and mount matrix not correct
-    %mountPoint = GetModelBoneIndexByName($kenneyModel, "RightHandIndex3_end");
-
-    %weapon = new ModelObject() {
-        Position ="0 0 0";
-        ModelId = $AppleTreeModel;
-        Scale = "3 3 3";
-        MountBoneIndex = %mountPoint;
-    };
-    // %weapon = %this.appleTree.clone();
-    // %weapon.position = "0 0 0";
-    // %weapon.scale ="10 10 10";
-    // %weapon.MountBoneIndex = %mountPoint;
-    // %weapon.refresh();
-    %this.player.add(%weapon);
+    %this.player = %this.loadKenneyModel();
+    $PLAYER = %this.player; //DEBUG global access
 
 
-
-    %count = GetModelMaterialCount($kenneyModel, MATERIAL_MAP_DIFFUSE);
-    echo("KENNEY MODEL MATERIAL COUNT IS:" SPC %count);
-    for (%i = 0; %i < %count; %i++) {
-        SetModelMapTexture($kenneyModel,$skinZombie, %i, MATERIAL_MAP_ALBEDO);
-        SetModelMapColor($kenneyModel, WHITE);
-        SetModelShader($kenneyModel, %this.Sun.sunShader, %i);
-    }
-
-    // %this.player.animation = $kennyAnimations;
-    // //
-    // %frame = 0; //
-    // UpdateModelAnimation( %this.player.ModelId, %this.player.animation, 0, %frame );
-    warn("MODELID:" SPC %this.player.ModelId SPC "animation id:"
-         SPC %this.player.animation SPC "animation count:" SPC GetModelAnimationCount(%this.player.animation)
-         SPC "texture id:" SPC $skinZombie
-         SPC "mountpoint" SPC %mountPoint
-         SPC "weapon" SPC %weapon.getId()
-    );
-
-
-
-    %this.levelObjects.add(%this.player);
-    %this.levelObjects.add(%weapon);
-    %this.DropToGround(%this.player);
+    %this.greenMan = %this.loadGreenManModel();
+    $GREENMAN = %this.greenMan;//DEBUG global access
 
 
 
