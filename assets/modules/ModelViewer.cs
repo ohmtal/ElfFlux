@@ -63,6 +63,27 @@ function ModelViewer::LoadModelResources(%this, %modelFileName, %animationFilena
 
 }
 //----------------------------------------------------------------------
+function ModelViewer::load(%this,%id) {
+    %this.mode *= 1;
+    switch (%this.mode) {
+        case 1: %this.loadBlockyChar(%id);
+        default: %this.loadCubePet(%id);
+    }
+}
+//----------------------------------------------------------------------
+function ModelViewer::loadBlockyChar(%this, %id) {
+    %this.path = "assets/models/kenney_blocky_characters/glb/";
+    %chars = "a b c d e f g h i j k l m n o p q r";
+
+    if (%id < 0 ) %id = getWordCount(%chars) -1;
+    else if ( %id >= getWordCount(%chars) ) %id = 0;
+    %this.modelName = "character-" @ getWord(%chars,%id) @ ".glb";
+    %texture = "Textures/texture-" @ getWord(%chars,%id)  @ ".png";
+
+    %this.LoadModelResources(%this.path @ %this.modelName,%this.path @ %this.modelName, %this.path @ %texture, 1 );
+    %this.curId = %id;
+}
+//----------------------------------------------------------------------
 function ModelViewer::loadCubePet(%this, %id) {
 
     %this.path = "assets/models/kenney_cube_pets/glb/";
@@ -98,7 +119,8 @@ function ModelViewer::onAdd(%this) {
     %this.gui = new Gui();
 
     // kenney pets:
-    %this.loadCubePet(0);
+    %this.mode = 1;
+    %this.load(0);
 
 
 
@@ -123,17 +145,18 @@ function ModelViewer::Render(%this) {
     %cam.Begin();
     if (%objIsObject) %obj.draw();
     DrawGrid(10, 1.0);
-    DrawPlane(VEC3_ZERO, "10.0 10.0", RAYWHITE);
+    DrawPlane(VEC3_ZERO, "10.0 10.0", DARKGREEN);
     %cam.End();
 
     %gui = %this.gui;
     %gui.Begin(10,10);
+
     %gui.Write("Model:" SPC %this.modelName, 20, BLACK);
     %gui.Separator(80);
     %gui.Write(strFormat("~ %02d ~",%this.curId), 20, BLACK);
-    if (%gui.Button(30, "<")) %this.loadCubePet(%this.curId -1);
+    if (%gui.Button(30, "<")) %this.load(%this.curId -1);
     %gui.SameLine();
-    if (%gui.Button(30, ">")) %this.loadCubePet(%this.curId +1);
+    if (%gui.Button(30, ">")) %this.load(%this.curId +1);
     %gui.Separator(80);
     if (%objIsObject) {
         %count = %obj.getAnimationCount();
@@ -150,5 +173,8 @@ function ModelViewer::Render(%this) {
         %gui.Separator(80);
         %gui.Write("Textures:" SPC %obj.MaterialCount,  12, BLACK);
     }
+    %gui.Separator(80);
+    if (%gui.Button(80, "Cube Pets")) { %this.mode = 0; %this.load(0); }
+    if (%gui.Button(80, "Blocky Chars")) { %this.mode = 1;  %this.load(0); }
 
 }
