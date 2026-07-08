@@ -119,7 +119,7 @@ function ModelViewer::onAdd(%this) {
     %this.gui = new Gui();
 
     // kenney pets:
-    %this.mode = 1;
+    %this.mode = 0;
     %this.load(0);
 
 
