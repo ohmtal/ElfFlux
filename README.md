@@ -4,7 +4,6 @@ Game Engine using:
 
 - [ElfScript](https://github.com/ohmtal/ElfScript)
 - [raylib-elfscript](https://github.com/ohmtal/raylib-elfscript)
-- TODO imgui / raylib / ohmFlux imGui stuff
 
 
 ![current modules](res/Screenshot_2026-07-08_14-07-10.png)
