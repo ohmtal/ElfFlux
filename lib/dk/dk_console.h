@@ -228,6 +228,7 @@ extern "C"
 
       for (int i = 0; i < console->log_index; i++) {
         Vector2 pos = { 10, 0 - scroll_offset + (float)i * console->fontSpacing };
+        if (pos.y < 0) continue;
         if (pos.y > input_pos.y)
           break;
         //shadow=>  DrawTextEx(*imui->font, console->logs[i].text, pos + Vector2(1.f,1.f), console->fontSize, 1, DARKGRAY);

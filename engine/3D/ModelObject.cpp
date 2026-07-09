@@ -64,6 +64,7 @@ public:
     ModelAnimation* getCurrentAnimation();
     S32 getAnimationCount();
     F32 getCurrentAnimFrame() { return mCurrentAnimFrame; }
+    S32 getAnimationIndexByName(String name);
 private:
     F32 mCurrentAnimFrame = 0.0f;
 
@@ -115,6 +116,23 @@ S32 ModelObject::getAnimationCount() {
          return block->count;
     }
     return 0;
+}
+//-----------------------------------------------------------------------------
+/*
+ * getAnimationIndexByName return -1 if not found
+ */
+S32 ModelObject::getAnimationIndexByName(String name) {
+    if (mAnimationBlockId > 0 ) {
+        ElfResource::ElfAnimationBlock* block = ElfResource::ModelAnimationMap.get(mAnimationBlockId);
+        if (block->count == 0) return -1;
+        for (S32 i = 0; i < block->count; i++) {
+            if (name.equal(block->anims[i].name, String::NoCase) ) {
+                return i;
+            }
+        }
+    }
+    return -1;
+
 }
 //-----------------------------------------------------------------------------
 ModelAnimation* ModelObject::getCurrentAnimation() {
@@ -244,7 +262,9 @@ DefineEngineMethod(ModelObject, getAnimationName, String, (), , "Get the name of
     }
     return "";
 }
-
+DefineEngineMethod(ModelObject, getAnimationIndexByName, S32, (String name), , "Get the id of a named animations. return -1 if not found.") {
+   return object->getAnimationIndexByName(name);
+}
 
 DefineEngineMethod(ModelObject, playOnce, bool, (S32 animationIndex, S32 animationFPS, bool force), (25,false)
     , "Play a animation once. The current animation will be restored after finished."

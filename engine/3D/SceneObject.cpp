@@ -21,10 +21,10 @@ SceneObject::SceneObject() {
 }
 //-----------------------------------------------------------------------------
 void SceneObject::initPersistFields() {
-    addField("Position", TypeVector3, Offset(mPosition, SceneObject));
-    addField("Rotation", TypeVector3, Offset(mRotation, SceneObject));
-    addField("Scale", TypeVector3, Offset(mScale, SceneObject));
-    addField("Visible", TypeBool, Offset(mVisible, SceneObject));
+    addField("Position", TypeVector3, Offset(mPosition, SceneObject), "3D position");
+    addField("Rotation", TypeVector3, Offset(mRotation, SceneObject), "Rotation in degrees");
+    addField("Scale", TypeVector3, Offset(mScale, SceneObject), "Scale default 1 1 1");
+    addField("Visible", TypeBool, Offset(mVisible, SceneObject), "Is the object drawn");
     Parent::initPersistFields();
 }
 //-----------------------------------------------------------------------------

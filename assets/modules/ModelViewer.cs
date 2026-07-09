@@ -1,5 +1,6 @@
 //----------------------------------------------------------------------
 exec("assets/include/CameraFree.cs");
+exec("assets/include/ModelLoader.cs");
 //----------------------------------------------------------------------
 #define VEC3_ZERO "0 0 0"
 //----------------------------------------------------------------------
@@ -12,54 +13,58 @@ function createModelViewer() {
 //----------------------------------------------------------------------
 function ModelViewer::CleanUp(%this) {
 
+    // NOTE include/ModelLoader take care or non double loading
+    //      and when game ends models are unloaded.
     if (isObject(%this.curModel)) %this.curModelObject.delete();
-    UnLoadModel(%this.model);
+    // UnLoadModel(%this.model);
     %this.model = 0;
-    UnloadTexture(%this.texture);
+    // UnloadTexture(%this.texture);
     %this.texture = 0;
-    UnloadModelAnimations(%this.animation);
+    // UnloadModelAnimations(%this.animation);
     %this.animation = 0;
 }
 //----------------------------------------------------------------------
 function ModelViewer::LoadModelResources(%this, %modelFileName, %animationFilename, %textureFilename, %startAnim) {
-    %this.CleanUp();
-
-    %this.model = LoadModel(%modelFileName);
-    if (%this.model == 0) return false;
-    echo("\t* loaded Model:" SPC %modelFileName SPC "id" SPC %this.model);
-
-    if (%textureFilename !$= "") {
-        %this.texture = LoadTexture(%textureFilename);
-        echo("\t* loaded Texture:" SPC %textureFilename SPC "id" SPC %this.texture);
-    }
-    if (%animationFilename !$= "") {
-        %this.animation = LoadModelAnimations(%animationFilename);
-        echo("\t* loaded Animation:" SPC %animationFilename SPC "id" SPC %this.animation);
-    }
-
-
-    %spawnPoint = "0 0 0";
-
-    %this.curModelObject = new ModelObject() {
-        Position = %spawnPoint;
-        ModelId = %this.model;
-        Scale = "1 1 1";
-        AnimationBlockId = %this.animation;
-        AnimationIndex = %startAnim $="" ? 0 : %startAnim;
-        AnimationFPS = 30;
-    };
-
-    // fixme texture should be added to ModelObject
-    %this.curModelObject.MaterialCount = 0;
-    if (%this.texture != 0) {
-        %cnt = GetModelMaterialCount(%this.model, MATERIAL_MAP_ALBEDO);
-        %this.curModelObject.MaterialCount  = %cnt;
-        // set all ... to be sure .. WARNING works only when model have only on texture!
-        for (%i = 0; %i < %cnt ; %i++) {
-            SetModelMapTexture(%this.model,%this.texture, %i, MATERIAL_MAP_ALBEDO);
-        }
-
-    }
+     %this.curModelObject = LoadModelResources(%modelFileName, %animationFilename, %textureFilename, %startAnim, "0 0 0", 30);
+     // NOTE: moved to include/ModelLoader
+    // %this.CleanUp();
+    //
+    // %this.model = LoadModel(%modelFileName);
+    // if (%this.model == 0) return false;
+    // echo("\t* loaded Model:" SPC %modelFileName SPC "id" SPC %this.model);
+    //
+    // if (%textureFilename !$= "") {
+    //     %this.texture = LoadTexture(%textureFilename);
+    //     echo("\t* loaded Texture:" SPC %textureFilename SPC "id" SPC %this.texture);
+    // }
+    // if (%animationFilename !$= "") {
+    //     %this.animation = LoadModelAnimations(%animationFilename);
+    //     echo("\t* loaded Animation:" SPC %animationFilename SPC "id" SPC %this.animation);
+    // }
+    //
+    //
+    // %spawnPoint = "0 0 0";
+    //
+    // %this.curModelObject = new ModelObject() {
+    //     Position = %spawnPoint;
+    //     ModelId = %this.model;
+    //     Scale = "1 1 1";
+    //     AnimationBlockId = %this.animation;
+    //     AnimationIndex = %startAnim $="" ? 0 : %startAnim;
+    //     AnimationFPS = 30;
+    // };
+    //
+    // // fixme texture should be added to ModelObject
+    // %this.curModelObject.MaterialCount = 0;
+    // if (%this.texture != 0) {
+    //     %cnt = GetModelMaterialCount(%this.model, MATERIAL_MAP_ALBEDO);
+    //     %this.curModelObject.MaterialCount  = %cnt;
+    //     // set all ... to be sure .. WARNING works only when model have only on texture!
+    //     for (%i = 0; %i < %cnt ; %i++) {
+    //         SetModelMapTexture(%this.model,%this.texture, %i, MATERIAL_MAP_ALBEDO);
+    //     }
+    //
+    // }
 
 }
 //----------------------------------------------------------------------

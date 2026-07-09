@@ -2,6 +2,8 @@
 //----------------------------------------------------------------------
 function CameraFree::update(%this, %dt)
 {
+    %consoleOpen = $main.consoleGui.isOpen(); //hackfest
+
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))  DisableCursor();
     else if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) EnableCursor();
 
@@ -9,12 +11,15 @@ function CameraFree::update(%this, %dt)
     if (%speed == 0) %this.moveSpeed = 100.0;
 
     //FIXME bad idea on console input !! need a focus system and a alternate isKeyDown...
-    if (isKeyDown(KEY_W)) %this.moveForward(%dt * %speed, false);
-    if (isKeyDown(KEY_S)) %this.moveForward(-%dt * %speed, false);
-    if (isKeyDown(KEY_D)) %this.moveRight(%dt * %speed, false);
-    if (isKeyDown(KEY_A)) %this.moveRight(-%dt * %speed, false);
-    if (isKeyDown(KEY_E)) %this.moveUp(%dt * %speed);
-    if (isKeyDown(KEY_Q)) %this.moveUp(-%dt * %speed);
+    if (!%consoleOpen) {
+        if (isKeyDown(KEY_W)) %this.moveForward(%dt * %speed, false);
+        if (isKeyDown(KEY_S)) %this.moveForward(-%dt * %speed, false);
+        if (isKeyDown(KEY_D)) %this.moveRight(%dt * %speed, false);
+        if (isKeyDown(KEY_A)) %this.moveRight(-%dt * %speed, false);
+        if (isKeyDown(KEY_E)) %this.moveUp(%dt * %speed);
+        if (isKeyDown(KEY_Q)) %this.moveUp(-%dt * %speed);
+    }
+
 
     if (IsCursorHidden())
     {

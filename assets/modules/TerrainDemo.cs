@@ -1,6 +1,8 @@
 exec("assets/include/CameraFree.cs");
 exec("assets/include/Sun.cs");
 exec("assets/include/WaterPlane.cs");
+exec("assets/include/ModelLoader.cs");
+exec("assets/include/LiteUnit.cs");
 
 
 //----------------------------------------------------------------------
@@ -300,6 +302,16 @@ function TerrainDemo::Render(%this) {
 
     if (!isObject(%waterPlane)) return false;
     if (!IsCursorHidden() && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) %this.onMouseLeftClick();
+    if (!IsCursorHidden() && IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE)) {
+        %mousePos = GetMousePosition();
+        %ray = %this.camera.getScreenToWorldRay(%mousePos); //<< GetMouseRay
+        %collisionStr = %this.terrain.getRayCollision(%ray);
+        if (%collisionStr $= "") {
+            return;
+        }
+        %hitPoint = getWords(%collisionStr, 0,2);
+        %this.lastPet.walkTo(%hitPoint);
+    }
 
     ClearBackground(%sun.skyColor);
     %cam = %this.camera;
@@ -389,11 +401,36 @@ function TerrainDemo::onMouseLeftClick(%this)
     // %tree = %this.spawnScriptTree(%hitPoint);
 
     // AppleTree
-    %tree = %this.appleTree.clone();
-    %tree.position = %hitPoint;
-    %this.levelObjects.add(%tree);
+    // %tree = %this.appleTree.clone();
+    // %tree.position = %hitPoint;
+    // %this.levelObjects.add(%tree);
 
-    echo("new Tree:" SPC  %tree SPC "created. Position:" SPC %tree.position);
+    // not a tree but
+    %path = "assets/models/kenney_cube_pets/glb/";
+    %models="animal-beaver.glb animal-bee.glb animal-bunny.glb animal-caterpillar.glb animal-cat.glb animal-chick.glb"
+    SPC "animal-cow.glb animal-crab.glb animal-deer.glb animal-dog.glb animal-elephant.glb animal-fish.glb animal-fox.glb"
+    SPC "animal-giraffe.glb animal-hog.glb animal-koala.glb animal-lion.glb animal-monkey.glb animal-panda.glb"
+    SPC "animal-parrot.glb animal-penguin.glb animal-pig.glb animal-polar.glb animal-tiger.glb";
+    %id = getRandom(getwordCount(%models) - 1);
+    %file = getWord(%models, %id);
+
+    %pet = LoadModelResources(
+        %path @ %file
+        , %path @ %file
+        , %path @ "Textures/colormap.png"
+        , 1
+        , %hitPoint
+        , 30
+        , "LiteUnit"
+    );
+    SetModelShader(%pet.modelId, %this.Sun.sunShader, 1);
+    %pet.terrainObject = %terrain;
+    %this.levelObjects.add(%pet);
+
+    %this.lastPet = %pet;
+    %tree = %pet; //hack for echo
+
+    echo("new Tree:" SPC  %tree SPC "created. Position:" SPC %tree.position SPC "MODEL" SPC %tree.model);
 }
 
 //----------------------------------------------------------------------

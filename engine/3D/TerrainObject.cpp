@@ -91,14 +91,17 @@ F32 TerrainObject::getHeight(Vector3 worldPos) {
     if (mHeightGrid.empty() || mGridWidth <= 1 || mGridHeight <= 1) return mPosition.y;
 
     // worldpos to localpos
-    F32 localX = worldPos.x - mPosition.x + (mSize.x / 2.0f);
-    F32 localZ = worldPos.z - mPosition.z + (mSize.z / 2.0f);
+    F32 localX = worldPos.x - mPosition.x;
+    F32 localZ = worldPos.z - mPosition.z;
+    // F32 localX = worldPos.x - mPosition.x + (mSize.x / 2.0f);
+    // F32 localZ = worldPos.z - mPosition.z + (mSize.z / 2.0f);
+
 
     // to grid
     F32 gridX = (localX / mSize.x) * (mGridWidth - 1);
     F32 gridZ = (localZ / mSize.z) * (mGridHeight - 1);
 
-    // Failsafe: out of terrain FIXME could be used for getTerrainAt...
+    // Failsafe: out of terrain
     if (gridX < 0.0f || gridX >= (mGridWidth - 1) || gridZ < 0.0f || gridZ >= (mGridHeight - 1)) {
         return mPosition.y;
     }
