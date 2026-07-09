@@ -12,23 +12,23 @@ function LiteUnit::onAdd(%this) {
     if (%this.animWalk == 0) %this.animWalk = %this.animRun;
 
     %this.moveDestination = ""; //empty!
-    %this.moveTolerance = 1.5;
-    %this.walkMoveSpeed = 0.08;
-    %this.runMoveSpeed = 0.20;
-    %this.rotationSpeed = 6.0;
+    %this.moveTolerance = 0.1;
+    %this.walkMoveSpeed = 3;
+    %this.runMoveSpeed = 7;
+    %this.rotationSpeed = 180.0;
 
     %this.terrainObject = 0;
 
-    %this.tickObject = new ScriptTickObject() { class = "LiteUnitTicker"; obj = %this;};
+    %this.tickObject = new ScriptTickObject() { class = "LiteUnitTicker"; callOnAdvanceTime = true; obj = %this;};
 }
 // -----------------------------------------------------------------------------
 function LiteUnit::onRemove(%this) {
     %this.tickObject.delete();
 }
 // -----------------------------------------------------------------------------
-function LiteUnitTicker::onInterpolateTick(%this, %dt) {
-    // %dt = 0.625
-    // warn("LiteUnitTicker::onInterpolateTick" SPC %this SPC %obj SPC %dt);
+function LiteUnitTicker::OnAdvanceTime(%this, %dt) {
+
+    // warn("LiteUnitTicker::OnAdvanceTime" SPC %this SPC %obj SPC %dt);
     %this.obj.update(%dt);
 }
 // -----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ function LiteUnit::update(%this, %dt) {
     if (%destVec !$= "") {
         %currentPos = %this.Position;
 
-        // --- Step 1: Calculate direction and distance to target ---
+        // --- Calculate direction and distance to target ---
         %deltaX = %destVec.x - %currentPos.x;
         %deltaY = %destVec.y - %currentPos.y;
         %deltaZ = %destVec.z - %currentPos.z;
@@ -59,18 +59,15 @@ function LiteUnit::update(%this, %dt) {
         // Calculate horizontal 2D distance for movement logic
         %distance = mSqrt((%deltaX * %deltaX) + (%deltaZ * %deltaZ));
 
-        // Use custom tolerance value or default to 0.1 units
-        %tolerance = (%this.moveTolerance !$= "") ? %this.moveTolerance : 1.0;
+        %tolerance = (%this.moveTolerance !$= "") ? %this.moveTolerance : 0.1;
 
         // If we are outside the tolerance range, rotate and move
         if (%distance > %tolerance) {
 
-            // --- Step 2: Rotation logic (Raylib standard: Y is Up-Axis) ---
-            // Calculate target angle around the Y-axis using horizontal plane (X and Z)
+            // ---  Rotation ---
             %targetRadians = mAtan(%deltaX, %deltaZ);
             %targetDegrees = mRadToDeg(%targetRadians);
 
-            // Get current Y-rotation
             %currentRotY = %this.Rotation.y;
 
             // Normalize angle difference to the shortest path (-180 to 180)
@@ -78,11 +75,10 @@ function LiteUnit::update(%this, %dt) {
             while (%angleDiff > 180)  { %angleDiff -= 360; }
             while (%angleDiff < -180) { %angleDiff += 360; }
 
-            // Define rotation speed (degrees per second), fallback to 180 if not set
             %rotSpeed = (%this.rotationSpeed !$= "") ? %this.rotationSpeed : 180.0;
             %maxRotation = %rotSpeed * %dt;
 
-            // Clamp rotation step to the maximum allowed speed
+            // Clamp rotation
             if (mAbs(%angleDiff) > %maxRotation) {
                 if (%angleDiff > 0) {
                     %currentRotY += %maxRotation;
@@ -93,12 +89,10 @@ function LiteUnit::update(%this, %dt) {
                 %currentRotY = %targetDegrees; // Snap to target angle if close enough
             }
 
-            // Apply updated Y-rotation back to the object
             %this.Rotation = %this.Rotation.x SPC %currentRotY SPC %this.Rotation.z;
 
-            // --- Step 3: Movement logic ---
-            // Define movement speed (units per second), fallback to 5.0 if not set
-            %moveSpeed = (%this.moveSpeed !$= "") ? %this.moveSpeed : 0.5 ;// 5.0;
+            // --- Movement ---
+            %moveSpeed = (%this.moveSpeed !$= "") ? %this.moveSpeed :  5.0;
             %moveStep = %moveSpeed * %dt;
 
             // Prevent overshooting the destination
@@ -110,17 +104,15 @@ function LiteUnit::update(%this, %dt) {
             %moveX = (%deltaX / %distance) * %moveStep;
             %moveZ = (%deltaZ / %distance) * %moveStep;
 
-            // Apply movement to position (keeping height/Y stable or adapting to terrain)
-
             %newPos = (%currentPos.x + %moveX) SPC %currentPos.y SPC (%currentPos.z + %moveZ);
-
+            // if we have a terrain we use the height as Y value
             if (%this.terrainObject != 0) {
                 %terrH = %this.terrainObject.getHeight(%newPos);
                 %newPos.y = %terrH;
             }
             %this.Position = %newPos;
 
-            warn("new pos" SPC %newPos);
+            // warn("new pos" SPC %newPos SPC "DT:" SPC %dt);
         } else {
             //no snap!  %this.Position = %destVec;
             %this.moveDestination = "";

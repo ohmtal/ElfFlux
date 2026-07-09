@@ -310,7 +310,7 @@ function TerrainDemo::Render(%this) {
             return;
         }
         %hitPoint = getWords(%collisionStr, 0,2);
-        %this.lastPet.walkTo(%hitPoint);
+        %this.lastPet.walkTo(%hitPoint, isKeyDown(KEY_LEFT_SHIFT));
     }
 
     ClearBackground(%sun.skyColor);
@@ -423,6 +423,7 @@ function TerrainDemo::onMouseLeftClick(%this)
         , 30
         , "LiteUnit"
     );
+    %pet.rotation.y = getRandom(360);
     SetModelShader(%pet.modelId, %this.Sun.sunShader, 1);
     %pet.terrainObject = %terrain;
     %this.levelObjects.add(%pet);
