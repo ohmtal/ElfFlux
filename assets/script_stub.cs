@@ -1,41 +1,3 @@
-class  WaterPlaneDemo {
-  public:
-   Script render( string this )...) {}
-   Script onRemove( string this )...) {}
-   Script onAdd( string this )...) {}
-};
-class  GridTest {
-  public:
-   Script newTerrain( string this )...) {}
-   Script init( string this )...) {}
-   Script render( string this )...) {}
-   Script onRemove( string this )...) {}
-   Script onAdd( string this )...) {}
-};
-class  TerrainDemo {
-  public:
-   Script DropToGround( string this, string obj )...) {}
-   Script onMouseLeftClick( string this )...) {}
-   Script spawnScriptTree( string this, string worldPos )...) {}
-   Script render( string this )...) {}
-   Script onRemove( string this )...) {}
-   Script onAdd( string this )...) {}
-   Script loadKenneyModel( string this, string spawnPoint )...) {}
-   Script loadGreenManModel( string this, string spawnPoint )...) {}
-};
-class  waterPlane {
-  public:
-   Script update( string this, string dt )...) {}
-   Script draw( string this, string dt )...) {}
-   Script onRemove( string this )...) {}
-   Script onAdd( string this )...) {}
-};
-class  Sun {
-  public:
-   Script update( string this, string dt )...) {}
-   Script onRemove( string this )...) {}
-   Script onAdd( string this )...) {}
-};
 /*!
 @brief Base class for almost all objects involved in the simulation.
 @ingroup Console
@@ -339,50 +301,22 @@ NOTE: this cant be used with arrays like setFieldValue@param fieldName The name 
    pid persistentId;
    /// @}
 };
-class  Camera3DObject : public SimObject {
+class  Gui : public SimObject {
   public:
-   /*! Update camera position for selected mode (e.g. $CAMERA_FIRST_PERSON, $CAMERA_FREE) */
-   void update( int mode ) {}
-   /*! Update camera movement/rotation with pro parameters */
-   void updatePro( Vector3 movement, Vector3 rotation, float zoom ) {}
-   /*! Get a 3D ray trace from a screen position (e.g. mouse) */
-   Ray getScreenToWorldRay( Vector2 position ) {}
-   /*! Get a 3D ray trace from a screen position within a specific custom viewport size */
-   Ray getScreenToWorldRayEx( Vector2 position, int width, int height ) {}
-   /*! Get 2D screen space position for a 3D world space position */
-   Vector2 getWorldToScreen( Vector3 position ) {}
-   /*! Get 2D screen space position for a 3D world space position inside a specific custom viewport size */
-   Vector2 getWorldToScreenEx( Vector3 position, int width, int height ) {}
-   /*! Get the 3D camera transform matrix (view matrix) */
-   Matrix getCameraMatrix() {}
-   /*! BeginMode3D - Begins 3D mode with a Camera3DObject */
-   void Begin() {}
-   /*! EndMode3D - End 3D mode with custom camera */
-   void End() {}
-   /*! GetCameraForward */
-   Vector3 getForwardVector() {}
-   /*! GetCameraUp */
-   Vector3 getUpVector() {}
-   /*! GetCameraRight */
-   Vector3 getRightVector() {}
-   /*! Moves the camera forward/backward based on distance. If moveInWorldPlane is true, movement is locked to the XZ plane. */
-   void moveForward( float distance, bool moveInWorldPlane ) {}
-   /*! Moves the camera up/down along its local up vector. */
-   void moveUp( float distance ) {}
-   /*! Moves the camera right/left based on distance. If moveInWorldPlane is true, movement is locked to the XZ plane. */
-   void moveRight( float distance, bool moveInWorldPlane ) {}
-   /*! Moves the camera closer or further away from its target point. */
-   void moveToTarget( float delta ) {}
-   /*! Rotates the camera horizontally (yaw) around its own axis or around the target point (angle in radians). */
-   void yaw( float angle, bool rotateAroundTarget ) {}
-   /*! Rotates the camera vertically (pitch) with optional view locking (angle in radians). */
-   void pitch( float angle, bool lockView, bool rotateAroundTarget, bool rotateUp ) {}
-   /*! Tilts the camera (roll) along its view axis (angle in radians). */
-   void roll( float angle ) {}
-   /*! Returns the camera's view matrix. */
-   Matrix getViewMatrix() {}
-   /*! Returns the camera's projection matrix based on the given aspect ratio. */
-   Matrix getProjectionMatrix( float aspect ) {}
+   void Begin( float x, float y ) {}
+   void SameLine( float relativeX=0 ) {}
+   void enhanceCursor() {}
+   void resetStates() {}
+   void setStates( float width, float height ) {}
+   bool ButtonV( Vector2 size, String text ) {}
+   bool Button( float width, String text ) {}
+   bool checkBox( String text, bool value ) {}
+   /*! variable example: $MyValue or %this.object.getId() @ ".enabled" */
+   bool checkBoxVar( String text, String variable ) {}
+   bool Write( String text, int fontSize=-1, Color color=LIGHTGRAY ) {}
+   bool Label( String text ) {}
+   bool SeparatorV( Vector2 size, Color color ) {}
+   bool Separator( float width, Color color=LIGHTGRAY ) {}
    /*! @name Ungrouped
    @{ */
    /*! */
@@ -400,74 +334,42 @@ class  Camera3DObject : public SimObject {
    /*! */
    /// @}
    /*!
-   Camera position in world space
-   
     */
-   Vector3 position;
+   float left;
    /*!
-   Camera target point in world space
-   
     */
-   Vector3 target;
+   Vector2 cursor;
    /*!
-   Camera up vector (defines the orientation)
-   
     */
-   Vector3 up;
+   Vector2 spacing;
    /*!
-   Camera field-of-view aperture in Y (degrees) in perspective, or width in orthographic
-   
     */
-   float fovy;
+   Vector2 defaultSize;
    /*!
-   Camera projection type (CAMERA_PERSPECTIVE or CAMERA_ORTHOGRAPHIC)
-   
     */
-   int projection;
+   bool SameLine;
+   /*!
+    */
+   bool isFocused;
+   /*!
+    */
+   bool isPressed;
+   /*!
+    */
+   bool isClicked;
+   /*!
+    */
+   Rectangle lastBounds;
+   /*!
+    */
+   int lastState;
 };
-class  CameraFree : public Camera3DObject {
+/// Stub class
+/// 
+/// @note This is a stub class to ensure a proper class hierarchy. No 
+///       information was available for this class.
+class  LightGui : public Gui {
   public:
-   Script update( string this, string dt )...) {}
-};
-/*!
-@brief A script-level OOP object which allows binding of a class, superClass and arguments along with declaration of methods.
-ScriptObjects are extrodinarily powerful objects that allow defining of any type of data required. They can optionally have
-a class and a superclass defined for added control of multiple ScriptObjects through a simple class definition.
-@tsexample
-new ScriptObject(Game)
-{
-   class = "DeathMatchGame";
-   superClass = GameCore;
-   genre = "Action FPS"; // Note the new, non-Torque variable
-};
-@endtsexample
-@see SimObject
-@ingroup Console
- */
-class  ScriptObject : public SimObject {
-  public:
-   /*! @name Ungrouped
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Object
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Editing
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Persistence
-   @{ */
-   /*! */
-   /// @}
-};
-class  Main : public ScriptObject {
-  public:
-   Script loop( string this )...) {}
-   Script loadModule( string this, string setNewModuleIndex )...) {}
-   Script init( string this )...) {}
 };
 /*!
 @brief A collection of SimObjects.
@@ -579,6 +481,333 @@ class  SimSet : public SimObject {
    /*! */
    /// @}
 };
+class  SceneObject : public SimSet {
+  public:
+   /*! refresh the worldbox, needs to be called when position / scale is changed */
+   void refresh() {}
+   /*!
+   3D position
+   
+    */
+   Vector3 position;
+   /*!
+   Rotation in degrees
+   
+    */
+   Vector3 rotation;
+   /*!
+   Scale default 1 1 1
+   
+    */
+   Vector3 Scale;
+   /*!
+   Is the object drawn
+   
+    */
+   bool Visible;
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
+};
+class  TerrainObject : public SceneObject {
+  public:
+   /*! Load or reload the terrain from the specified HeightMapFilename. */
+   bool load() {}
+   /*! Draw  heightmap */
+   void draw() {}
+   /*! Returns the exact terrain height (Y-coordinate) at the given world position. */
+   F32 getHeight( Vector3 position ) {}
+   /*! Returns the surface normal vector at the given world position. */
+   Vector3 getNormal( Vector3 position ) {}
+   /*! Performs a raycast collision check against the terrainand returns 'X Y Z Nx Ny Nz Dist' or empty string. */
+   String getRayCollision( Ray ray ) {}
+   /*! Returns the resource-manager compatible model ID of the terrain's 3D mesh. */
+   S32 getModelId() {}
+   /*!
+   You need to call load() after changing it.
+   
+    */
+   string HeightMapFilename;
+   /*!
+   You need to call load() after changing it.
+   
+    */
+   Vector3 Size;
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
+};
+/// Stub class
+/// 
+/// @note This is a stub class to ensure a proper class hierarchy. No 
+///       information was available for this class.
+class  terrain : public TerrainObject {
+  public:
+};
+class  Camera3DObject : public SimObject {
+  public:
+   /*! Update camera position for selected mode (e.g. $CAMERA_FIRST_PERSON, $CAMERA_FREE) */
+   void update( int mode ) {}
+   /*! Update camera movement/rotation with pro parameters */
+   void updatePro( Vector3 movement, Vector3 rotation, float zoom ) {}
+   /*! Get a 3D ray trace from a screen position (e.g. mouse) */
+   Ray getScreenToWorldRay( Vector2 position ) {}
+   /*! Get a 3D ray trace from a screen position within a specific custom viewport size */
+   Ray getScreenToWorldRayEx( Vector2 position, int width, int height ) {}
+   /*! Get 2D screen space position for a 3D world space position */
+   Vector2 getWorldToScreen( Vector3 position ) {}
+   /*! Get 2D screen space position for a 3D world space position inside a specific custom viewport size */
+   Vector2 getWorldToScreenEx( Vector3 position, int width, int height ) {}
+   /*! Get the 3D camera transform matrix (view matrix) */
+   Matrix getCameraMatrix() {}
+   /*! BeginMode3D - Begins 3D mode with a Camera3DObject */
+   void Begin() {}
+   /*! EndMode3D - End 3D mode with custom camera */
+   void End() {}
+   /*! GetCameraForward */
+   Vector3 getForwardVector() {}
+   /*! GetCameraUp */
+   Vector3 getUpVector() {}
+   /*! GetCameraRight */
+   Vector3 getRightVector() {}
+   /*! Moves the camera forward/backward based on distance. If moveInWorldPlane is true, movement is locked to the XZ plane. */
+   void moveForward( float distance, bool moveInWorldPlane ) {}
+   /*! Moves the camera up/down along its local up vector. */
+   void moveUp( float distance ) {}
+   /*! Moves the camera right/left based on distance. If moveInWorldPlane is true, movement is locked to the XZ plane. */
+   void moveRight( float distance, bool moveInWorldPlane ) {}
+   /*! Moves the camera closer or further away from its target point. */
+   void moveToTarget( float delta ) {}
+   /*! Rotates the camera horizontally (yaw) around its own axis or around the target point (angle in radians). */
+   void yaw( float angle, bool rotateAroundTarget ) {}
+   /*! Rotates the camera vertically (pitch) with optional view locking (angle in radians). */
+   void pitch( float angle, bool lockView, bool rotateAroundTarget, bool rotateUp ) {}
+   /*! Tilts the camera (roll) along its view axis (angle in radians). */
+   void roll( float angle ) {}
+   /*! Returns the camera's view matrix. */
+   Matrix getViewMatrix() {}
+   /*! Returns the camera's projection matrix based on the given aspect ratio. */
+   Matrix getProjectionMatrix( float aspect ) {}
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
+   /*!
+   Camera position in world space
+   
+    */
+   Vector3 position;
+   /*!
+   Camera target point in world space
+   
+    */
+   Vector3 target;
+   /*!
+   Camera up vector (defines the orientation)
+   
+    */
+   Vector3 up;
+   /*!
+   Camera field-of-view aperture in Y (degrees) in perspective, or width in orthographic
+   
+    */
+   float fovy;
+   /*!
+   Camera projection type (CAMERA_PERSPECTIVE or CAMERA_ORTHOGRAPHIC)
+   
+    */
+   int projection;
+};
+class  CameraFree : public Camera3DObject {
+  public:
+   Script update( string this, string dt )...) {}
+};
+/// Stub class
+/// 
+/// @note This is a stub class to ensure a proper class hierarchy. No 
+///       information was available for this class.
+class  camera : public CameraFree {
+  public:
+};
+/*!
+@brief A script-level OOP object which allows binding of a class, superClass and arguments along with declaration of methods.
+ScriptObjects are extrodinarily powerful objects that allow defining of any type of data required. They can optionally have
+a class and a superclass defined for added control of multiple ScriptObjects through a simple class definition.
+@tsexample
+new ScriptObject(Game)
+{
+   class = "DeathMatchGame";
+   superClass = GameCore;
+   genre = "Action FPS"; // Note the new, non-Torque variable
+};
+@endtsexample
+@see SimObject
+@ingroup Console
+ */
+class  ScriptObject : public SimObject {
+  public:
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
+};
+class  TerrainDemo : public ScriptObject {
+  public:
+   Script DropToGround( string this, string obj )...) {}
+   Script onMouseLeftClick( string this )...) {}
+   Script spawnScriptTree( string this, string worldPos )...) {}
+   Script render( string this )...) {}
+   Script onRemove( string this )...) {}
+   Script onAdd( string this )...) {}
+   Script loadKenneyModel( string this, string spawnPoint )...) {}
+   Script loadGreenManModel( string this, string spawnPoint )...) {}
+};
+class  LiteUnitTicker {
+  public:
+   Script onAdvanceTime( string this, string dt )...) {}
+};
+class  ModelObject : public SceneObject {
+  public:
+   /*! Draws this object instance and all its children polymorphically. */
+   void draw() {}
+   /*! Get the count of the current animations */
+   S32 getAnimationCount() {}
+   /*! Get the name of the current animations */
+   String getAnimationName() {}
+   /*! Get the id of a named animations. return -1 if not found. */
+   S32 getAnimationIndexByName( String name ) {}
+   /*! Play a animation once. The current animation will be restored after finished.Force also start the animation if a runOnce is already running. */
+   bool playOnce( int animationIndex, int animationFPS=25, bool force=false ) {}
+   /*!
+   The script ID of the raylib model.
+   
+    */
+   int ModelId;
+   /*!
+   If this is a child it can be mounted to a Bone index. See also GetModelBoneIndexByName
+   
+    */
+   int MountBoneIndex;
+   /*! @name Animation
+   @{ */
+   /*! */
+   /*!
+   Id of the AnimationBlock
+   
+    */
+   int AnimationBlockId;
+   /*!
+   Index of the animation to play. See also GetModelAnimationCount.
+   
+    */
+   int AnimationIndex;
+   /*!
+   Frames per secound when an animation is played
+   
+    */
+   int AnimationFPS;
+   /// @}
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
+};
+class  LiteUnit : public ModelObject {
+  public:
+   Script lookAt( string this, string position )...) {}
+   Script update( string this, string dt )...) {}
+   Script walkTo( string this, string dest, string hurry )...) {}
+   Script onDestinationReached( string this )...) {}
+   Script onRemove( string this )...) {}
+   Script onAdd( string this )...) {}
+};
+class  ModelCache : public ScriptObject {
+  public:
+   Script loadAnimation( string this, string filename )...) {}
+   Script LoadTexture( string this, string filename )...) {}
+   Script LoadModel( string this, string filename )...) {}
+};
+class  waterPlane : public ScriptObject {
+  public:
+   Script update( string this, string dt )...) {}
+   Script draw( string this, string dt )...) {}
+   Script onRemove( string this )...) {}
+   Script onAdd( string this )...) {}
+};
+class  Sun : public ScriptObject {
+  public:
+   Script update( string this, string dt )...) {}
+   Script onRemove( string this )...) {}
+   Script onAdd( string this )...) {}
+};
+class  Main : public ScriptObject {
+  public:
+   Script loop( string this )...) {}
+   Script loadModule( string this, string setNewModuleIndex )...) {}
+   Script init( string this )...) {}
+};
 /// Stub class
 /// 
 /// @note This is a stub class to ensure a proper class hierarchy. No 
@@ -645,135 +874,8 @@ class  SimGroup : public SimSet {
 class  RootGroup : public SimGroup {
   public:
 };
-class  SceneObject : public SimSet {
-  public:
-   /*! refresh the worldbox, needs to be called when position / scale is changed */
-   void refresh() {}
-   /*!
-    */
-   Vector3 position;
-   /*!
-    */
-   Vector3 rotation;
-   /*!
-    */
-   Vector3 Scale;
-   /*!
-    */
-   bool Visible;
-   /*! @name Ungrouped
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Object
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Editing
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Persistence
-   @{ */
-   /*! */
-   /// @}
-};
-class  ModelObject : public SceneObject {
-  public:
-   /*! Draws this object instance and all its children polymorphically. */
-   void draw() {}
-   /*! Play a animation once. The current animation will be restored after finished.Force also start the animation if a runOnce is already running. */
-   bool playOnce( int animationIndex, int animationFPS=25, bool force=false ) {}
-   /*!
-   The script ID of the raylib model.
-   
-    */
-   int ModelId;
-   /*!
-   If this is a child it can be mounted to a Bone index. See also GetModelBoneIndexByName
-   
-    */
-   int MountBoneIndex;
-   /*! @name Animation
-   @{ */
-   /*! */
-   /*!
-   Id of the AnimationBlock
-   
-    */
-   int AnimationBlockId;
-   /*!
-   Index of the animation to play. See also GetModelAnimationCount.
-   
-    */
-   int AnimationIndex;
-   /*!
-   Frames per secound when an animation is played
-   
-    */
-   int AnimationFPS;
-   /// @}
-   /*! @name Ungrouped
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Object
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Editing
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Persistence
-   @{ */
-   /*! */
-   /// @}
-};
-class  TerrainObject : public SceneObject {
-  public:
-   /*! Load or reload the terrain from the specified HeightMapFilename. */
-   bool load() {}
-   /*! Draw  heightmap */
-   void draw() {}
-   /*! Returns the exact terrain height (Y-coordinate) at the given world position. */
-   F32 getHeight( Vector3 position ) {}
-   /*! Returns the surface normal vector at the given world position. */
-   Vector3 getNormal( Vector3 position ) {}
-   /*! Performs a raycast collision check against the terrainand returns 'X Y Z Nx Ny Nz Dist' or empty string. */
-   String getRayCollision( Ray ray ) {}
-   /*! Returns the resource-manager compatible model ID of the terrain's 3D mesh. */
-   S32 getModelId() {}
-   /*!
-   You need to call load() after changing it.
-   
-    */
-   string HeightMapFilename;
-   /*!
-   You need to call load() after changing it.
-   
-    */
-   Vector3 Size;
-   /*! @name Ungrouped
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Object
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Editing
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Persistence
-   @{ */
-   /*! */
-   /// @}
-};
 class  Grid : public SimObject {
   public:
-   Script addRandomMud( string this )...) {}
    /*! param: area: x y w h, F32 SquareSize */
    bool init( Rectangle area, float squareSize ) {}
    /*! get count of nodes */
@@ -846,6 +948,7 @@ class  ConsoleGuiObject : public SimObject {
    bool setFont( int fontId ) {}
    /*! update the console */
    void update() {}
+   bool isOpen() {}
    /*! @name Ungrouped
    @{ */
    /*! */
@@ -877,69 +980,6 @@ class  ConsoleGuiObject : public SimObject {
    
     */
    float heightDiv;
-};
-class  Gui : public SimObject {
-  public:
-   void Begin( float x, float y ) {}
-   void SameLine( float relativeX=0 ) {}
-   void enhanceCursor() {}
-   void resetStates() {}
-   void setStates( float width, float height ) {}
-   bool ButtonV( Vector2 size, String text ) {}
-   bool Button( float width, String text ) {}
-   bool checkBox( String text, bool value ) {}
-   /*! variable example: $MyValue or %this.object.getId() @ ".enabled" */
-   bool checkBoxVar( String text, String variable ) {}
-   bool Write( String text, int fontSize=-1, Color color=LIGHTGRAY ) {}
-   bool Label( String text ) {}
-   bool SeparatorV( Vector2 size, Color color ) {}
-   bool Separator( float width, Color color=LIGHTGRAY ) {}
-   /*! @name Ungrouped
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Object
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Editing
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Persistence
-   @{ */
-   /*! */
-   /// @}
-   /*!
-    */
-   float left;
-   /*!
-    */
-   Vector2 cursor;
-   /*!
-    */
-   Vector2 spacing;
-   /*!
-    */
-   Vector2 defaultSize;
-   /*!
-    */
-   bool SameLine;
-   /*!
-    */
-   bool isFocused;
-   /*!
-    */
-   bool isPressed;
-   /*!
-    */
-   bool isClicked;
-   /*!
-    */
-   Rectangle lastBounds;
-   /*!
-    */
-   int lastState;
 };
 class  BatchRender : public SimObject {
   public:
@@ -2201,9 +2241,8 @@ class  Camera2DObject : public SimObject {
    float zoom;
 };
 namespace Global {
-   Script createWaterPlaneDemo()...) {}
-   Script creategridtest()...) {}
    Script createTerrainDemo()...) {}
+   Script LoadModelResources( string modelFileName, string animationFilename, string textureFilename, string startAnim, string spawnPoint, string fps, string class )...) {}
    Script createWaterPlane( string type, string sunObject, string cameraObject, string size, string position )...) {}
    Script createSun( string terrainRadiusNeg, string sunModel )...) {}
    Script updateDocu()...) {}
@@ -2242,6 +2281,8 @@ NOTE: You should delete the returned SimSet when done to avoid leaks! */
    bool BatchDrawLines( Color color=DARKPURPLE ) {}
    /*! Draw lines from the global BatchRender 3th stack is used for colors */
    bool BatchDrawColoredLines( Color color=DARKPURPLE ) {}
+   /*! return the OS where it was compiled.Win64 | Win32 | Linux | OpenBSD | FreeBSD | MacOSX | Android | Emscripten */
+   String getOS() {}
    /*! @name Clipboard
    
    Miscellaneous functions to control the clipboard and clear the console.
@@ -3975,7 +4016,7 @@ This does not create the actual file. It simply creates a random name for a file
    Vector2 GetGesturePinchVector() {}
    /*! Get gesture pinch angle in degrees */
    float GetGesturePinchAngle() {}
-   /*! Clear all resources. */
+   /*! Resource Manager: Unload all resources and clear resource maps. */
    void ClearAllResources() {}
    /*! Load image from file into CPU memory (RAM) and return the ImageID */
    S32 LoadImage( String fileName ) {}
@@ -4548,14 +4589,18 @@ SetModelShader(modelId, shaderId [, matIndex=0]) */
    S32 LoadModelAnimations( String fileName ) {}
    /*! Update model animation pose for a specific frame index */
    void UpdateModelAnimation( int modelId, int animBlockId, int animIndex, int frame ) {}
+   /*! Update model animation pose, blending two animations */
+   bool UpdateModelAnimationEx( int modelId, int animBlockIdA, int animIndexA, float frameA, int animBlockIdB, int animIndexB, float frameB, float blend ) {}
+   /*! Get total number of animations inside an AnimationBlock */
+   int GetModelAnimationCount( int animBlockId ) {}
+   /*! Get animation infomation as field separated: name TAB boneCount TAB keyframeCount */
+   const char* GetModelAnimationData( int animBlockId, int animIndex ) {}
    /*! Get the FrameCount used by UpdateModelAnimation for a animaton */
    S32 GetModelAnimationFrameCount( int animBlockId, int animIndex ) {}
    /*! Get the boneIndex by queryname. used for mounting. Return -1 if not found. */
    S32 GetModelBoneIndexByName( int modelId, String queryname, bool caseSensitive=true ) {}
    /*! Unload model animation array data from memory */
    void UnloadModelAnimations( int animBlockId ) {}
-   /*! Get total number of animations inside an AnimationBlock */
-   int GetModelAnimationCount( int animBlockId ) {}
    /*! Generates a 3D cube model from dimensions and returns its modelId. */
    S32 GenModelCube( float width, float height, float length ) {}
    /*! Generates a 3D sphere model and returns its modelId. */

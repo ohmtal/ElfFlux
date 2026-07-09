@@ -28,8 +28,6 @@ function WaterPlaneDemo::onAdd(%this) {
     };
 
     // ---- shader
-    // Load vertex_displacement shader
-
     %this.waterShader = LoadShader(
         "assets/shaders/custom/water_" @ WATER_TYPE @ ".vert",
         "assets/shaders/custom/water_" @ WATER_TYPE @ ".frag"
@@ -74,6 +72,7 @@ function WaterPlaneDemo::OnRemove(%this) {
     UnloadShader(%this.waterShader);
     UnloadModel(%this.planeModel);
     UnloadTexture(%this.perlinNoiseMap);
+    %this.camera.delete();
 
 }
 //----------------------------------------------------------------------

@@ -104,7 +104,7 @@ function Main::loop(%this) {
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 function MainInit() {
-
+    $isWebBuild = getOS() $= "Emscripten";
     $Main = new ScriptObject() {
         class = "Main";
         // dynamic fields:
@@ -112,7 +112,8 @@ function MainInit() {
         TypeS32 screenWidth = 1152;
         TypeS32 screenHeight = 648;
         TypeS32 currentFps = 60;
-        TypeS32 flags = FLAG_WINDOW_RESIZABLE;
+        TypeS32 flags = FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT;
+        // TypeS32 flags = $isWebBuild ? 0 :  (FLAG_WINDOW_RESIZABLE);
         TypeS32 moduleIndex = 0;
         TypeS32 module = 0;
     };
