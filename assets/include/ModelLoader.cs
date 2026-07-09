@@ -54,7 +54,7 @@ function LoadModelResources(
     %animation = ModelCache.loadAnimation(%animationFilename);
     echo("\t* loaded Animation:" SPC %animationFilename SPC "id" SPC %animation);
 
-
+    //FIXME GPU animation !!! CPU one is slow ...
     %result = new ModelObject() {
         class = %class;
         Position = %spawnPoint $= "" ? "0 0 0" : %spawnPoint ;

@@ -323,10 +323,16 @@ function TerrainDemo::Render(%this) {
     %sun.update(%dt);
     %waterPlane.update(%dt);
 
+    %lo = %this.levelObjects;
+    %cnt = %lo.getCount();
+    for (%i = 0; %i < %cnt; %i++) {
+        %o = %lo.getObject(%i);
+        if (%o.update) %o.update(%dt);
+    }
+
     %cam.Begin();
         %waterPlane.draw();
         ClientContainerDrawObjects();
-
     %cam.End();
 
 
@@ -426,6 +432,7 @@ function TerrainDemo::onMouseLeftClick(%this)
     %pet.rotation.y = getRandom(360);
     SetModelShader(%pet.modelId, %this.Sun.sunShader, 1);
     %pet.terrainObject = %terrain;
+    %pet.update = true;
     %this.levelObjects.add(%pet);
 
     %this.lastPet = %pet;

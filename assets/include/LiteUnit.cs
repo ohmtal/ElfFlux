@@ -19,7 +19,7 @@ function LiteUnit::onAdd(%this) {
 
     %this.terrainObject = 0;
 
-    %this.tickObject = new ScriptTickObject() { class = "LiteUnitTicker"; callOnAdvanceTime = true; obj = %this;};
+    // %this.tickObject = new ScriptTickObject() { class = "LiteUnitTicker"; callOnAdvanceTime = true; obj = %this;};
 }
 // -----------------------------------------------------------------------------
 function LiteUnit::onRemove(%this) {
