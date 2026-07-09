@@ -26,6 +26,28 @@ function ModelViewer::CleanUp(%this) {
 //----------------------------------------------------------------------
 function ModelViewer::LoadModelResources(%this, %modelFileName, %animationFilename, %textureFilename, %startAnim) {
      %this.curModelObject = LoadModelResources(%modelFileName, %animationFilename, %textureFilename, %startAnim, "0 0 0", 30);
+
+     // TEST EngineFunctions
+     if (%this.curModelObject.AnimationBlockId > 0 ) {
+        %cnt = GetModelAnimationCount(%this.curModelObject.AnimationBlockId);
+        echo("------ Animation Infos ------");
+        echo("Count:" SPC %cnt);
+        for(%i = 0; %i < %cnt; %i++) {
+            %data = GetModelAnimationData(%this.curModelObject.AnimationBlockId, %i);
+            if (%data !$= "") {
+                %name = getField(%data,0);
+                %boneCount = getField(%data,1);
+                %keyframeCount = getField(%data,2);
+                echo(%i @ "# Name:" SPC %name @ ", Bones:" SPC  %boneCount @ ", KEYFRAMES:" SPC %keyframeCount);
+
+            } else {
+                error(%i @ "# Failed to ger Model Animation Data!");
+            }
+        }
+        echo("------ --------------- ------");
+    }
+
+
      // NOTE: moved to include/ModelLoader
     // %this.CleanUp();
     //
