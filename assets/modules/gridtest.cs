@@ -38,22 +38,27 @@ function GridTest::Render(%this) {
 
 
     if (!%this.hideTerrain) {
+
+        // this is rendered also if it does not change
+        // a render to texture would be much faster ;)
+        // same for path below ...
+
         %vert = %this.countX;
         %hor  = %this.countY;
 
         %idx = 0;
         %weight = 0;
+        %grid = %this.grid;
         for (%i = 0; %i < %vert; %i++) {
             // %line = "";
             for (%j=0; %j < %hor; %j++) {
-                %weight = %this.grid.getWeightByNodeId( %idx );
+                %weight = %grid.getWeightByNodeId( %idx );
                 // %this.writeText(65 + 50 * %j,%i*30 + 50,byteToHex(%weight), $align::left ,  %weight SPC "0.5 0.2");
 
                 %x = 65 + 50 * %j;
                 %y = %i*30 + 40;
-                %rect = %x SPC %y SPC 35 SPC 28;
                 %color = %weight  SPC "128 0";
-                DrawRectangleRec(%rect, %color);
+                DrawRectangle(%x,%y,35,28, %color);
                 DrawText(%weight, %x + 2 , %y + 2, 10, BLACK, false);
                 %idx++;
             }

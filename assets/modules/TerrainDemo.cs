@@ -216,6 +216,7 @@ function TerrainDemo::onAdd(%this) {
     %yVal = %terSize / 256 * 16;
 
     %this.terrain = new TerrainObject(TERRAIN) {
+        // HeightMapFilename = "assets/terrain/text.png";
         HeightMapFilename = "assets/terrain/ohmtal_HM.png";
         // HeightMapFilename = "assets/terrain/ohmtal_HM_1024.png";
         // HeightMapFilename = "assets/terrain/Tenerife_HM_1024.png";
