@@ -123,9 +123,23 @@ RayCollision SceneObject::castRay(Ray ray) {
 }
 
 //-----------------------------------------------------------------------------
-
-
-
+DefineEngineMethod(SceneObject, setPosition,void, (F32 x, F32 y, F32 z), , "Set the position and refresh the worldbox") {
+    object->mPosition.x = x;
+    object->mPosition.y = y;
+    object->mPosition.z = z;
+    object->refreshWorldBox();
+}
+DefineEngineMethod(SceneObject, setRotation,void, (F32 x, F32 y, F32 z), , "Set the rotation in degrees") {
+    object->mRotation.x = x;
+    object->mRotation.y = y;
+    object->mRotation.z = z;
+}
+DefineEngineMethod(SceneObject, setScale,void, (F32 x, F32 y, F32 z), , "Set the scale") {
+    object->mScale.x = x;
+    object->mScale.y = y;
+    object->mScale.z = z;
+}
+//-----------------------------------------------------------------------------
 DefineEngineMethod(SceneObject, refresh, void, (), , "refresh the worldbox, needs to be called when position / scale is changed") {
     object->refreshWorldBox();
 }

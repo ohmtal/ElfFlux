@@ -148,7 +148,7 @@ ModelAnimation* ModelObject::getCurrentAnimation() {
 }
 //-----------------------------------------------------------------------------
 void ModelObject::draw() {
-    if (mModelId <= 0) {
+    if (!mVisible || mModelId <= 0) {
         Parent::draw();
         return;
     }

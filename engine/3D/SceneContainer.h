@@ -6,6 +6,10 @@
 //-----------------------------------------------------------------------------
 #pragma once
 
+#ifndef RESERVED_SCENE_OBJECTS
+#define RESERVED_SCENE_OBJECTS 250
+#endif
+
 #include "console/engineAPI.h"
 #include "console/simSet.h"
 #include "core/util/tVector.h"
@@ -21,6 +25,9 @@ private:
     Vector<SceneObject*> mObjects;
 
 public:
+    SceneContainer() {
+        mObjects.reserve(RESERVED_SCENE_OBJECTS);
+    }
     void registerObject(SceneObject* obj);
     void unregisterObject(SceneObject* obj);
     SceneObject* castRay(Ray ray, RayCollision& outCollision);
@@ -31,7 +38,7 @@ public:
 
     const Vector<SceneObject*> getObjects() { return  mObjects; }
 
-    void drawObjects(); //for future use to implement shadows
+    void drawObjects(); //for future use to implement shadows and reflection
 };
 
 // global Container

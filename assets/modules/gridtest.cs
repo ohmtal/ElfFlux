@@ -22,7 +22,7 @@ function GridTest::OnRemove(%this) {
 }
 //----------------------------------------------------------------------
 function GridTest::Render(%this) {
-    ClearBackground("10 10 10");
+    ClearBackground("10 10 100");
 
     if (%this.crazy) %this.newTerrain();
 

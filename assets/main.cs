@@ -1,5 +1,5 @@
 // Main Script
-$MODULES = "TerrainDemo ModelViewer WaterPlaneDemo gridtest";
+$MODULES = "TerrainDemo ModelViewer WaterPlaneDemo gridtest Primitives2D BatchTest";
 // $MODULES = $MODULES SPC "lights_script models_first_person_maze textures_sprite_animation";
 // $MODULES = $MODULES SPC "textures_background_scrolling Eyes";
 // $MODULES = $MODULES SPC "textures_mouse_painting";
@@ -44,6 +44,9 @@ function Main::loadModule(%this, %setNewModuleIndex) {
     if (%this.moduleIndex < 0 ) %this.moduleIndex = %cnt - 1;
 
     %this.moduleName = getword($MODULES, %this.moduleIndex);
+    echo("---------------------------------------------------------------------");
+    echo(" Load Module:" SPC %this.moduleName);
+    echo("---------------------------------------------------------------------");
 
     if (!exec("assets/modules/" @ %this.moduleName @ ".cs")) {
         error("Failed to load module" SPC %this.moduleName);
@@ -53,12 +56,13 @@ function Main::loadModule(%this, %setNewModuleIndex) {
     if (isObject(%this.module)) {
         %this.module.delete();
     }
+    // --- old Module unloaded go ahead
     SetTargetFPS(%this.currentFps); //reset fps
     %cmd = %this.getId() @ ".module = Create" @ %this.moduleName @ "();";
     echo("loadModule command is:" SPC %cmd);
     eval(%cmd);
     %created = isObject(%this.module);
-    echo("loadModule success:" SPC %created);
+    echo("loadModule success:" SPC %created SPC "id:" SPC %this.module.getId());
     if (!%created || !%this.module.isMethod("render")) {
         error("Module failed!! obj:" SPC %this.module SPC "method render exists:" SPC %this.module.isMethod("render"));
         if (%created) %this.module.delete();
@@ -85,10 +89,9 @@ function Main::loop(%this) {
 
     BeginDrawing();
 
-    // DrawFPS(10, 10); //2500 fps without the module stuff below. Also > 2.4k  with
-
     if (isObject(%this.module)){
         %this.module.render();
+        // echo("HUHU" SPC %this.moduleName);
         DrawText("Loaded module:" SPC %this.moduleName , 5, GetScreenHeight() - 30, 20, BLUE, true, BLACK);
     } else {
         ClearBackground("20 100 100");
@@ -118,6 +121,7 @@ function MainInit() {
         TypeS32 module = 0;
     };
 
+    // if ($isWebBuild) $Main.flags = FLAG_WINDOW_HIGHDPI;
 
     $Main.init();
 

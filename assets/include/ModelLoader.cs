@@ -43,7 +43,9 @@ function LoadModelResources(
         , %fps //default 30
         , %class //default  ""
     ) {
-    if (!isObject(ModelCache)) new ScriptObject(ModelCache);
+    if (!isObject(ModelCache)) {
+        new ScriptObject(ModelCache);
+    }
 
     %model = ModelCache.loadModel(%modelFileName);
     echo("\t* loaded Model:" SPC %modelFileName SPC "id" SPC %model);

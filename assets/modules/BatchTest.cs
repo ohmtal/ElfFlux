@@ -1,7 +1,10 @@
+// - started using pointers to global vars .. this should speed up even more
+// - but depenting on update intervall it's running in GPU limit
+// - MAYBE: also custom draw can speed up even more
 
-#define _BATCH_COUNT_ 50000
-#define _RECT_SIZE_ 20
-#define _UPDATE_INTERVAL_ 3
+#define _BATCH_COUNT_ 5000
+#define _RECT_SIZE_ 50
+#define _UPDATE_INTERVAL_ 2
 
 function createBatchTest() {
     %obj = new ScriptObject() {

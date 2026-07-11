@@ -3,6 +3,9 @@
 // SPDX-License-Identifier: MIT
 //-----------------------------------------------------------------------------
 // Inspired by TGE's SceneObject / Container System
+// NOTE: I use a flat list of Objects (mObjects) at the moment. For many many
+//       objects it should be implemented as a Spatial Grid. But the you have
+//       the moving to other cells overhead.
 //-----------------------------------------------------------------------------
 #include "SceneContainer.h"
 #include "SceneObject.h"

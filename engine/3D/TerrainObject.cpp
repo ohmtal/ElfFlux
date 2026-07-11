@@ -82,7 +82,7 @@ void TerrainObject::genHeightGrid(Image* image, Color* heightPixels ){
     mGridWidth = image->width;
     mGridHeight = image->height;
     mHeightGrid.setSize(mGridWidth * mGridHeight);
-    for (int i = 0; i < mGridWidth * mGridHeight; i++) {
+    for (S32 i = 0; i < mGridWidth * mGridHeight; i++) {
         mHeightGrid[i] = (float)heightPixels[i].r / 255.0f;
     }
 }
@@ -106,11 +106,11 @@ F32 TerrainObject::getHeight(Vector3 worldPos) {
         return mPosition.y;
     }
 
-    // get corner points
-    int x0 = (int)gridX;
-    int z0 = (int)gridZ;
-    int x1 = x0 + 1;
-    int z1 = z0 + 1;
+    // get corner poS32s
+    S32 x0 = (S32)gridX;
+    S32 z0 = (S32)gridZ;
+    S32 x1 = x0 + 1;
+    S32 z1 = z0 + 1;
 
      // normalized local position inside the quad
     F32 dx = gridX - x0;
@@ -122,19 +122,19 @@ F32 TerrainObject::getHeight(Vector3 worldPos) {
     F32 h01 = mHeightGrid[z1 * mGridWidth + x0]; // bottom left
     F32 h11 = mHeightGrid[z1 * mGridWidth + x1]; // bottom right
 
-    F32 interpolatedHeightFactor = 0.0f;
+    F32 S32erpolatedHeightFactor = 0.0f;
 
     // linear Interpolation
     if (dx + dz <= 1.0f) {
         // top left  triangle
-        interpolatedHeightFactor = h00 + dx * (h10 - h00) + dz * (h01 - h00);
+        S32erpolatedHeightFactor = h00 + dx * (h10 - h00) + dz * (h01 - h00);
     } else {
         // bottom right triangle
-        interpolatedHeightFactor = h11 + (1.0f - dx) * (h01 - h11) + (1.0f - dz) * (h10 - h11);
+        S32erpolatedHeightFactor = h11 + (1.0f - dx) * (h01 - h11) + (1.0f - dz) * (h10 - h11);
     }
 
     // multiply with terrain height
-    return mPosition.y + (interpolatedHeightFactor * mSize.y);
+    return mPosition.y + (S32erpolatedHeightFactor * mSize.y);
 }
 
 // -----------------------------------------------------------------------------
@@ -170,15 +170,16 @@ bool TerrainObject::loadAutoTexture() {
         return false;
     }
 
-    Image diffuseImage = ::GenImageColor(image.width, image.height, BLANK);
+    S32 scale = 1;
+    Image diffuseImage = ::GenImageColor(image.width * scale, image.height * scale, BLANK);
 
     Color* heightPixels = ::LoadImageColors(image);
     Color* diffusePixels = ::LoadImageColors(diffuseImage);
 
-    int pixelCount = image.width * image.height;
+    S32 pixelCount = image.width * scale * image.height * scale;
 
-
-    for (int i = 0; i < pixelCount; i++) {
+//FIXME scale
+    for (S32 i = 0; i < pixelCount; i++) {
         U8 height = heightPixels[i].r; // 0 bis 255
 
         // Noise-Effekt
@@ -208,7 +209,7 @@ bool TerrainObject::loadAutoTexture() {
         }
         // Zone 3: Meadow / Grass
         else if (height < 135) {
-            int grassNoise = (rand() % 25) - 12;
+            S32 grassNoise = (rand() % 25) - 12;
             baseColor.r = (U8)mClamp(70 + grassNoise, 0, 255);
             baseColor.g = (U8)mClamp(140 + grassNoise / 2, 0, 255);
             baseColor.b = (U8)mClamp(60 + grassNoise, 0, 255);
@@ -235,7 +236,7 @@ bool TerrainObject::loadAutoTexture() {
         }
         // Zone 6: Snow Peaks
         else {
-            int snowNoise = (rand() % 10) - 5;
+            S32 snowNoise = (rand() % 10) - 5;
             baseColor.r = (U8)mClamp(245 + snowNoise, 0, 255);
             baseColor.g = (U8)mClamp(245 + snowNoise, 0, 255);
             baseColor.b = (U8)mClamp(250 + snowNoise, 0, 255);
@@ -338,16 +339,16 @@ Vector3 TerrainObject::getNormal(Vector3 worldPos) {
         return defaultNormal;
     }
 
-    int x0 = (int)gridX;
-    int z0 = (int)gridZ;
-    int x1 = x0 + 1;
-    int z1 = z0 + 1;
+    S32 x0 = (S32)gridX;
+    S32 z0 = (S32)gridZ;
+    S32 x1 = x0 + 1;
+    S32 z1 = z0 + 1;
 
     F32 dx = gridX - x0;
     F32 dz = gridZ - z0;
 
-    // Calculate the real 3D points of the vertices on the terrain To do this,
-    // we calculate the grid indices back into world coordinates
+    // Calculate the real 3D poS32s of the vertices on the terrain To do this,
+    // we calculate the grid indices back S32o world coordinates
     F32 worldX0 = mPosition.x - (mSize.x / 2.0f) + ((float)x0 / (mGridWidth - 1)) * mSize.x;
     F32 worldX1 = mPosition.x - (mSize.x / 2.0f) + ((float)x1 / (mGridWidth - 1)) * mSize.x;
     F32 worldZ0 = mPosition.z - (mSize.z / 2.0f) + ((float)z0 / (mGridHeight - 1)) * mSize.z;

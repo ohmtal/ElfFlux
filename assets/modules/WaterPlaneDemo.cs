@@ -73,7 +73,7 @@ function WaterPlaneDemo::OnRemove(%this) {
     UnloadModel(%this.planeModel);
     UnloadTexture(%this.perlinNoiseMap);
     %this.camera.delete();
-
+    echo("~~~~~~~~~~ WaterPlaneDemo cleanup done. ~~~~~~~~~~~~~~~~");
 }
 //----------------------------------------------------------------------
 function WaterPlaneDemo::Render(%this) {
@@ -83,7 +83,7 @@ function WaterPlaneDemo::Render(%this) {
     %dt = GetFrameTime();
     %cam.update(%dt);
 
-    //TODO change this when in terrain!
+
     SetShaderValue(%this.waterShader, %this.sunDirLoc, "0.5 1.0 0.3", SHADER_UNIFORM_VEC3);
     SetShaderValue(%this.waterShader, %this.sunColorLoc, "0.5 0.5 0.75 1.0", SHADER_UNIFORM_VEC4);
     SetShaderValue(%this.waterShader, %this.viewPosLoc, %cam.position, SHADER_UNIFORM_VEC3);

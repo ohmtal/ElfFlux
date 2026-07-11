@@ -17,6 +17,12 @@ set(PROJECT_SRC
     engine/3D/SceneObject.h
     engine/3D/TerrainObject.cpp
 
+    engine/2D/SceneContainer2D.h
+    engine/2D/SceneContainer2D.cpp
+    engine/2D/SceneObject2D.h
+    engine/2D/SceneObject2D.cpp
+    engine/2D/PrimitiveObject2D.cpp
+
     engine/grid/basicgrid.cpp
     engine/grid/basicgrid.h
     engine/grid/Grid.cpp
@@ -27,6 +33,7 @@ set(PROJECT_SRC
     engine/gui/Gui.cpp
     engine/gui/Gui.h
 
+    # -- test stuff can be removed later ....
     engine/test/BatchRender.cpp
     engine/test/starfield.cpp
 
