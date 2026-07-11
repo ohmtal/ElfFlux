@@ -2,7 +2,10 @@
 // Copyright (c) 2026 Thomas Hühn (XXTH)
 // SPDX-License-Identifier: MIT
 //-----------------------------------------------------------------------------
-// Inspired by TGE's SceneObject2D / Container System
+// SceneObject2D / Container System
+//
+// Together with SceneObject2D it handle layers and can be used for drawing
+//
 //-----------------------------------------------------------------------------
 //TEST SCRIPT:
 /*

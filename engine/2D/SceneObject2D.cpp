@@ -2,8 +2,6 @@
 // Copyright (c) 2026 Thomas Hühn (XXTH)
 // SPDX-License-Identifier: MIT
 //-----------------------------------------------------------------------------
-//NOTE: recursive drawing NOT implemented like in 3D version
-//-----------------------------------------------------------------------------
 #include "SceneObject2D.h"
 #include "SceneContainer2D.h"
 

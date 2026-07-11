@@ -75,7 +75,7 @@ function LoadModelResources(
         %result.MaterialCount = GetModelMaterialCount(%model, MATERIAL_MAP_ALBEDO);
         // set all ... to be sure .. WARNING works only when model have only on texture!
         for (%i = 0; %i < %result.MaterialCount ; %i++) {
-            ResetModelMaterial(%model,%i);
+            ResetModelMaterial(%model,%i); // NOTE: IMPORTANT
             SetModelMapTexture(%model,%texture, %i, MATERIAL_MAP_ALBEDO);
         }
 

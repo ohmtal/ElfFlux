@@ -58,8 +58,6 @@ public:
 
     static void initPersistFields();
 
-    // void addObject( SimObject* object ) override;
-
 
 private:
     static bool _setFieldPosition( void *object, const char *index, const char *data );
