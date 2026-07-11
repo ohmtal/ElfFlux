@@ -56,16 +56,7 @@ void SceneObject2D::initPersistFields() {
     addField("Visible", TypeBool, Offset(mVisible, SceneObject2D), "Is the object drawn");
     Parent::initPersistFields();
 }
-//-----------------------------------------------------------------------------
-// void SceneObject2D::addObject( SimObject* object ) {
-//     // object is added as child remove it from container!!
-//
-//     //FIXME recursive drawing
-//     // SceneObject2D* sceneobj = dynamic_cast<SceneObject2D*>(object);
-//     // if (sceneobj) gClientSceneContainer2D.unregisterObject(sceneobj);
-//
-//     Parent::addObject(object);
-// }
+
 //-----------------------------------------------------------------------------
 
 bool SceneObject2D::onAdd() {

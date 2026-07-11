@@ -22,6 +22,7 @@ set(PROJECT_SRC
     engine/2D/SceneObject2D.h
     engine/2D/SceneObject2D.cpp
     engine/2D/PrimitiveObject2D.cpp
+    engine/2D/SpriteObject.cpp
 
     engine/grid/basicgrid.cpp
     engine/grid/basicgrid.h

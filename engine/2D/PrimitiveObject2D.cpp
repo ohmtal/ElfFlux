@@ -6,7 +6,7 @@
 
 #include "raylib.h"
 #include <rlgl.h>
-// #include "math/mMathFn.h"
+
 
 namespace ElfObjects {
 
@@ -31,14 +31,14 @@ public:
     F32 mThick = 1.f; //used by different types
     StringTableEntry mCaption = StringTable->EmptyString(); //used for text
 
-    virtual void draw() override;
+    virtual void draw(const F32& dt) override;
     static void initPersistFields();
 
 };
 //-----------------------------------------------------------------------------
 IMPLEMENT_CONOBJECT(PrimitiveObject2D);
 //-----------------------------------------------------------------------------
-void PrimitiveObject2D::draw() {
+void PrimitiveObject2D::draw(const F32& dt) {
 
     if (!mVisible) return;
 
@@ -161,7 +161,7 @@ void PrimitiveObject2D::draw() {
             break;
         }
     }
-    Parent::draw();
+    Parent::draw(dt);
 }
 //-----------------------------------------------------------------------------
 void PrimitiveObject2D::initPersistFields() {

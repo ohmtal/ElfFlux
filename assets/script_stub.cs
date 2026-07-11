@@ -953,6 +953,66 @@ class  ModelObject : public SceneObject {
    /*! */
    /// @}
 };
+class  SpriteObject : public SceneObject2D {
+  public:
+   /*! set the forward vector by rot in degree */
+   void setForwardVectorByAngle( float rot ) {}
+   /*! update the rotation (degree) and set the forward vector */
+   void setRotationAndForwardVector( float rot ) {}
+   /*! usefull for bouncing on borders */
+   void doBounce( float x, float y, float width, float height ) {}
+   /*!
+   ID of the Texture
+   
+    */
+   int TextureId;
+   /*!
+   rotation in degree
+   
+    */
+   float rotation;
+   /*!
+   point where the rotation orign is
+   
+    */
+   float RotationOrgin;
+   /*!
+   motion speed
+   
+    */
+   float speed;
+   /*!
+   motion vector will be normaized, see also setForwardVectorByAngle and setRotationAndForwardVector
+   
+    */
+   Vector2 ForwardVector;
+   /*!
+   flip on xaxis
+   
+    */
+   bool FlipX;
+   /*!
+   flip on yaxis
+   
+    */
+   bool FlipY;
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
+};
 class  Grid : public SimObject {
   public:
    /*! param: area: x y w h, F32 SquareSize */

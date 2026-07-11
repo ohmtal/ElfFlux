@@ -7,6 +7,9 @@
 // Together with SceneObject2D it handle layers and can be used for drawing
 //
 //-----------------------------------------------------------------------------
+// FIXME:
+//      - culling
+//-----------------------------------------------------------------------------
 //TEST SCRIPT:
 /*
 $foo = new SceneObject2D() { position = "10 10 0";};

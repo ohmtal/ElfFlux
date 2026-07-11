@@ -186,7 +186,7 @@ function Primitives2D::Render(%this) {
             %obj.setPosition ( -_RECT_SIZE_, GetRandomValue(0, $batchH),%savZ);
         }
     }
-
+    // -------
     ClientContainer2DDrawObjects();
 
 

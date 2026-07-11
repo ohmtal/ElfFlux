@@ -183,9 +183,17 @@ function ModelViewer::Render(%this) {
     %gui.Write("Model:" SPC %this.modelName, 20, BLACK);
     %gui.Separator(80);
     %gui.Write(strFormat("~ %02d ~",%this.curId), 20, BLACK);
-    if (%gui.Button(30, "<")) %this.load(%this.curId -1);
+    if (%gui.Button(30, "<"))  {
+        %this.load(%this.curId -1);
+        %obj = %this.curModelObject;
+        %objIsObject = isObject(%obj);
+    }
     %gui.SameLine();
-    if (%gui.Button(30, ">")) %this.load(%this.curId +1);
+    if (%gui.Button(30, ">")) {
+        %this.load(%this.curId +1);
+        %obj = %this.curModelObject;
+        %objIsObject = isObject(%obj);
+    }
     %gui.Separator(80);
     if (%objIsObject) {
         %count = %obj.getAnimationCount();

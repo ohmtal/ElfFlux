@@ -51,7 +51,7 @@ public:
     virtual void refreshWorldBox();
     // Matrix getWorldTransform() const;
 
-    virtual void draw() {}
+    virtual void draw(const F32& dt) {}
 
     virtual bool castRay(Vector2 pos, F32 minLayer = 0.f, F32 maxLayer = 1.f);
     virtual bool rectCollide(Rectangle rect, F32 minLayer = 0.f, F32 maxLayer = 1.f);

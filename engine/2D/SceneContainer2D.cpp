@@ -138,9 +138,10 @@ SimSet* SceneContainer2D::getBoxObjects(BoundingBox searchBox) {
 }
 // -----------------------------------------------------------------------------
 void SceneContainer2D::drawObjects() {
+    F32 dt = GetFrameTime();
     if (mLocked) return;
     for (U32 i = 0; i < mObjects.size(); i++) {
-        if (mObjects[i]->mVisible) mObjects[i]->draw();
+        if (mObjects[i]->mVisible) mObjects[i]->draw(dt);
     }
 }
 // -----------------------------------------------------------------------------
