@@ -38,6 +38,7 @@ class SceneObject2D;
 class SceneContainer2D {
 private:
     Vector<SceneObject2D*> mObjects;
+    bool mLocked = false;
 
 public:
     SceneContainer2D() {
@@ -64,6 +65,8 @@ public:
     void reserveMore(S32 count) {
         mObjects.reserve(count);
     }
+
+    void deleteAllObjects() ;
 
 private:
     static S32 QSORT_CALLBACK compare_ObjectLayer( const void* a, const void* b );

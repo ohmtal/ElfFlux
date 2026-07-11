@@ -3,8 +3,10 @@
 // BatchRender loop the raw vector and Container have to call
 // the objects draw function
 // .... i guess this is the overhead which slowdown
-#define _BATCH_COUNT_ 1000
-#define _RECT_SIZE_ 10
+// works also with values like 50000 but then delete/cleanup takes
+// very long ^^ << disabled garbagecollection make it fast again!
+#define _BATCH_COUNT_ 5000
+#define _RECT_SIZE_ 50
 
 function createPrimitives2D() {
     %obj = new ScriptObject() {
@@ -117,33 +119,41 @@ function Primitives2D::onAdd(%this) {
 //----------------------------------------------------------------------
 function Primitives2D::fillBatch(%this) {
     if (!isObject(%this.batchList)) return;
-    %r = GetRandomValue(0, 255);  //r
-    %g = GetRandomValue(0, 255);  //g
-    %b = GetRandomValue(0, 255);  //b
-    %a = GetRandomValue(64, 200); //a
+    %left = _BATCH_COUNT_ - %this.batchList.getcount();
+    %cnt = getMin(100, %left);
 
-    %x = GetRandomValue(0, $batchW);
-    %y = GetRandomValue(0, $batchH);
-    %z = GetRandomValue(0, 90) / 100 + 0.1; //0.1 .. 1.0
+    for (%i = 0; %i < %cnt; %i++) {
+        %r = GetRandomValue(0, 255);  //r
+        %g = GetRandomValue(0, 255);  //g
+        %b = GetRandomValue(0, 255);  //b
+        %a = GetRandomValue(64, 200); //a
 
-    %w = GetRandomValue( 3, _RECT_SIZE_); //w
-    %h = GetRandomValue( 3, _RECT_SIZE_); //h
-    %thick = GetRandomValue(1,3);
+        %x = GetRandomValue(0, $batchW);
+        %y = GetRandomValue(0, $batchH);
+        %z = GetRandomValue(0, 90) / 100 + 0.1; //0.1 .. 1.0
 
-    %type = GetRandomValue(0,3);
+        %w = GetRandomValue( 3, _RECT_SIZE_); //w
+        %h = GetRandomValue( 3, _RECT_SIZE_); //h
+        %thick = GetRandomValue(1,3);
 
-    %obj =  new PrimitiveObject2D() {
-        type =  5; //%type;
-        filled = GetRandomValue(0,1);
-        position = %x SPC %y SPC %z;
-        size = %w SPC %h;
-        color = %r SPC %g SPC %b SPC %a;
-        thick = %thick;
-    };
-    %this.batchList.add( %obj );
+        %type = GetRandomValue(0,3);
 
-    if ( %this.batchList.getcount() < _BATCH_COUNT_) {
-        %this.schedule(0, "fillBatch");
+        %obj =  new PrimitiveObject2D() {
+            type =  5; //%type;
+            filled = GetRandomValue(0,1);
+            position = %x SPC %y SPC %z;
+            size = %w SPC %h;
+            color = %r SPC %g SPC %b SPC %a;
+            thick = %thick;
+        };
+        %this.batchList.add( %obj );
+    }
+
+
+
+    if ( %left > 0) {
+        %this.schedule(1, "fillBatch");
+
         // %this.fillBatch(); //cause crash!
     } else {
         ClientContainer2DSetSort(true);
@@ -151,10 +161,13 @@ function Primitives2D::fillBatch(%this) {
 }
 //----------------------------------------------------------------------
 function Primitives2D::OnRemove(%this) {
-    %this.cleanup.deleteObjects();
+
+    // first remove sets
     %this.cleanup.delete();
-    %this.batchList.deleteObjects();
     %this.batchList.delete();
+    // then fast delete
+    ClientContainer2DDeleteAllObjects();
+
 }
 //----------------------------------------------------------------------
 function Primitives2D::Render(%this) {

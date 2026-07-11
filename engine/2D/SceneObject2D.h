@@ -27,8 +27,8 @@ struct RectPoints {
 };
 
 
-class SceneObject2D : public SimSet {
-    typedef SimSet Parent;
+class SceneObject2D : public /*SimSet*/ SimObject {
+    typedef SimObject Parent;
 public:
     DECLARE_CONOBJECT(SceneObject2D);
 
@@ -58,7 +58,7 @@ public:
 
     static void initPersistFields();
 
-    void addObject( SimObject* object ) override;
+    // void addObject( SimObject* object ) override;
 
 
 private:

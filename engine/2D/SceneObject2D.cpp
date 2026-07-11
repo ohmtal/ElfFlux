@@ -59,15 +59,15 @@ void SceneObject2D::initPersistFields() {
     Parent::initPersistFields();
 }
 //-----------------------------------------------------------------------------
-void SceneObject2D::addObject( SimObject* object ) {
-    // object is added as child remove it from container!!
-
-    //FIXME recursive drawing
-    // SceneObject2D* sceneobj = dynamic_cast<SceneObject2D*>(object);
-    // if (sceneobj) gClientSceneContainer2D.unregisterObject(sceneobj);
-
-    Parent::addObject(object);
-}
+// void SceneObject2D::addObject( SimObject* object ) {
+//     // object is added as child remove it from container!!
+//
+//     //FIXME recursive drawing
+//     // SceneObject2D* sceneobj = dynamic_cast<SceneObject2D*>(object);
+//     // if (sceneobj) gClientSceneContainer2D.unregisterObject(sceneobj);
+//
+//     Parent::addObject(object);
+// }
 //-----------------------------------------------------------------------------
 
 bool SceneObject2D::onAdd() {

@@ -30,17 +30,20 @@ S32 QSORT_CALLBACK SceneContainer2D::compare_ObjectLayer( const void* a, const v
 // called on SceneObject2D::setPosition and SceneContainer2D::registerObject
 void SceneContainer2D::sortObjects()
 {
+    if (mLocked) return;
     if (!mDoSortObects) return;
     dQsort( mObjects.address(), mObjects.size(), sizeof(SceneObject2D *), SceneContainer2D::compare_ObjectLayer );
 }
 // -----------------------------------------------------------------------------
 void SceneContainer2D::registerObject(SceneObject2D* obj) {
+    if (mLocked) return;
     mObjects.push_back(obj);
     sortObjects();
 }
 
 // -----------------------------------------------------------------------------
 void SceneContainer2D::unregisterObject(SceneObject2D* obj) {
+    if (mLocked) return;
     for (U32 i = 0; i < mObjects.size(); i++) {
         if (mObjects[i] == obj) {
             mObjects.erase_fast(i);
@@ -48,7 +51,17 @@ void SceneContainer2D::unregisterObject(SceneObject2D* obj) {
         }
     }
 }
+// -----------------------------------------------------------------------------
+void SceneContainer2D::deleteAllObjects() {
+    if (mLocked) return;
+    mLocked = true;
+    for (S32 i = 0; i < mObjects.size(); i++){
+        mObjects[i]->deleteObject();
+    }
 
+    mObjects.clear();
+    mLocked = false;
+}
 // -----------------------------------------------------------------------------
 SceneObject2D* SceneContainer2D::castRay(Vector2 pos,  F32 minLayer, F32 maxLayer) {
     // objects are sorted from highest layer to lowest so we
@@ -125,6 +138,7 @@ SimSet* SceneContainer2D::getBoxObjects(BoundingBox searchBox) {
 }
 // -----------------------------------------------------------------------------
 void SceneContainer2D::drawObjects() {
+    if (mLocked) return;
     for (U32 i = 0; i < mObjects.size(); i++) {
         if (mObjects[i]->mVisible) mObjects[i]->draw();
     }
@@ -193,6 +207,13 @@ DefineEngineFunction( ClientContainer2DSetSort, void, (bool doSort), ,
         gClientSceneContainer2D.mDoSortObects = false;
     }
 }
+
+DefineEngineFunction( ClientContainer2DDeleteAllObjects, void, (), ,
+                      "delete all objects and clean the list"
+) {
+    gClientSceneContainer2D.deleteAllObjects();
+}
+
 // -----------------------------------------------------------------------------
 DefineEngineFunction( ClientContainer2DListObjects, void, (), ,
                       "For Debug ... use ContainerGetBoxObjects with a big box to get all objects in as a SimSet ")
