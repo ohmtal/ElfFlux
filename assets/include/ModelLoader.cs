@@ -1,5 +1,7 @@
 // Modelloader
-
+// NOTE: if a shader is set on the Model the drawing fails in a other module
+// this happen in TerrainDemo => ModelViewer
+// solution added => ResetModelMaterial
 function ModelCache::loadModel(%this, %filename) {
     if (%filename $= "") return 0;
     %hash = getStringHash("MODEL_" @ %filename);
@@ -25,7 +27,7 @@ function ModelCache::loadTexture(%this, %filename) {
 
 function ModelCache::loadAnimation(%this, %filename) {
     if (%filename $= "") return 0;
-    %hash = getStringHash("TEXTURE_" @ %filename);
+    %hash = getStringHash("ANIMATION_" @ %filename);
     %result = %this.getFieldValue(%hash);
     if (%result > 0) return %result;
 
@@ -73,6 +75,7 @@ function LoadModelResources(
         %result.MaterialCount = GetModelMaterialCount(%model, MATERIAL_MAP_ALBEDO);
         // set all ... to be sure .. WARNING works only when model have only on texture!
         for (%i = 0; %i < %result.MaterialCount ; %i++) {
+            ResetModelMaterial(%model,%i);
             SetModelMapTexture(%model,%texture, %i, MATERIAL_MAP_ALBEDO);
         }
 

@@ -15,7 +15,7 @@ function ModelViewer::CleanUp(%this) {
 
     // NOTE include/ModelLoader take care or non double loading
     //      and when game ends models are unloaded.
-    if (isObject(%this.curModel)) %this.curModelObject.delete();
+    if (isObject(%this.curModelObject)) %this.curModelObject.delete();
     // UnLoadModel(%this.model);
     %this.model = 0;
     // UnloadTexture(%this.texture);
@@ -25,8 +25,10 @@ function ModelViewer::CleanUp(%this) {
 }
 //----------------------------------------------------------------------
 function ModelViewer::LoadModelResources(%this, %modelFileName, %animationFilename, %textureFilename, %startAnim) {
-     %this.curModelObject = LoadModelResources(%modelFileName, %animationFilename, %textureFilename, %startAnim, "0 0 0", 30);
+     %this.CleanUp();
+     %this.curModelObject = LoadModelResources(%modelFileName, %animationFilename, %textureFilename, %startAnim, "0 0 0", 30, "ViewerModel");
 
+     $m = %this.curModelObject;
      // TEST EngineFunctions
      if (%this.curModelObject.AnimationBlockId > 0 ) {
         %cnt = GetModelAnimationCount(%this.curModelObject.AnimationBlockId);

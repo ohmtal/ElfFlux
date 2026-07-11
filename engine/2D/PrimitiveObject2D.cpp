@@ -2,8 +2,6 @@
 // Copyright (c) 2026 Thomas Hühn (XXTH)
 // SPDX-License-Identifier: MIT
 //-----------------------------------------------------------------------------
-//NOTE: about 10% slower than raw BatchRender!
-//-----------------------------------------------------------------------------
 #include "SceneObject2D.h"
 
 #include "raylib.h"

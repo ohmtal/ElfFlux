@@ -7,6 +7,9 @@
 //       objects it should be implemented as a Spatial Grid. But the you have
 //       the moving to other cells overhead.
 //-----------------------------------------------------------------------------
+// FIXME:
+//  - add deleteAllObjects (like 2D)
+//-----------------------------------------------------------------------------
 #include "SceneContainer.h"
 #include "SceneObject.h"
 

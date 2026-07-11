@@ -483,6 +483,12 @@ class  SimSet : public SimObject {
 };
 class  SceneObject : public SimSet {
   public:
+   /*! Set the position and refresh the worldbox */
+   void setPosition( float x, float y, float z ) {}
+   /*! Set the rotation in degrees */
+   void setRotation( float x, float y, float z ) {}
+   /*! Set the scale */
+   void setScale( float x, float y, float z ) {}
    /*! refresh the worldbox, needs to be called when position / scale is changed */
    void refresh() {}
    /*!
@@ -712,78 +718,16 @@ class  TerrainDemo : public ScriptObject {
    Script loadKenneyModel( string this, string spawnPoint )...) {}
    Script loadGreenManModel( string this, string spawnPoint )...) {}
 };
-class  LiteUnitTicker {
-  public:
-   Script onAdvanceTime( string this, string dt )...) {}
-};
-class  ModelObject : public SceneObject {
-  public:
-   /*! Draws this object instance and all its children polymorphically. */
-   void draw() {}
-   /*! Get the count of the current animations */
-   S32 getAnimationCount() {}
-   /*! Get the name of the current animations */
-   String getAnimationName() {}
-   /*! Get the id of a named animations. return -1 if not found. */
-   S32 getAnimationIndexByName( String name ) {}
-   /*! Play a animation once. The current animation will be restored after finished.Force also start the animation if a runOnce is already running. */
-   bool playOnce( int animationIndex, int animationFPS=25, bool force=false ) {}
-   /*!
-   The script ID of the raylib model.
-   
-    */
-   int ModelId;
-   /*!
-   If this is a child it can be mounted to a Bone index. See also GetModelBoneIndexByName
-   
-    */
-   int MountBoneIndex;
-   /*! @name Animation
-   @{ */
-   /*! */
-   /*!
-   Id of the AnimationBlock
-   
-    */
-   int AnimationBlockId;
-   /*!
-   Index of the animation to play. See also GetModelAnimationCount.
-   
-    */
-   int AnimationIndex;
-   /*!
-   Frames per secound when an animation is played
-   
-    */
-   int AnimationFPS;
-   /// @}
-   /*! @name Ungrouped
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Object
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Editing
-   @{ */
-   /*! */
-   /// @}
-   /*! @name Persistence
-   @{ */
-   /*! */
-   /// @}
-};
-class  LiteUnit : public ModelObject {
+class  LiteUnit {
   public:
    Script lookAt( string this, string position )...) {}
    Script update( string this, string dt )...) {}
    Script walkTo( string this, string dest, string hurry )...) {}
    Script onDestinationReached( string this )...) {}
-   Script onRemove( string this )...) {}
+   Script onRemove()...) {}
    Script onAdd( string this )...) {}
 };
-class  ModelCache : public ScriptObject {
+class  ModelCache {
   public:
    Script loadAnimation( string this, string filename )...) {}
    Script LoadTexture( string this, string filename )...) {}
@@ -807,13 +751,6 @@ class  Main : public ScriptObject {
    Script loop( string this )...) {}
    Script loadModule( string this, string setNewModuleIndex )...) {}
    Script init( string this )...) {}
-};
-/// Stub class
-/// 
-/// @note This is a stub class to ensure a proper class hierarchy. No 
-///       information was available for this class.
-class  GarbageCollectionSet : public SimSet {
-  public:
 };
 /*!
 @brief A collection of SimObjects that are owned by the group.
@@ -873,6 +810,148 @@ class  SimGroup : public SimSet {
 ///       information was available for this class.
 class  RootGroup : public SimGroup {
   public:
+};
+class  SceneObject2D : public SimObject {
+  public:
+   /*! Set the position and refresh the worldbox */
+   void setPosition( float x, float y, float z ) {}
+   /*! Set the size and update the worldbox */
+   void setSize( float x, float y ) {}
+   /*! refresh the worldbox, needs to be called when position / size is changed */
+   void refresh() {}
+   /*!
+   2D position + layer. 
+   
+    */
+   Vector3 position;
+   /*!
+   Render Size.
+   
+    */
+   Vector2 Size;
+   /*!
+   The color or tint of the object
+   
+    */
+   Color color;
+   /*!
+   Is the object drawn
+   
+    */
+   bool Visible;
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
+};
+class  PrimitiveObject2D : public SceneObject2D {
+  public:
+   /*!
+   Filled or outline
+   
+    */
+   bool filled;
+   /*!
+   Thick used by lines and unfilled rectangle
+   
+    */
+   float thick;
+   /*!
+   drawtype Rectangle = 0, Circle = 1, ELLIPSE = 2, LINE = 3 (Primitive2DType)
+   
+    */
+   int type;
+   /*!
+   used at type text
+   
+    */
+   string caption;
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
+};
+class  ModelObject : public SceneObject {
+  public:
+   /*! Draws this object instance and all its children polymorphically. */
+   void draw() {}
+   /*! Get the count of the current animations */
+   S32 getAnimationCount() {}
+   /*! Get the name of the current animations */
+   String getAnimationName() {}
+   /*! Get the id of a named animations. return -1 if not found. */
+   S32 getAnimationIndexByName( String name ) {}
+   /*! Play a animation once. The current animation will be restored after finished.Force also start the animation if a runOnce is already running. */
+   bool playOnce( int animationIndex, int animationFPS=25, bool force=false ) {}
+   /*!
+   The script ID of the raylib model.
+   
+    */
+   int ModelId;
+   /*!
+   If this is a child it can be mounted to a Bone index. See also GetModelBoneIndexByName
+   
+    */
+   int MountBoneIndex;
+   /*! @name Animation
+   @{ */
+   /*! */
+   /*!
+   Id of the AnimationBlock
+   
+    */
+   int AnimationBlockId;
+   /*!
+   Index of the animation to play. See also GetModelAnimationCount.
+   
+    */
+   int AnimationIndex;
+   /*!
+   Frames per secound when an animation is played
+   
+    */
+   int AnimationFPS;
+   /// @}
+   /*! @name Ungrouped
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Object
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Editing
+   @{ */
+   /*! */
+   /// @}
+   /*! @name Persistence
+   @{ */
+   /*! */
+   /// @}
 };
 class  Grid : public SimObject {
   public:
@@ -2261,6 +2340,23 @@ NOTE: You should delete the returned SimSet when done to avoid leaks! */
    S32 ClientContainerGetBoxObjects( Vector3 minBounds, Vector3 maxBounds ) {}
    /*! For Debug ... use ContainerGetBoxObjects with a big box to get all objects in as a SimSet  */
    void ClientContainerListObjects() {}
+   /*! Call draw on all objects */
+   void ClientContainer2DDrawObjects() {}
+   /*! Casts a ray into the 2D client container and returns the closest hit SceneObject2D id closest == lowest layer */
+   S32 ClientContainer2DRayCast( Vector2 pos, float minLayer=0.f, float maxLayer=1.f ) {}
+   /*! Returns true if no SceneObject2D intersects the given bounding box. */
+   bool ClientContainer2DBoxEmpty( Vector3 minBounds, Vector3 maxBounds ) {}
+   /*! Returns a SimSet ID containing all SceneObject2Ds within the specified bounding box.
+NOTE: You should delete the returned SimSet when done to avoid leaks! */
+   S32 ClientContainer2DGetBoxObjects( Vector3 minBounds, Vector3 maxBounds ) {}
+   /*! reserve objects ...  */
+   void ClientContainer2DReserve( int count ) {}
+   /*! Enable / disable sorting - when adding lots of objects disable it until done */
+   void ClientContainer2DSetSort( bool doSort ) {}
+   /*! delete all objects and clean the list */
+   void ClientContainer2DDeleteAllObjects() {}
+   /*! For Debug ... use ContainerGetBoxObjects with a big box to get all objects in as a SimSet  */
+   void ClientContainer2DListObjects() {}
    /*! Create or reinit global BatchRender */
    void BatchCreate( int count ) {}
    /*! push variables $b[stack]x, y, z, w */
@@ -4180,6 +4276,8 @@ This does not create the actual file. It simply creates a random name for a file
    bool IsTextureValid( int textureId ) {}
    /*! get the texture size int width int height */
    String getTextureSize( int textureId ) {}
+   /*! get the texture size  as rectangle : int width int height */
+   Rectangle getTextureRect( int textureId ) {}
    /*! get the texture width  */
    S32 getTextureWidth( int textureId ) {}
    /*! get the texture height  */
@@ -4284,6 +4382,8 @@ This does not create the actual file. It simply creates a random name for a file
    void EndMode3D() {}
    /*! Set texture and source rectangle to be used on shapes drawing */
    void SetShapesTexture( int textureId, Rectangle source ) {}
+   /*! back to white texture (default) */
+   void ResetShapesTexture() {}
    /*! Get texture ID currently used for shapes drawing */
    S32 GetShapesTexture() {}
    /*! Get texture source rectangle that is used for shapes drawing */
@@ -4468,6 +4568,8 @@ This does not create the actual file. It simply creates a random name for a file
    S32 LoadModel( String fileName ) {}
    /*! Load model from generated mesh (default material) and return ModelID */
    S32 LoadModelFromMesh( int meshId ) {}
+   /*! reset the model material to cleanup shader settings. */
+   bool ResetModelMaterial( int modelId, int matIndex ) {}
    /*! Gets the material count from a model by 
 GetModelMapTexture(modelId, [mapMap=MATERIAL_MAP_DIFFUSE]) */
    S32 GetModelMaterialCount( int modelId, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}

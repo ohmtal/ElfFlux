@@ -5,8 +5,8 @@
 // .... i guess this is the overhead which slowdown
 // works also with values like 50000 but then delete/cleanup takes
 // very long ^^ << disabled garbagecollection make it fast again!
-#define _BATCH_COUNT_ 5000
-#define _RECT_SIZE_ 50
+#define _BATCH_COUNT_ 100
+#define _RECT_SIZE_ 100
 
 function createPrimitives2D() {
     %obj = new ScriptObject() {
@@ -17,7 +17,7 @@ function createPrimitives2D() {
 }
 //----------------------------------------------------------------------
 function Primitives2D::onAdd(%this) {
-     SetTargetFPS(0); //FPS TEST only calling module
+     // SetTargetFPS(0); //FPS TEST only calling module
     ClientContainer2DReserve(_BATCH_COUNT_ + 20);
 
 
@@ -109,8 +109,8 @@ function Primitives2D::onAdd(%this) {
     ClientContainer2DSetSort(false);
 
     %this.batchList = new SimSet();
-    $batchH = GetScreenHeight() - _RECT_SIZE_;
-    $batchW = GetScreenWidth() - _RECT_SIZE_;
+    $batchH = GetScreenHeight();
+    $batchW = GetScreenWidth();
 
     %this.fillBatch();
 
@@ -139,12 +139,13 @@ function Primitives2D::fillBatch(%this) {
         %type = GetRandomValue(0,3);
 
         %obj =  new PrimitiveObject2D() {
-            type =  5; //%type;
+            type =  %type;
             filled = GetRandomValue(0,1);
             position = %x SPC %y SPC %z;
             size = %w SPC %h;
             color = %r SPC %g SPC %b SPC %a;
             thick = %thick;
+            caption = "hello";
         };
         %this.batchList.add( %obj );
     }
@@ -171,8 +172,23 @@ function Primitives2D::OnRemove(%this) {
 }
 //----------------------------------------------------------------------
 function Primitives2D::Render(%this) {
-    ClearBackground(WHITE);
+    ClearBackground(RAYWHITE);
+
+    %speed = GetFrameTime() * 30;
+    %list = %this.batchList;
+    %cnt = %list.getCount();
+    for (%i = 0 ; %i < %cnt; %i++) {
+        %obj = %list.getObject(%i);
+        %obj.position.x += %speed;
+        if (%obj.position.x > $batchW ) {
+            %obj.type =  GetRandomValue(0,3);
+            %savZ = %obj.position.z;
+            %obj.setPosition ( -_RECT_SIZE_, GetRandomValue(0, $batchH),%savZ);
+        }
+    }
 
     ClientContainer2DDrawObjects();
+
+
 }
 

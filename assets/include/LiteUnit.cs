@@ -19,17 +19,9 @@ function LiteUnit::onAdd(%this) {
 
     %this.terrainObject = 0;
 
-    // %this.tickObject = new ScriptTickObject() { class = "LiteUnitTicker"; callOnAdvanceTime = true; obj = %this;};
 }
 // -----------------------------------------------------------------------------
 function LiteUnit::onRemove(%this) {
-    %this.tickObject.delete();
-}
-// -----------------------------------------------------------------------------
-function LiteUnitTicker::OnAdvanceTime(%this, %dt) {
-
-    // warn("LiteUnitTicker::OnAdvanceTime" SPC %this SPC %obj SPC %dt);
-    %this.obj.update(%dt);
 }
 // -----------------------------------------------------------------------------
 function LiteUnit::onDestinationReached(%this) {
