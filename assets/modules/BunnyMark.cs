@@ -1,4 +1,5 @@
 // ElfScipt is not very good on such loops ... going int CPU bottlenek
+// cheated a bit border check is only applied every 8th tick
 #define MAX_BUNNIES 80000
 #define BUNNY_BATCH 1000
 
