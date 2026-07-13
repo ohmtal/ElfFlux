@@ -4628,8 +4628,8 @@ This does not create the actual file. It simply creates a random name for a file
    S32 LoadModel( String fileName ) {}
    /*! Load model from generated mesh (default material) and return ModelID */
    S32 LoadModelFromMesh( int meshId ) {}
-   /*! reset the model material to cleanup shader settings. */
-   bool ResetModelMaterial( int modelId, int matIndex ) {}
+   /*! reset the model material shader settings. */
+   bool ResetModelMaterialShader( int modelId, int matIndex ) {}
    /*! Gets the material count from a model by 
 GetModelMapTexture(modelId, [mapMap=MATERIAL_MAP_DIFFUSE]) */
    S32 GetModelMaterialCount( int modelId, int mapMap=(S32)MATERIAL_MAP_DIFFUSE ) {}
@@ -4923,16 +4923,84 @@ SetModelShader(modelId, shaderId [, matIndex=0]) */
    int GetDirectoryFileCount( String dirPath ) {}
    /*! Get file count with extension filtering and recursive directory scan. Use 'DIR' in filter to include directories. */
    int GetDirectoryFileCountEx( String basePath, String filter, bool scanSubdirs ) {}
+   /*! Adds two Vector2 values together. */
+   Vector2 Vector2Add( Vector2 v1, Vector2 v2 ) {}
+   /*! Adds a value to Vector2. */
+   Vector2 Vector2AddValue( Vector2 v1, float value ) {}
+   /*! Subtracts v2 from v1. */
+   Vector2 Vector2Subtract( Vector2 v1, Vector2 v2 ) {}
+   /*! Subtracts a value to Vector2. */
+   Vector2 Vector2SubtractValue( Vector2 v1, float value ) {}
+   /*! Scales a Vector2 by a float multiplier. */
+   Vector2 Vector2Scale( Vector2 v, float scale ) {}
+   /*! Multiply vector by vector. */
+   Vector2 Vector2Multiply( Vector2 v1, Vector2 v2 ) {}
+   /*! Returns the length of a Vector2. */
+   F32 Vector2Length( Vector2 v ) {}
+   /*! Calculate vector3 square length */
+   F32 Vector2LengthSqr( Vector2 v ) {}
+   /*! Calculate two vectors dot product */
+   F32 Vector2DotProduct( Vector2 v1, Vector2 v2 ) {}
+   /*! Returns the squared distance between two Vector2 points. */
+   F32 Vector2DistanceSqr( Vector2 v1, Vector2 v2 ) {}
+   /*! Calculate angle between two vectors */
+   F32 Vector2Angle( Vector2 v1, Vector2 v2 ) {}
+   /*! Returns the distance between two Vector2 points. */
+   F32 Vector2Distance( Vector2 v1, Vector2 v2 ) {}
+   /*! Negate provided vector (invert direction) */
+   Vector2 Vector2Negate( Vector2 v ) {}
+   /*! Divide vector by vector */
+   Vector2 Vector2Divide( Vector2 v1, Vector2 v2 ) {}
+   /*! Normalizes a Vector2 to a length of 1.0. */
+   Vector2 Vector2Normalize( Vector2 v ) {}
+   /*! Transforms a Vector2 by a given Matrix */
+   Vector2 Vector2Transform( Vector2 v1, Matrix mat ) {}
+   /*! Move Vector towards target */
+   Vector2 Vector2MoveTowards( Vector2 v1, Vector2 v2, float maxDistance ) {}
    /*! Adds two Vector3 values together. */
    Vector3 Vector3Add( Vector3 v1, Vector3 v2 ) {}
+   /*! Adds a value to Vector3. */
+   Vector3 Vector3AddValue( Vector3 v1, float value ) {}
    /*! Subtracts v2 from v1. */
    Vector3 Vector3Subtract( Vector3 v1, Vector3 v2 ) {}
+   /*! Subtracts a value to Vector3. */
+   Vector3 Vector3SubtractValue( Vector3 v1, float value ) {}
    /*! Scales a Vector3 by a float multiplier. */
    Vector3 Vector3Scale( Vector3 v, float scale ) {}
-   /*! Normalizes a Vector3 to a length of 1.0. */
-   Vector3 Vector3Normalize( Vector3 v ) {}
+   /*! Multiply vector by vector. */
+   Vector3 Vector3Multiply( Vector3 v1, Vector3 v2 ) {}
+   /*! Calculate two vectors cross product */
+   Vector3 Vector3CrossProduct( Vector3 v1, Vector3 v2 ) {}
+   /*! Calculate one vector perpendicular vector */
+   Vector3 Vector3Perpendicular( Vector3 v ) {}
    /*! Returns the length of a Vector3. */
    F32 Vector3Length( Vector3 v ) {}
+   /*! Calculate vector3 square length */
+   F32 Vector3LengthSqr( Vector3 v ) {}
+   /*! Calculate two vectors dot product */
+   F32 Vector3DotProduct( Vector3 v1, Vector3 v2 ) {}
+   /*! Returns the squared distance between two Vector3 points. */
+   F32 Vector3DistanceSqr( Vector3 v1, Vector3 v2 ) {}
+   /*! Calculate angle between two vectors */
+   F32 Vector3Angle( Vector3 v1, Vector3 v2 ) {}
    /*! Returns the distance between two Vector3 points. */
    F32 Vector3Distance( Vector3 v1, Vector3 v2 ) {}
+   /*! Negate provided vector (invert direction) */
+   Vector3 Vector3Negate( Vector3 v ) {}
+   /*! Divide vector by vector */
+   Vector3 Vector3Divide( Vector3 v1, Vector3 v2 ) {}
+   /*! Normalizes a Vector3 to a length of 1.0. */
+   Vector3 Vector3Normalize( Vector3 v ) {}
+   /*! Calculate the projection of the vector v1 on to v2 */
+   Vector3 Vector3Project( Vector3 v1, Vector3 v2 ) {}
+   /*! Calculate the rejection of the vector v1 on to v2 */
+   Vector3 Vector3Reject( Vector3 v1, Vector3 v2 ) {}
+   /*! Transforms a Vector3 by a given Matrix */
+   Vector3 Vector3Transform( Vector3 v1, Matrix mat ) {}
+   /*! Transform a vector by quaternion rotation */
+   Vector3 Vector3RotateByQuaternion( Vector3 v1, Vector4 v2 ) {}
+   /*! Rotates a vector around an axis */
+   Vector3 Vector3RotateByAxisAngle( Vector3 v1, Vector3 axis, float angle ) {}
+   /*! Move Vector towards target */
+   Vector3 Vector3MoveTowards( Vector3 v1, Vector3 v2, float maxDistance ) {}
 };
