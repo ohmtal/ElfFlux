@@ -1,3 +1,6 @@
+//------------------------------------------------------------------
+//                    C L A S S E S  
+//------------------------------------------------------------------
 /*!
 @brief Base class for almost all objects involved in the simulation.
 @ingroup Console
@@ -364,13 +367,6 @@ class  Gui : public SimObject {
     */
    int lastState;
 };
-/// Stub class
-/// 
-/// @note This is a stub class to ensure a proper class hierarchy. No 
-///       information was available for this class.
-class  LightGui : public Gui {
-  public:
-};
 /*!
 @brief A collection of SimObjects.
 It is often necessary to keep track of an arbitrary set of SimObjects. For instance, Torque's networking code needs to not only keep track of the set of objects which need to be ghosted, but also the set of objects which must <i>always</i> be ghosted. It does this by working with two sets. The first of these is the RootGroup (which is actually a SimGroup) and the second is the GhostAlwaysSet, which contains objects which must always be ghosted to the client.
@@ -569,13 +565,6 @@ class  TerrainObject : public SceneObject {
    /*! */
    /// @}
 };
-/// Stub class
-/// 
-/// @note This is a stub class to ensure a proper class hierarchy. No 
-///       information was available for this class.
-class  terrain : public TerrainObject {
-  public:
-};
 class  Camera3DObject : public SimObject {
   public:
    /*! Update camera position for selected mode (e.g. $CAMERA_FIRST_PERSON, $CAMERA_FREE) */
@@ -662,17 +651,6 @@ class  Camera3DObject : public SimObject {
     */
    int projection;
 };
-class  CameraFree : public Camera3DObject {
-  public:
-   Script update( string this, string dt )...) {}
-};
-/// Stub class
-/// 
-/// @note This is a stub class to ensure a proper class hierarchy. No 
-///       information was available for this class.
-class  camera : public CameraFree {
-  public:
-};
 /*!
 @brief A script-level OOP object which allows binding of a class, superClass and arguments along with declaration of methods.
 ScriptObjects are extrodinarily powerful objects that allow defining of any type of data required. They can optionally have
@@ -706,51 +684,6 @@ class  ScriptObject : public SimObject {
    @{ */
    /*! */
    /// @}
-};
-class  TerrainDemo : public ScriptObject {
-  public:
-   Script DropToGround( string this, string obj )...) {}
-   Script onMouseLeftClick( string this )...) {}
-   Script spawnScriptTree( string this, string worldPos )...) {}
-   Script render( string this )...) {}
-   Script onRemove( string this )...) {}
-   Script onAdd( string this )...) {}
-   Script loadKenneyModel( string this, string spawnPoint )...) {}
-   Script loadGreenManModel( string this, string spawnPoint )...) {}
-};
-class  LiteUnit {
-  public:
-   Script lookAt( string this, string position )...) {}
-   Script update( string this, string dt )...) {}
-   Script walkTo( string this, string dest, string hurry )...) {}
-   Script onDestinationReached( string this )...) {}
-   Script onRemove()...) {}
-   Script onAdd( string this )...) {}
-};
-class  ModelCache {
-  public:
-   Script loadAnimation( string this, string filename )...) {}
-   Script LoadTexture( string this, string filename )...) {}
-   Script LoadModel( string this, string filename )...) {}
-};
-class  waterPlane : public ScriptObject {
-  public:
-   Script update( string this, string dt )...) {}
-   Script draw( string this, string dt )...) {}
-   Script onRemove( string this )...) {}
-   Script onAdd( string this )...) {}
-};
-class  Sun : public ScriptObject {
-  public:
-   Script update( string this, string dt )...) {}
-   Script onRemove( string this )...) {}
-   Script onAdd( string this )...) {}
-};
-class  Main : public ScriptObject {
-  public:
-   Script loop( string this )...) {}
-   Script loadModule( string this, string setNewModuleIndex )...) {}
-   Script init( string this )...) {}
 };
 /*!
 @brief A collection of SimObjects that are owned by the group.
@@ -803,13 +736,6 @@ class  SimGroup : public SimSet {
    @{ */
    /*! */
    /// @}
-};
-/// Stub class
-/// 
-/// @note This is a stub class to ensure a proper class hierarchy. No 
-///       information was available for this class.
-class  RootGroup : public SimGroup {
-  public:
 };
 class  SceneObject2D : public SimObject {
   public:
@@ -2379,16 +2305,10 @@ class  Camera2DObject : public SimObject {
     */
    float zoom;
 };
+//------------------------------------------------------------------
+//                  F U N C T I O N S 
+//------------------------------------------------------------------
 namespace Global {
-   Script createTerrainDemo()...) {}
-   Script LoadModelResources( string modelFileName, string animationFilename, string textureFilename, string startAnim, string spawnPoint, string fps, string class )...) {}
-   Script createWaterPlane( string type, string sunObject, string cameraObject, string size, string position )...) {}
-   Script createSun( string terrainRadiusNeg, string sunModel )...) {}
-   Script updateDocu()...) {}
-   Script rl()...) {}
-   Script MainLoop()...) {}
-   Script MainShutDown()...) {}
-   Script MainInit()...) {}
    /*! Call draw on all objects */
    void ClientContainerDrawObjects() {}
    /*! Casts a ray into the container and returns the closest hit SceneObject and collision info. */
@@ -5004,3 +4924,344 @@ SetModelShader(modelId, shaderId [, matIndex=0]) */
    /*! Move Vector towards target */
    Vector3 Vector3MoveTowards( Vector3 v1, Vector3 v2, float maxDistance ) {}
 };
+//------------------------------------------------------------------
+//                  C O N S T A N T S 
+//------------------------------------------------------------------
+/*
+--- Script Constants Dump ---
+  NOISE_SCALE = 16
+  WAVE_SPEED = 2.0
+  NPATCH_THREE_PATCH_HORIZONTAL = 2
+  CAMERA_ORTHOGRAPHIC = 1
+  CAMERA_PERSPECTIVE = 0
+  CAMERA_THIRD_PERSON = 4
+  CAMERA_ORBITAL = 2
+  CAMERA_FREE = 1
+  CAMERA_CUSTOM = 0
+  GESTURE_PINCH_OUT = 512
+  GESTURE_SWIPE_DOWN = 128
+  GESTURE_SWIPE_UP = 64
+  GESTURE_SWIPE_RIGHT = 16
+  GESTURE_DRAG = 8
+  GESTURE_HOLD = 4
+  GESTURE_DOUBLETAP = 2
+  GESTURE_TAP = 1
+  GESTURE_NONE = 0
+  BLEND_SUBTRACT_COLORS = 4
+  BLEND_MULTIPLIED = 2
+  GESTURE_SWIPE_LEFT = 32
+  BLEND_ALPHA = 0
+  FONT_SDF = 2
+  FONT_BITMAP = 1
+  CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE = 4
+  CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR = 3
+  CUBEMAP_LAYOUT_LINE_HORIZONTAL = 2
+  CUBEMAP_LAYOUT_LINE_VERTICAL = 1
+  CUBEMAP_LAYOUT_AUTO_DETECT = 0
+  TEXTURE_WRAP_MIRROR_CLAMP = 3
+  TEXTURE_WRAP_REPEAT = 0
+  TEXTURE_FILTER_ANISOTROPIC_16X = 5
+  TEXTURE_FILTER_ANISOTROPIC_8X = 4
+  TEXTURE_FILTER_ANISOTROPIC_4X = 3
+  TEXTURE_FILTER_BILINEAR = 1
+  BLEND_CUSTOM_SEPARATE = 7
+  TEXTURE_FILTER_POINT = 0
+  PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA = 24
+  PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA = 23
+  PIXELFORMAT_COMPRESSED_PVRT_RGBA = 22
+  PIXELFORMAT_COMPRESSED_PVRT_RGB = 21
+  PIXELFORMAT_COMPRESSED_ETC2_RGB = 19
+  PIXELFORMAT_COMPRESSED_ETC1_RGB = 18
+  PIXELFORMAT_COMPRESSED_DXT1_RGBA = 15
+  PIXELFORMAT_COMPRESSED_DXT1_RGB = 14
+  PIXELFORMAT_UNCOMPRESSED_R16G16B16 = 12
+  PIXELFORMAT_UNCOMPRESSED_R16 = 11
+  PIXELFORMAT_UNCOMPRESSED_R32G32B32 = 9
+  PIXELFORMAT_UNCOMPRESSED_R5G5B5A1 = 5
+  PIXELFORMAT_UNCOMPRESSED_R5G6B5 = 3
+  PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA = 2
+  PIXELFORMAT_UNCOMPRESSED_GRAYSCALE = 1
+  SHADER_ATTRIB_VEC4 = 3
+  SHADER_ATTRIB_VEC3 = 2
+  SHADER_ATTRIB_VEC2 = 1
+  SHADER_ATTRIB_FLOAT = 0
+  KEY_KP_9 = 329
+  BROWN = "127 106 79 255"
+  KEY_KP_1 = 321
+  MATERIAL_MAP_ALBEDO = 0
+  BLACK = "0 0 0 255"
+  KEY_RIGHT_CONTROL = 345
+  KEY_F2 = 291
+  BLEND_ALPHA_PREMULTIPLY = 5
+  KEY_RIGHT_SHIFT = 344
+  KEY_LEFT_ALT = 342
+  KEY_F12 = 301
+  KEY_KP_5 = 325
+  SHADER_LOC_MATRIX_VIEW = 7
+  KEY_F11 = 300
+  PIXELFORMAT_UNCOMPRESSED_R32 = 8
+  FLAG_WINDOW_TRANSPARENT = 16
+  KEY_F8 = 297
+  KEY_F4 = 293
+  MATERIAL_MAP_CUBEMAP = 7
+  KEY_KP_MULTIPLY = 332
+  PIXELFORMAT_COMPRESSED_DXT3_RGBA = 16
+  KEY_DELETE = 261
+  MOUSE_BUTTON_MIDDLE = 2
+  KEY_F3 = 292
+  GAMEPAD_BUTTON_UNKNOWN = 0
+  KEY_PAUSE = 284
+  KEY_PRINT_SCREEN = 283
+  KEY_KP_2 = 322
+  GAMEPAD_BUTTON_LEFT_THUMB = 16
+  GAMEPAD_AXIS_LEFT_Y = 1
+  SHADER_LOC_MATRIX_BONETRANSFORMS = 28
+  KEY_Z = 90
+  KEY_HOME = 268
+  KEY_PAGE_DOWN = 267
+  KEY_SCROLL_LOCK = 281
+  KEY_PAGE_UP = 266
+  KEY_THREE = 51
+  SHADER_UNIFORM_UIVEC2 = 9
+  KEY_KP_8 = 328
+  GAMEPAD_BUTTON_LEFT_FACE_RIGHT = 2
+  KEY_KP_DIVIDE = 331
+  KEY_INSERT = 260
+  GAMEPAD_BUTTON_MIDDLE_RIGHT = 15
+  KEY_BACKSPACE = 259
+  KEY_KP_0 = 320
+  SHADER_LOC_MATRIX_MVP = 6
+  KEY_VOLUME_DOWN = 25
+  MATERIAL_MAP_OCCLUSION = 4
+  KEY_KP_3 = 323
+  FLAG_FULLSCREEN_MODE = 2
+  FLAG_WINDOW_ALWAYS_RUN = 256
+  PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 = 7
+  KEY_RIGHT = 262
+  TEXTURE_WRAP_MIRROR_REPEAT = 2
+  DARKGREEN = "0 117 44 255"
+  LIME = "0 158 47 255"
+  KEY_SEMICOLON = 59
+  KEY_SPACE = 32
+  KEY_B = 66
+  KEY_F1 = 290
+  KEY_RIGHT_SUPER = 347
+  KEY_RIGHT_BRACKET = 93
+  TEXTURE_FILTER_TRILINEAR = 2
+  KEY_MINUS = 45
+  GAMEPAD_BUTTON_RIGHT_FACE_LEFT = 8
+  KEY_LEFT_BRACKET = 91
+  KEY_BACKSLASH = 92
+  KEY_Y = 89
+  KEY_F6 = 295
+  KEY_X = 88
+  SHADER_LOC_VERTEX_COLOR = 5
+  KEY_T = 84
+  KEY_M = 77
+  KEY_CAPS_LOCK = 280
+  FONT_DEFAULT = 0
+  SHADER_UNIFORM_UIVEC4 = 11
+  KEY_VOLUME_UP = 24
+  KEY_Q = 81
+  KEY_KP_DECIMAL = 330
+  GRAY = "130 130 130 255"
+  KEY_LEFT_CONTROL = 341
+  KEY_APOSTROPHE = 39
+  KEY_F7 = 296
+  KEY_L = 76
+  DARKBROWN = "76 63 47 255"
+  KEY_NUM_LOCK = 282
+  KEY_KP_6 = 326
+  GAMEPAD_AXIS_RIGHT_TRIGGER = 5
+  NPATCH_THREE_PATCH_VERTICAL = 1
+  MATERIAL_MAP_NORMAL = 2
+  KEY_NINE = 57
+  KEY_DOWN = 264
+  BLEND_CUSTOM = 6
+  KEY_SIX = 54
+  GAMEPAD_BUTTON_RIGHT_TRIGGER_1 = 11
+  KEY_COMMA = 44
+  SHADER_LOC_MAP_CUBEMAP = 22
+  KEY_D = 68
+  KEY_PERIOD = 46
+  VIOLET = "135 60 190 255"
+  KEY_G = 71
+  KEY_LEFT = 263
+  GREEN = "0 228 48 255"
+  NPATCH_NINE_PATCH = 0
+  BLANK = "0 0 0 0"
+  KEY_I = 73
+  PURPLE = "200 122 255 255"
+  MATERIAL_MAP_DIFFUSE = 0
+  MOUSE_CURSOR_POINTING_HAND = 4
+  SHADER_LOC_VERTEX_BONEIDS = 26
+  LIGHTGRAY = "200 200 200 255"
+  GAMEPAD_BUTTON_RIGHT_THUMB = 17
+  SHADER_LOC_MATRIX_NORMAL = 10
+  KEY_TAB = 258
+  KEY_F5 = 294
+  KEY_E = 69
+  KEY_LEFT_SUPER = 343
+  KEY_KP_SUBTRACT = 333
+  SKYBLUE = "102 191 255 255"
+  KEY_UP = 265
+  RED = "230 41 55 255"
+  KEY_O = 79
+  GAMEPAD_BUTTON_LEFT_FACE_LEFT = 4
+  PIXELFORMAT_UNCOMPRESSED_R4G4B4A4 = 6
+  KEY_U = 85
+  KEY_KP_7 = 327
+  KEY_V = 86
+  ORANGE = "255 161 0 255"
+  GAMEPAD_BUTTON_MIDDLE = 14
+  KEY_TWO = 50
+  SHADER_UNIFORM_VEC4 = 3
+  SHADER_UNIFORM_INT = 4
+  KEY_KP_4 = 324
+  WHITE = "255 255 255 255"
+  KEY_ONE = 49
+  SHADER_LOC_MAP_HEIGHT = 21
+  GOLD = "255 203 0 255"
+  SHADER_LOC_VERTEX_INSTANCETRANSFORM = 29
+  SHADER_LOC_MATRIX_MODEL = 9
+  KEY_SLASH = 47
+  KEY_S = 83
+  RAYWHITE = "245 245 245 255"
+  KEY_SEVEN = 55
+  KEY_W = 87
+  GAMEPAD_BUTTON_LEFT_FACE_UP = 1
+  MAGENTA = "255 0 255 255"
+  KEY_A = 65
+  KEY_KB_MENU = 348
+  KEY_ZERO = 48
+  KEY_FIVE = 53
+  SHADER_LOC_MAP_PREFILTER = 24
+  KEY_J = 74
+  PINK = "255 109 194 255"
+  KEY_LEFT_SHIFT = 340
+  KEY_P = 80
+  KEY_KP_ADD = 334
+  KEY_KP_ENTER = 335
+  KEY_KP_EQUAL = 336
+  GAMEPAD_AXIS_LEFT_X = 0
+  KEY_BACK = 4
+  KEY_MENU = 5
+  KEY_RIGHT_ALT = 346
+  DARKGRAY = "80 80 80 255"
+  FLAG_VSYNC_HINT = 64
+  SHADER_UNIFORM_IVEC2 = 5
+  FLAG_WINDOW_UNFOCUSED = 2048
+  PIXELFORMAT_UNCOMPRESSED_R8G8B8 = 4
+  FLAG_WINDOW_RESIZABLE = 4
+  FLAG_WINDOW_UNDECORATED = 8
+  FLAG_WINDOW_HIDDEN = 128
+  FLAG_WINDOW_MINIMIZED = 512
+  FLAG_WINDOW_MAXIMIZED = 1024
+  MATERIAL_MAP_BRDF = 10
+  FLAG_WINDOW_TOPMOST = 4096
+  MOUSE_BUTTON_BACK = 6
+  KEY_ESCAPE = 256
+  FLAG_WINDOW_MOUSE_PASSTHROUGH = 16384
+  FLAG_BORDERLESS_WINDOWED_MODE = 32768
+  GAMEPAD_AXIS_RIGHT_Y = 3
+  FLAG_MSAA_4X_HINT = 32
+  KEY_F10 = 299
+  SHADER_UNIFORM_IVEC3 = 6
+  FLAG_INTERLACED_HINT = 65536
+  LOG_ALL = 0
+  GAMEPAD_BUTTON_LEFT_TRIGGER_1 = 9
+  LOG_DEBUG = 2
+  LOG_INFO = 3
+  LOG_WARNING = 4
+  LOG_ERROR = 5
+  GAMEPAD_BUTTON_LEFT_TRIGGER_2 = 10
+  SHADER_LOC_MAP_METALNESS = 16
+  DARKPURPLE = "112 31 126 255"
+  SHADER_LOC_MAP_ROUGHNESS = 18
+  LOG_FATAL = 6
+  KEY_ENTER = 257
+  GAMEPAD_BUTTON_MIDDLE_LEFT = 13
+  SHADER_UNIFORM_SAMPLER2D = 12
+  FLAG_WINDOW_HIGHDPI = 8192
+  LOG_NONE = 7
+  SHADER_LOC_COLOR_DIFFUSE = 12
+  KEY_END = 269
+  MOUSE_BUTTON_LEFT = 0
+  MATERIAL_MAP_SPECULAR = 1
+  KEY_FOUR = 52
+  MOUSE_BUTTON_RIGHT = 1
+  KEY_N = 78
+  SHADER_LOC_MAP_IRRADIANCE = 23
+  MOUSE_BUTTON_SIDE = 3
+  MOUSE_BUTTON_EXTRA = 4
+  MOUSE_BUTTON_FORWARD = 5
+  MOUSE_CURSOR_DEFAULT = 0
+  MOUSE_CURSOR_ARROW = 1
+  CAMERA_FIRST_PERSON = 3
+  DARKBLUE = "0 82 172 255"
+  MATERIAL_MAP_ROUGHNESS = 3
+  MOUSE_CURSOR_IBEAM = 2
+  KEY_F9 = 298
+  LOG_TRACE = 1
+  MATERIAL_MAP_METALNESS = 1
+  GESTURE_PINCH_IN = 256
+  MOUSE_CURSOR_RESIZE_EW = 5
+  YELLOW = "253 249 0 255"
+  KEY_H = 72
+  SHADER_LOC_VERTEX_TEXCOORD02 = 2
+  MOUSE_CURSOR_RESIZE_NS = 6
+  MOUSE_CURSOR_RESIZE_NWSE = 7
+  KEY_F = 70
+  MOUSE_CURSOR_RESIZE_NESW = 8
+  MOUSE_CURSOR_RESIZE_ALL = 9
+  MOUSE_CURSOR_NOT_ALLOWED = 10
+  GAMEPAD_BUTTON_RIGHT_TRIGGER_2 = 12
+  GAMEPAD_BUTTON_LEFT_FACE_DOWN = 3
+  GAMEPAD_BUTTON_RIGHT_FACE_UP = 5
+  GAMEPAD_BUTTON_RIGHT_FACE_RIGHT = 6
+  KEY_GRAVE = 96
+  GAMEPAD_BUTTON_RIGHT_FACE_DOWN = 7
+  GAMEPAD_AXIS_RIGHT_X = 2
+  GAMEPAD_AXIS_LEFT_TRIGGER = 4
+  BLEND_ADDITIVE = 1
+  SHADER_LOC_MAP_ALBEDO = 15
+  KEY_EQUAL = 61
+  MATERIAL_MAP_EMISSION = 5
+  SHADER_UNIFORM_FLOAT = 0
+  SHADER_UNIFORM_UIVEC3 = 10
+  MATERIAL_MAP_HEIGHT = 6
+  MATERIAL_MAP_IRRADIANCE = 8
+  MATERIAL_MAP_PREFILTER = 9
+  BLEND_ADD_COLORS = 3
+  MOUSE_CURSOR_CROSSHAIR = 3
+  SHADER_LOC_VERTEX_POSITION = 0
+  PIXELFORMAT_UNCOMPRESSED_R16G16B16A16 = 13
+  SHADER_LOC_VECTOR_VIEW = 11
+  PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA = 20
+  SHADER_LOC_VERTEX_TEXCOORD01 = 1
+  SHADER_LOC_VERTEX_NORMAL = 3
+  KEY_C = 67
+  SHADER_LOC_VERTEX_TANGENT = 4
+  MAROON = "190 33 55 255"
+  SHADER_LOC_MATRIX_PROJECTION = 8
+  BEIGE = "211 176 131 255"
+  SHADER_LOC_COLOR_SPECULAR = 13
+  SHADER_LOC_COLOR_AMBIENT = 14
+  KEY_R = 82
+  KEY_K = 75
+  SHADER_LOC_MAP_OCCLUSION = 19
+  KEY_EIGHT = 56
+  SHADER_LOC_MAP_EMISSION = 20
+  SHADER_LOC_MAP_BRDF = 25
+  PIXELFORMAT_COMPRESSED_DXT5_RGBA = 17
+  SHADER_LOC_VERTEX_BONEWEIGHTS = 27
+  TEXTURE_WRAP_CLAMP = 1
+  PIXELFORMAT_UNCOMPRESSED_R32G32B32A32 = 10
+  SHADER_UNIFORM_VEC2 = 1
+  SHADER_UNIFORM_VEC3 = 2
+  BLUE = "0 121 241 255"
+  SHADER_LOC_MAP_NORMAL = 17
+  SHADER_UNIFORM_IVEC4 = 7
+  SHADER_UNIFORM_UINT = 8
+--- End of Dump (334 items) ---
+*/

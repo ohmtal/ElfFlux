@@ -141,7 +141,8 @@ function rl() { exec("assets/main.cs");}
 
 function updateDocu() { 
     %file = "assets/script_stub.cs";
-    if (exportConsoleDocu(%file))
+    // if (exportConsoleDocu(%file))
+    if (exportConsoleDocu(%file, false, false, false, true))
     {
         echo ("Docu exported to:" SPC %file);
         echo ("- In vim you can simple open it alongside the other file to use autocomplete");
