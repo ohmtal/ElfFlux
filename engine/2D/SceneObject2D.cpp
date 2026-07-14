@@ -104,6 +104,7 @@ void SceneObject2D::setSize(const Vector2& size) {
 // TestScript for layer clamp/MAX_2D_LAYERS:
 //  $foo = new SceneObject2D(){ Position = "10 10 0.123456";}; echo($foo.position);
 //  $foo.position.z = 5; $foo.refresh(); echo($foo.position);
+// NOTE it's designed for future use. moveing object in Container
 void SceneObject2D::refreshWorldBox() {
 
     mWorldBox.x = mPosition.x;
@@ -203,14 +204,14 @@ DefineEngineMethod(SceneObject2D, setSize,void, (F32 x, F32 y), ,
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 DefineEngineMethod(SceneObject2D, moveLinear, void, (F32 dt), ,"Move Linear position/velocity"
-    "\nRequre manual refresh!") {
+    "\nRequire manual refresh!") {
     object->moveLinear(dt);
 }
 //-----------------------------------------------------------------------------
 DefineEngineMethod(SceneObject2D, moveGravity, void, (F32 dt, F32 gravityX, F32 gravityY/*, F32 gravityZ*/),
         (0.f, 9.81f/*, 0.f*/) ,
         "Move with gravity acceleration default: 0, 9.81"
-        "\nRequre manual refresh!") {
+        "\nRequire manual refresh!") {
     object->moveGravity(dt, {gravityX, gravityY});
 }
 //-----------------------------------------------------------------------------
@@ -218,11 +219,14 @@ DefineEngineMethod(SceneObject2D, moveOrbital2D, void, (F32 dt,
         Vector2 centerPoint, F32 gravity, F32 softening, F32 maxSpeed),
         (10.f, 150.f, 350.f) ,
         "2D Safe Orbital Movement"
-        "\nRequre manual refresh!" ) {
+        "\nRequire manual refresh!" ) {
     object->moveOrbital(dt, centerPoint, gravity, softening, maxSpeed);
 }
 //-----------------------------------------------------------------------------
-DefineEngineMethod(SceneObject2D, refresh, void, (), , "refresh the worldbox, needs to be called when position / size is changed") {
+DefineEngineMethod(SceneObject2D, refresh, void, (), ,
+                   "refresh the worldbox, needs to be called when:"
+                   "\nposition xy is changed or move calles applied."
+                   "\n Fields:.position and .size do this automaticly") {
     object->refreshWorldBox();
 }
 }//namespace

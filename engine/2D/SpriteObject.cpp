@@ -2,6 +2,10 @@
 // Copyright (c) 2026 Thomas Hühn (XXTH)
 // SPDX-License-Identifier: MIT
 //-----------------------------------------------------------------------------
+// FIXME forwardVector vs Velocty
+// FIXME draw should not call linear movement
+// TODO collisions - remove this stupid doBounce
+//-----------------------------------------------------------------------------
 #include "SceneObject2D.h"
 
 #include "raylib.h"
