@@ -33,6 +33,7 @@ public:
     DECLARE_CONOBJECT(SceneObject2D);
 
     Vector3 mPosition = { 0.0f, 0.0f, 0.0f }; // Z is used for layer
+    Vector2 mVelo = { 0.0f, 0.0f }; // Velocity 2D
     Vector2 mSize = { 32.0f, 32.0f };
     Color mColor = RAYWHITE;
     bool mVisible = true;
@@ -57,6 +58,12 @@ public:
     virtual bool rectCollide(Rectangle rect, F32 minLayer = 0.f, F32 maxLayer = 1.f);
 
     static void initPersistFields();
+
+    //NOTE the since it can be combined refresh must be called after position has settled !
+    void moveLinear(F32 dt);
+    //NOTE gravity, softening, maxSpeed: depends on common object speed
+    void moveGravity(F32 dt, Vector2 gravity);
+    void moveOrbital(F32 dt, Vector2 centerPoint, F32 gravity, F32 softening = 10.f, F32 maxSpeed = 350.f);
 
 
 private:

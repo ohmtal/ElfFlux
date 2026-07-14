@@ -28,6 +28,9 @@ public:
     bool mFlipX = false;
     bool mFlipY = false;
 
+    // Velocty
+
+
     virtual void draw(const F32& dt) override;
     static void initPersistFields();
 

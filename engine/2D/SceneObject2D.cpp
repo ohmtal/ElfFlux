@@ -6,7 +6,9 @@
 #include "SceneContainer2D.h"
 
 #include "raylib.h"
+#include "raymath.h"
 #include "math/mMathFn.h"
+
 
 //-----------------------------------------------------------------------------
 namespace ElfObjects {
@@ -54,6 +56,17 @@ void SceneObject2D::initPersistFields() {
 
     addField("color", TypeColor, Offset(mColor, SceneObject2D), "The color or tint of the object");
     addField("Visible", TypeBool, Offset(mVisible, SceneObject2D), "Is the object drawn");
+
+    // position Fields require refresh after settled
+    addField("x", TypeF32, Offset(mPosition.x,SceneObject2D));
+    addField("y", TypeF32, Offset(mPosition.y,SceneObject2D));
+    addField("z", TypeF32, Offset(mPosition.z,SceneObject2D));
+
+
+    addField("velocity", TypeVector2, Offset(mVelo,SceneObject2D));
+    addField("veloX", TypeF32, Offset(mVelo.x,SceneObject2D));
+    addField("veloY", TypeF32, Offset(mVelo.y,SceneObject2D));
+
     Parent::initPersistFields();
 }
 
@@ -118,6 +131,57 @@ void SceneObject2D::refreshWorldBox() {
 
 
 //-----------------------------------------------------------------------------
+void SceneObject2D::moveLinear(F32 dt) {
+    this->mPosition.x += this->mVelo.x * dt;
+    this->mPosition.y += this->mVelo.y * dt;
+    // this->mPosition.z += this->mVelo.z * dt;
+}
+//NOTE gravity, softening, maxSpeed: depends on common object speed
+void SceneObject2D::moveGravity(F32 dt, Vector2 gravity) {
+    this->mVelo.x += gravity.x * dt;
+    this->mVelo.y += gravity.y * dt;
+    // this->mVelo.z += gravity.z * dt;
+
+    this->mPosition.x += this->mVelo.x * dt;
+    this->mPosition.y += this->mVelo.y * dt;
+    // this->mPosition.z += this->mVelo.z * dt;
+
+}
+void SceneObject2D::moveOrbital(F32 dt, Vector2 centerPoint, F32 gravity, F32 softening, F32 maxSpeed ) {
+
+    Vector2 direction = centerPoint;
+    direction.x -= this->mPosition.x; ;
+    direction.y -= this->mPosition.y; ;
+
+
+    F32 distance = Vector2Length(direction);
+
+    // F32 G = 9.81f;
+
+    if (distance > 0.0001f) {
+        direction = Vector2Normalize(direction);
+        F32 gravityPull = (gravity * 1000.f) / (distance * distance + softening);
+
+        this->mVelo.x += direction.x * gravityPull * dt;
+        this->mVelo.y += direction.y * gravityPull * dt;
+    }
+
+    // F32 drag = 0.995f;
+    // this->mVelo.x *= drag;
+    // this->mVelo.y *= drag;
+
+    F32 currentSpeed = sqrt(this->mVelo.x * this->mVelo.x + this->mVelo.y * this->mVelo.y);
+    if (currentSpeed > maxSpeed && currentSpeed > 0.0f) {
+        this->mVelo.x = (this->mVelo.x / currentSpeed) * maxSpeed;
+        this->mVelo.y = (this->mVelo.y / currentSpeed) * maxSpeed;
+    }
+
+    this->mPosition.x += this->mVelo.x * dt;
+    this->mPosition.y += this->mVelo.y * dt;
+}
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 bool SceneObject2D::castRay(Vector2 pos, F32 minLayer, F32 maxLayer) {
     if (!mVisible || mPosition.z > maxLayer || mPosition.z < minLayer) return false;
     return ::CheckCollisionPointRec(pos, mWorldBox);
@@ -132,8 +196,30 @@ DefineEngineMethod(SceneObject2D, setPosition,void, (F32 x, F32 y, F32 z), , "Se
     object->setPosition({ x,y,z });
 ;
 }
-DefineEngineMethod(SceneObject2D, setSize,void, (F32 x, F32 y), , "Set the size and update the worldbox") {
+DefineEngineMethod(SceneObject2D, setSize,void, (F32 x, F32 y), ,
+                   "Set the size and update the worldbox") {
     object->setSize({x,y});
+}
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+DefineEngineMethod(SceneObject2D, moveLinear, void, (F32 dt), ,"Move Linear position/velocity"
+    "\nRequre manual refresh!") {
+    object->moveLinear(dt);
+}
+//-----------------------------------------------------------------------------
+DefineEngineMethod(SceneObject2D, moveGravity, void, (F32 dt, F32 gravityX, F32 gravityY/*, F32 gravityZ*/),
+        (0.f, 9.81f/*, 0.f*/) ,
+        "Move with gravity acceleration default: 0, 9.81"
+        "\nRequre manual refresh!") {
+    object->moveGravity(dt, {gravityX, gravityY});
+}
+//-----------------------------------------------------------------------------
+DefineEngineMethod(SceneObject2D, moveOrbital2D, void, (F32 dt,
+        Vector2 centerPoint, F32 gravity, F32 softening, F32 maxSpeed),
+        (10.f, 150.f, 350.f) ,
+        "2D Safe Orbital Movement"
+        "\nRequre manual refresh!" ) {
+    object->moveOrbital(dt, centerPoint, gravity, softening, maxSpeed);
 }
 //-----------------------------------------------------------------------------
 DefineEngineMethod(SceneObject2D, refresh, void, (), , "refresh the worldbox, needs to be called when position / size is changed") {
