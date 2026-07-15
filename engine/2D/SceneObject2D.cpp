@@ -134,8 +134,16 @@ void SceneObject2D::solveCollision(const CollisionInfo2D& info) {
 
     // --- move out of other object
     if (info.mOther->mCollisionType != CollisionType::Trigger && info.mOther->mCollisionType != CollisionType::None) {
-        this->mPosition.x += info.mNormal.x * info.mOverlap;
-        this->mPosition.y += info.mNormal.y * info.mOverlap;
+        // clamp overlap
+        F32 slop = 0.01f;
+        F32 penetration = ElfMath::getMax(0.0f, info.mOverlap - slop);
+        F32 correctionScale = 0.8f;
+
+        this->mPosition.x += info.mNormal.x * penetration * correctionScale;
+        this->mPosition.y += info.mNormal.y * penetration * correctionScale;
+
+        // this->mPosition.x += info.mNormal.x * info.mOverlap;
+        // this->mPosition.y += info.mNormal.y * info.mOverlap;
         this->updateWorldBox();
     }
 

@@ -2,9 +2,11 @@
 // cheated a bit border check is only applied every 8th tick
 
 // NOTE it's not longer the bunnyMark its my physic/object playground
+// Collision eats all the fps ;) should not be used with so many objects when i only
+// collide against 4 walls
 
 #define MAX_BUNNIES 80000
-#define BUNNY_BATCH 1
+#define BUNNY_BATCH 20
 
 #define BUNNY_SIZE 32
 
@@ -38,7 +40,7 @@ function BunnyMark::spawnBunny(%this) {
 
         // Collision
         TypeMask = 1 << 4; //bunny ;) BIT(4)
-        CollisionMask = 1 << 1 | 1 << 4; //wall ;) BIT(1) | ...
+        CollisionMask = 1 << 1; //was test only: | 1 << 4; //wall ;) BIT(1) | ...
         //Physics
         CollisionType = CollisionType_Bounce;
         Restitution = 1.0;
@@ -168,7 +170,7 @@ function BunnyMark::Render(%this) {
         //     }
         // // }
 
-        %b.moveLinear(%dt);
+        // %b.moveLinear(%dt);
         %b.moveGravity(%dt, $Gravity.x,$Gravity.y);
 
         if ( %buttonDown) {
