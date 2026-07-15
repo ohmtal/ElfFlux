@@ -41,6 +41,13 @@ namespace ElfObjects {
 
 class SceneObject2D;
 
+struct CollisionInfo2D {
+    SceneObject2D* mOther = nullptr; // we did collide with
+    Vector2 mNormal = {0.0f, 0.0f};  // the direction where the collision come from
+    F32 mOverlap = 0.0f;             // how much we overlap
+    Vector2 mCollisionAxis = {0.0f,0.0f};// optional helper {1,0}  X-axis, {0,1} Y-axis
+};
+
 class SceneContainer2D {
 private:
     Vector<SceneObject2D*> mObjects;
@@ -57,9 +64,11 @@ public:
 
 
     void findObjectsInBox(BoundingBox searchBox, Vector<SceneObject2D*>& outResults, bool returnOnlyFirst = false);
+    bool CheckCollide(SceneObject2D* object, Vector<CollisionInfo2D>& outResults);
 
     bool boxEmpty(BoundingBox searchBox);
     SimSet* getBoxObjects(BoundingBox searchBox);
+
 
     const Vector<SceneObject2D*> getObjects() { return  mObjects; }
 
@@ -74,8 +83,8 @@ public:
 
     void deleteAllObjects() ;
 
-private:
     static S32 QSORT_CALLBACK compare_ObjectLayer( const void* a, const void* b );
+    static S32 QSORT_CALLBACK compare_CollisionOverlap( const void* a, const void* b );
 };
 
 // global Container

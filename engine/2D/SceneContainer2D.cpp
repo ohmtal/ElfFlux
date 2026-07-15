@@ -10,11 +10,18 @@
 //-----------------------------------------------------------------------------
 #include "SceneContainer2D.h"
 #include "SceneObject2D.h"
+#include "raymath.h"
 
 namespace ElfObjects {
 // -----------------------------------------------------------------------------
 SceneContainer2D gClientSceneContainer2D;
 
+S32 QSORT_CALLBACK SceneContainer2D::compare_CollisionOverlap( const void* a, const void* b ) {
+    const CollisionInfo2D* infoA =  *(const CollisionInfo2D**)a;
+    const CollisionInfo2D* infoB =  *(const CollisionInfo2D**)b;
+    if (infoA->mOverlap > infoB->mOverlap) return -1;
+    return 1;
+}
 
 S32 QSORT_CALLBACK SceneContainer2D::compare_ObjectLayer( const void* a, const void* b )
 {
@@ -70,7 +77,7 @@ SceneObject2D* SceneContainer2D::castRay(Vector2 pos,  F32 minLayer, F32 maxLaye
     // for (U32 i = 0; i < mObjects.size(); i++) {
     for (U32 i = mObjects.size() - 1;i >= 0;  i--) {
         SceneObject2D* obj = mObjects[i];
-        if (obj->castRay(pos, minLayer,maxLayer)) {
+        if (obj->castRayLayers(pos, minLayer,maxLayer)) {
             return obj;
 
         }
@@ -78,6 +85,78 @@ SceneObject2D* SceneContainer2D::castRay(Vector2 pos,  F32 minLayer, F32 maxLaye
     return nullptr;
 }
 
+// -----------------------------------------------------------------------------
+// check ... to use ...
+// bool shouldCollide(SceneObject2D* a, SceneObject2D* b) {
+//     return (a->mCollisionMask & b->mCollisionLayer) &&
+//     (b->mCollisionMask & a->mCollisionLayer);
+// }
+// -----------------------------------------------------------------------------
+bool SceneContainer2D::CheckCollide(SceneObject2D* a,  Vector<CollisionInfo2D>& outResults) {
+    bool foundOther = false;
+    for (S32 i = 0; i < mObjects.size(); i++) {
+        SceneObject2D* b = mObjects[i];
+        //filter  same object check
+        if (a == b) continue;
+
+        //filter  collision mask / layer  check
+        bool aWantsB = (a->mCollisionMask & b->mTypeMask) != 0;
+        bool bWantsA = (b->mCollisionMask & a->mTypeMask) != 0;
+        if (!aWantsB || !bWantsA) continue;
+
+
+        // finally check we collide
+        if ( ::CheckCollisionRecs(a->mWorldBox, b->mWorldBox)) {
+            CollisionInfo2D infoA;
+            infoA.mOther = b;
+
+            // overlap calculation
+            // F32 aHalfW = a->mWorldBox.width / 2.0f;
+            // F32 bHalfW = b->mWorldBox.width / 2.0f;
+            // F32 diffX = (a->mPosition.x + aHalfW) - (b->mPosition.x + bHalfW);
+            // F32 overlapX = (aHalfW + bHalfW) - std::abs(diffX);
+            //
+            // F32 aHalfH = a->mWorldBox.height / 2.0f;
+            // F32 bHalfH = b->mWorldBox.height / 2.0f;
+            // F32 diffY = (a->mPosition.y + aHalfH) - (b->mPosition.y + bHalfH);
+            // F32 overlapY = (aHalfH + bHalfH) - std::abs(diffY);
+
+
+            F32 diffX = (a->mWorldBox.x +  a->mWorldBoxHalfSize.x) - (b->mWorldBox.x + b->mWorldBoxHalfSize.x);
+            F32 overlapX = (a->mWorldBoxHalfSize.x + b->mWorldBoxHalfSize.x) - ElfMath::mFabs(diffX);
+
+
+            F32 diffY = (a->mWorldBox.y + a->mWorldBoxHalfSize.y) - (b->mWorldBox.y + b->mWorldBoxHalfSize.y);
+            F32 overlapY = (a->mWorldBoxHalfSize.y + b->mWorldBoxHalfSize.y) - ElfMath::mFabs(diffY);
+
+
+            // smallest check
+            if (overlapX < overlapY) {
+                infoA.mOverlap = overlapX;
+                infoA.mNormal.x = (diffX > 0.0f) ? 1.0f : -1.0f; // 1 = von rechts, -1 = von links
+                infoA.mNormal.y = 0.0f;
+            } else {
+                infoA.mOverlap = overlapY;
+                infoA.mNormal.x = 0.0f;
+                infoA.mNormal.y = (diffY > 0.0f) ? 1.0f : -1.0f; // 1 = von unten, -1 = von oben
+            }
+
+            outResults.push_back(infoA);
+            // a->onCollision(infoA); a get the info from this result!
+
+            CollisionInfo2D infoB;
+            infoB.mOther = a;
+            infoB.mOverlap = infoA.mOverlap;
+            infoB.mNormal = Vector2Negate(infoA.mNormal);
+            b->onCollision(infoB); // onCollision is a passive one
+
+            // Events
+
+            foundOther = true;
+        }
+    }
+    return foundOther;
+}
 // -----------------------------------------------------------------------------
 void SceneContainer2D::findObjectsInBox(BoundingBox searchBox, Vector<SceneObject2D*>& outResults, bool returnOnlyFirst) {
 
@@ -102,10 +181,10 @@ void SceneContainer2D::findObjectsInBox(BoundingBox searchBox, Vector<SceneObjec
 
 
 
-    for (U32 i = 0; i < mObjects.size(); i++) {
+    for (S32 i = 0; i < mObjects.size(); i++) {
         SceneObject2D* obj = mObjects[i];
 
-        if ( obj->rectCollide(rect, minLayer, maxLayer)) {
+        if ( obj->rectCollideLayers(rect, minLayer, maxLayer)) {
             outResults.push_back(obj);
             if (returnOnlyFirst) return;
         }

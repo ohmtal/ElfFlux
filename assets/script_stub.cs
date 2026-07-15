@@ -506,7 +506,7 @@ class  SceneObject : public SimSet {
    Is the object drawn
    
     */
-   bool Visible;
+   bool visible;
    /*! @name Ungrouped
    @{ */
    /*! */
@@ -741,10 +741,29 @@ class  SceneObject2D : public SimObject {
   public:
    /*! Set the position and refresh the worldbox */
    void setPosition( float x, float y, float z ) {}
+   /*! het the layer */
+   void setZ( float z ) {}
+   /*! get the layer */
+   F32 getZ() {}
    /*! Set the size and update the worldbox */
    void setSize( float x, float y ) {}
-   /*! refresh the worldbox, needs to be called when position / size is changed */
-   void refresh() {}
+   /*! Move Linear position/velocity
+Require manual refresh! */
+   void moveLinear( float dt, bool doRefresh=false ) {}
+   /*! Move with gravity acceleration default: 0, 9.81
+Require manual refresh! */
+   void moveGravity( float dt, float gravityX=0.f, float gravityY=9.81f, bool doRefresh=false ) {}
+   /*! 2D Safe Orbital Movement
+Require manual refresh! */
+   void moveOrbital2D( float dt, Vector2 centerPoint, float gravity=10.f, float softening=150.f, float maxSpeed=350.f, bool applyMass=true, bool doRefresh=false ) {}
+   /*! Apply a radial impulse, maxDistance == 0 means no distance check  */
+   void applyRadialImpulse( float centerX, float centerY, float strength, float maxDistance=0.f ) {}
+   /*! Apply a radial impulse */
+   void applyLinearImpulse( float dirX, float dirY, float strength ) {}
+   /*! save the current position */
+   void beginMove() {}
+   /*! save the current position */
+   void endMove() {}
    /*!
    2D position + layer. 
    
@@ -756,6 +775,21 @@ class  SceneObject2D : public SimObject {
     */
    Vector2 Size;
    /*!
+   Collsion filter mask
+   
+    */
+   int collisionMask;
+   /*!
+   Collision Type mask of this object
+   
+    */
+   int typeMask;
+   /*!
+   See also enum CollisionType
+   
+    */
+   int collisionType;
+   /*!
    The color or tint of the object
    
     */
@@ -764,7 +798,27 @@ class  SceneObject2D : public SimObject {
    Is the object drawn
    
     */
-   bool Visible;
+   bool visible;
+   /*!
+    */
+   float x;
+   /*!
+    */
+   float y;
+   /*!
+    */
+   Vector2 velocity;
+   /*!
+    */
+   float veloX;
+   /*!
+    */
+   float veloY;
+   /*!
+   Mass of the object
+   
+    */
+   float mass;
    /*! @name Ungrouped
    @{ */
    /*! */
@@ -881,12 +935,12 @@ class  ModelObject : public SceneObject {
 };
 class  SpriteObject : public SceneObject2D {
   public:
+   /*! set the Velocty by a normalized forward vector  */
+   void setForwardVector( Vector2 vector, float speed=1.f ) {}
    /*! set the forward vector by rot in degree */
-   void setForwardVectorByAngle( float rot ) {}
+   void setForwardVectorByAngle( float rot, float speed=1.f ) {}
    /*! update the rotation (degree) and set the forward vector */
    void setRotationAndForwardVector( float rot ) {}
-   /*! usefull for bouncing on borders */
-   void doBounce( float x, float y, float width, float height ) {}
    /*!
    ID of the Texture
    
@@ -902,16 +956,6 @@ class  SpriteObject : public SceneObject2D {
    
     */
    float RotationOrgin;
-   /*!
-   motion speed
-   
-    */
-   float speed;
-   /*!
-   motion vector will be normaized, see also setForwardVectorByAngle and setRotationAndForwardVector
-   
-    */
-   Vector2 ForwardVector;
    /*!
    flip on xaxis
    
@@ -4931,6 +4975,8 @@ SetModelShader(modelId, shaderId [, matIndex=0]) */
 --- Script Constants Dump ---
   NOISE_SCALE = 16
   WAVE_SPEED = 2.0
+  CollisionType_Static = 4
+  CollisionType_None = 0
   NPATCH_THREE_PATCH_HORIZONTAL = 2
   CAMERA_ORTHOGRAPHIC = 1
   CAMERA_PERSPECTIVE = 0
@@ -5022,6 +5068,7 @@ SetModelShader(modelId, shaderId [, matIndex=0]) */
   KEY_SCROLL_LOCK = 281
   KEY_PAGE_UP = 266
   KEY_THREE = 51
+  CollisionType_Kinematic = 2
   SHADER_UNIFORM_UIVEC2 = 9
   KEY_KP_8 = 328
   GAMEPAD_BUTTON_LEFT_FACE_RIGHT = 2
@@ -5080,6 +5127,7 @@ SetModelShader(modelId, shaderId [, matIndex=0]) */
   BLEND_CUSTOM = 6
   KEY_SIX = 54
   GAMEPAD_BUTTON_RIGHT_TRIGGER_1 = 11
+  CollisionType_Trigger = 1
   KEY_COMMA = 44
   SHADER_LOC_MAP_CUBEMAP = 22
   KEY_D = 68
@@ -5229,6 +5277,7 @@ SetModelShader(modelId, shaderId [, matIndex=0]) */
   MATERIAL_MAP_EMISSION = 5
   SHADER_UNIFORM_FLOAT = 0
   SHADER_UNIFORM_UIVEC3 = 10
+  CollisionType_Bounce = 3
   MATERIAL_MAP_HEIGHT = 6
   MATERIAL_MAP_IRRADIANCE = 8
   MATERIAL_MAP_PREFILTER = 9
@@ -5263,5 +5312,5 @@ SetModelShader(modelId, shaderId [, matIndex=0]) */
   SHADER_LOC_MAP_NORMAL = 17
   SHADER_UNIFORM_IVEC4 = 7
   SHADER_UNIFORM_UINT = 8
---- End of Dump (334 items) ---
+--- End of Dump (339 items) ---
 */

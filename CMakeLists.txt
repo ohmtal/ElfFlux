@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project(elfFlux)
 set(PROJECT_SRC
     src/main.cpp
+    engine/core/ElfFluxInit.cpp
 
     engine/3D/ModelObject.cpp
     engine/3D/SceneContainer.cpp

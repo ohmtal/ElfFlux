@@ -20,6 +20,7 @@ bool gEnableConsole = false;
 extern void initEnum();  //elfEnum.cpp
 extern void CustomTraceLog(int msgType, const char *text, va_list args); //elfBase.cpp
 namespace ElfResource { extern void shutDown(); }
+namespace ElfFlux { extern void initEnum(); }
 
 
 int argParser(int argc, char* argv[]) {
@@ -76,6 +77,7 @@ int main(int argc, char* argv[])
     argParser(argc, argv);
     engineGlue::init(nullptr, GetApplicationDirectory()); // FIXME command line path => --path
     initEnum();
+    ElfFlux::initEnum();
     SetTraceLogCallback(CustomTraceLog);
 
 
