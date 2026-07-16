@@ -6,11 +6,12 @@
 // collide against 4 walls
 
 #define MAX_BUNNIES 80000
-#define BUNNY_BATCH 20
+#define BUNNY_BATCH 10
 
-#define BUNNY_SIZE 32
+#define BUNNY_SIZE 24
 
-$BUNNY_CANVAS="64 64 1024 520";
+// $BUNNY_CANVAS="64 64 1024 520";
+$BUNNY_CANVAS="128 128 896 392";
 $WALL_THICK=8;
 
 function createBunnyMark() {
@@ -27,8 +28,8 @@ function BunnyMark::spawnBunny(%this) {
     %b = GetRandomValue(50, 255);  //b
     %a = 255; //GetRandomValue(64, 200); //a
 
-    %x = GetRandomValue(0, %this.width);
-    %y = GetRandomValue(0, %this.height);
+    // %x = GetRandomValue(0, %this.width);
+    // %y = GetRandomValue(0, %this.height);
     %z = GetRandomValue(0, 90) / 100 + 0.1; //0.1 .. 1.0
 
     //
@@ -40,16 +41,20 @@ function BunnyMark::spawnBunny(%this) {
 
         // Collision
         TypeMask = 1 << 4; //bunny ;) BIT(4)
-        CollisionMask = 1 << 1; //was test only: | 1 << 4; //wall ;) BIT(1) | ...
+        CollisionMask = 1 << 1 ; //| 1 << 4; //wall ;) BIT(1) | ...
         //Physics
         CollisionType = CollisionType_Bounce;
+        // CollisionType = CollisionType_Kinematic;
         Restitution = 1.0;
         Friction = 0.5;
-        Damping = 0.1; // we are not a trampolin
+        //Damping = 0.1; // we are not a trampolin
+        // Damping = 1.2; // we are  a trampolin
 
 
         VeloX = GetRandomValue(-100,100);
         VeloY = GetRandomValue(-100,100);
+
+        Size  = BUNNY_SIZE SPC BUNNY_SIZE;
     };
     // %speed = GetRandomValue(50,300);
     // %obj.setForwardVectorByAngle(GetRandomValue(0,359), %speed);
@@ -80,6 +85,9 @@ function BunnyMark::onAdd(%this) {
     };
     %this.wallBottom = %this.wallTop.clone();
     %this.wallBottom.position.y = $BUNNY_CANVAS.y + $BUNNY_CANVAS.height;
+
+    // add a small gaps
+    %this.wallBottom.size.x -= 64;
 
     %this.wallLeft = %this.wallTop.clone();
     %this.wallLeft.position.y += $WALL_THICK;
@@ -125,7 +133,7 @@ function BunnyMark::scatter(%this) {
 
 //----------------------------------------------------------------------
 function BunnyMark::Render(%this) {
-    ClearBackground(SEABLUE);
+    ClearBackground("20 20 60");
 
     DrawRectangleRec( %this.wallTop.GetWorldBox(), ORANGE);
     DrawRectangleRec( %this.wallBottom.GetWorldBox(), ORANGE);
@@ -170,6 +178,7 @@ function BunnyMark::Render(%this) {
         //     }
         // // }
 
+
         // %b.moveLinear(%dt);
         %b.moveGravity(%dt, $Gravity.x,$Gravity.y);
 
@@ -178,6 +187,11 @@ function BunnyMark::Render(%this) {
         }
 
         %b.endMove();
+
+        if (%b.y > 1000) {
+            // echo("Bunny left the world.");
+            %b.schedule(10, delete);
+        }
 
     }
 
@@ -198,7 +212,7 @@ function BunnyMark::Render(%this) {
 
     // -------
     ClientContainer2DDrawObjects();
-    DrawText( "Bunnys:" SPC %cnt,10, 10, 32, RAYWHITE, true);
+    DrawText( "2D physics playground. Bunnies:" SPC %cnt,10, 10, 32, RAYWHITE, true);
     // DrawText( "Damping:" SPC %damping SPC "Friction" SPC %friction,10, 50, 20, WHITE, false);
     // DrawText( "$Gravity:" SPC $Gravity SPC "$ImpulseStrength" SPC $ImpulseStrength,10, 70, 20, WHITE, false);
 }

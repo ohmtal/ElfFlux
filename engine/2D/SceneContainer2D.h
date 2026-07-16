@@ -45,7 +45,7 @@ struct CollisionInfo2D {
     SceneObject2D* mOther = nullptr; // we did collide with
     Vector2 mNormal = {0.0f, 0.0f};  // the direction where the collision come from
     F32 mOverlap = 0.0f;             // how much we overlap
-    Vector2 mCollisionAxis = {0.0f,0.0f};// optional helper {1,0}  X-axis, {0,1} Y-axis
+    // Vector2 mCollisionAxis = {0.0f,0.0f};// optional helper {1,0}  X-axis, {0,1} Y-axis
 };
 
 class SceneContainer2D {
