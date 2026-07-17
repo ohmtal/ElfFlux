@@ -35,7 +35,12 @@ enum class CollisionType {
     Bounce,     // ball physics / see also mRestitution and mFriction
     Static
 };
-
+enum class ShapeType {
+    None,
+    Rectangle,
+    Line,
+    Circle
+};
 
 class SceneObject2D : public /*SimSet*/ SimObject {
     typedef SimObject Parent;
@@ -89,6 +94,9 @@ public:
     // Impulse
     void applyRadialImpulse(const Vector2& center, F32 strength, F32 maxDistance);
     void applyLinearImpulse(Vector2 direction, F32 strength);
+
+    // ShapeType
+    ShapeType mShapeType = ShapeType::Rectangle;
 
     // Collision ---------------- abstract ------------------
     CollisionType mCollisionType = CollisionType::None;

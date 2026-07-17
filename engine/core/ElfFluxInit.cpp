@@ -10,6 +10,7 @@ namespace ElfFlux {
 
 void initEnum() {
     Con::registerEnumS32<ElfObjects::CollisionType>("CollisionType_");
+    Con::registerEnumS32<ElfObjects::ShapeType>("ShapeType_");
 }
 
 

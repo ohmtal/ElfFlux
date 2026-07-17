@@ -106,6 +106,10 @@ bool SceneContainer2D::CheckCollide(SceneObject2D* a,  Vector<CollisionInfo2D>& 
 
 
         // finally check we collide
+
+        // FIXME ShapeType - need a custom function which check what collsion check have to be used.
+        // i guess i have to implement my own collision check !
+
         if ( ::CheckCollisionRecs(a->mWorldBox, b->mWorldBox)) {
             CollisionInfo2D infoA;
             infoA.mOther = b;

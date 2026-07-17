@@ -55,6 +55,7 @@ void SceneObject2D::initPersistFields() {
              &_setFieldSize, &defaultProtectedGetFn,
              "Render Size.");
 
+    addField("ShapeType", TypeS32, Offset(mShapeType, SceneObject2D), "Type of the shape for collision. Default ShapeType_Rectangle");
     addField("collisionMask", TypeS32, Offset(mCollisionMask,SceneObject2D), "Collsion filter mask");
     addField("typeMask", TypeS32, Offset(mTypeMask,SceneObject2D), "Collision Type mask of this object");
     addField("collisionType", TypeS32, Offset(mCollisionType,SceneObject2D), "See also enum CollisionType_Kinematic, CollisionType_Bounce and other constants with  CollisionType_");
@@ -63,7 +64,7 @@ void SceneObject2D::initPersistFields() {
     addField("visible", TypeBool, Offset(mVisible, SceneObject2D), "Is the object drawn");
 
     // position Fields require refresh after settled
-    addField("x", TypeF32, Offset(mPosition.x,SceneObject2D));
+    addField("x", TypeF32, Offset(mPosition.x,SceneObject2D), "");
     addField("y", TypeF32, Offset(mPosition.y,SceneObject2D));
     // use setZ or .position  addField("z", TypeF32, Offset(mPosition.z,SceneObject2D));
 
@@ -71,6 +72,8 @@ void SceneObject2D::initPersistFields() {
     addField("velocity", TypeVector2, Offset(mVelo,SceneObject2D));
     addField("veloX", TypeF32, Offset(mVelo.x,SceneObject2D));
     addField("veloY", TypeF32, Offset(mVelo.y,SceneObject2D));
+
+
 
     addField("mass", TypeF32, Offset(mMass,SceneObject2D), "Mass of the object");
     addField("restitution", TypeF32, Offset(mRestitution,SceneObject2D), "bouncyness: 0.0 = like a stone ; 1.0 = like a flummy ball");
@@ -232,7 +235,9 @@ void SceneObject2D::solveCollision(const CollisionInfo2D& info) {
 void SceneObject2D::onPositionChanged() {
     this->updateWorldBox();
 
-    if ( mCollisionType != CollisionType::Static && mCollisionType != CollisionType::None) {
+    if ( mCollisionType != CollisionType::Static && mCollisionType != CollisionType::None
+        && mShapeType != ShapeType::None
+    ) {
         Vector<CollisionInfo2D> collsionInfos;
         if (gClientSceneContainer2D.CheckCollide(this, collsionInfos)) {
             // sort by biggest mOverlap
@@ -240,6 +245,9 @@ void SceneObject2D::onPositionChanged() {
                     SceneContainer2D::compare_CollisionOverlap );
 
             // Con::warnf("--------- We did collide:");
+
+            // FIXME ShapeType
+
             for (const auto& info : collsionInfos) {
                 if (!::CheckCollisionRecs(this->mWorldBox, info.mOther->mWorldBox)) {
                     continue;
@@ -461,10 +469,12 @@ DefineEngineMethod(SceneObject2D, GetWorldBox, Rectangle, (), ,
 DefineEngineMethod(SceneObject2D, beginMove, void, (), ,
                    "save the current position"){
     object->mSavPostion = object->mPosition;
-    object->onPositionChanged();
 }
 DefineEngineMethod(SceneObject2D, endMove, void, (), ,
                    "save the current position"){
-    if (object->mSavPostion != object->mPosition)  object->onPositionChanged();
+    // only if deltaMove > 0.0001f
+    if (Vector3Distance(object->mSavPostion, object->mPosition) > 0.0001f )  {
+        object->onPositionChanged();
+    }
 }
 }//namespace
