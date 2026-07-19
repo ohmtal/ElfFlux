@@ -12,7 +12,7 @@
 #endif
 
 
-String gScriptFile = "assets/main.cs";
+String gScriptFile = "assets/main.elf";
 bool gShutDownRequest = false;
 bool gNoDefaultCalls  = false;
 bool gEnableConsole = false;

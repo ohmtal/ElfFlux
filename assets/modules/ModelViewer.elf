@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------
-exec("assets/include/CameraFree.cs");
-exec("assets/include/ModelLoader.cs");
+exec("assets/include/CameraFree.elf");
+exec("assets/include/ModelLoader.elf");
 //----------------------------------------------------------------------
 #define VEC3_ZERO "0 0 0"
 //----------------------------------------------------------------------

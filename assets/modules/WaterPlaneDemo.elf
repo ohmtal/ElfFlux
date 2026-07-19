@@ -1,4 +1,4 @@
-exec("assets/include/CameraFree.cs");
+exec("assets/include/CameraFree.elf");
 //----------------------------------------------------------------------
 #define WAVE_SPEED 2.0
 #define WATER_TYPE lake

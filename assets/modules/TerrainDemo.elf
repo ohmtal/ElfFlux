@@ -1,8 +1,8 @@
-exec("assets/include/CameraFree.cs");
-exec("assets/include/Sun.cs");
-exec("assets/include/WaterPlane.cs");
-exec("assets/include/ModelLoader.cs");
-exec("assets/include/LiteUnit.cs");
+exec("assets/include/CameraFree.elf");
+exec("assets/include/Sun.elf");
+exec("assets/include/WaterPlane.elf");
+exec("assets/include/ModelLoader.elf");
+exec("assets/include/LiteUnit.elf");
 
 
 //----------------------------------------------------------------------

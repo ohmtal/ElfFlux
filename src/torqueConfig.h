@@ -25,10 +25,10 @@
 
 // ----------------------------------------------------------------------------
 
-#define TORQUE_SCRIPT_EXTENSION   "cs"
-#define TORQUE_APP_NAME            "raylib-elfscript"
+#define TORQUE_SCRIPT_EXTENSION   "elf"
+#define TORQUE_APP_NAME            "ElfFlux"
 #define TORQUE_APP_VERSION         1000
-#define TORQUE_APP_VERSION_STRING  "26.06.23.0"
+#define TORQUE_APP_VERSION_STRING  "26.07.19.0"
 #define TORQUE_DISABLE_MEMORY_MANAGER
 
 

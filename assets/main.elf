@@ -48,7 +48,7 @@ function Main::loadModule(%this, %setNewModuleIndex) {
     echo(" Load Module:" SPC %this.moduleName);
     echo("---------------------------------------------------------------------");
 
-    if (!exec("assets/modules/" @ %this.moduleName @ ".cs")) {
+    if (!exec("assets/modules/" @ %this.moduleName @ ".elf")) {
         error("Failed to load module" SPC %this.moduleName);
         return false;
     }
@@ -137,10 +137,10 @@ function MainLoop() {
     $Main.loop();
 }
 
-function rl() { exec("assets/main.cs");}
+function rl() { exec("assets/main.elf");}
 
 function updateDocu() { 
-    %file = "assets/script_stub.cs";
+    %file = "assets/script_stub.elf";
     // if (exportConsoleDocu(%file))
     if (exportConsoleDocu(%file, false, false, false, true))
     {
