@@ -176,9 +176,10 @@ function Primitives2D::Render(%this) {
 
     %speed = GetFrameTime() * 30;
     %list = %this.batchList;
-    %cnt = %list.getCount();
-    for (%i = 0 ; %i < %cnt; %i++) {
-        %obj = %list.getObject(%i);
+    // %cnt = %list.getCount();
+    // for (%i = 0 ; %i < %cnt; %i++) {
+    //     %obj = %list.getObject(%i);
+    foreach(%obj in %list) {
         %obj.position.x += %speed;
         if (%obj.position.x > $batchW ) {
             %obj.type =  GetRandomValue(0,3);

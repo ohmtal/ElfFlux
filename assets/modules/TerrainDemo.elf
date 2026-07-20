@@ -325,9 +325,10 @@ function TerrainDemo::Render(%this) {
     %waterPlane.update(%dt);
 
     %lo = %this.levelObjects;
-    %cnt = %lo.getCount();
-    for (%i = 0; %i < %cnt; %i++) {
-        %o = %lo.getObject(%i);
+    // %cnt = %lo.getCount();
+    // for (%i = 0; %i < %cnt; %i++) {
+        // %o = %lo.getObject(%i);
+    foreach(%o in %lo) {
         if (%o.update) %o.update(%dt);
     }
 

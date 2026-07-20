@@ -112,20 +112,22 @@ function BunnyMark::OnRemove(%this) {
 function BunnyMark::ApplyRadialImpulse(%this, %pos, %strength) {
     warn("ApplyRadialImpulse:" SPC %pos SPC %strength);
     %list = %this.bunnies;
-    %cnt = %list.getCount();
     %dist = 150;
-    for (%i = 0; %i < %cnt; %i++) {
-        %b = %list.getObject(%i);
+    // %cnt = %list.getCount();
+    // for (%i = 0; %i < %cnt; %i++) {
+    //     %b = %list.getObject(%i);
+    foreach(%b in %list) {
         %b.ApplyRadialImpulse(%pos.x, %pos.y, %strength, %dist);
     }
 }
 //----------------------------------------------------------------------
 function BunnyMark::scatter(%this) {
     %list = %this.bunnies;
-    %cnt = %list.getCount();
     %dist = 150;
-    for (%i = 0; %i < %cnt; %i++) {
-        %b = %list.getObject(%i);
+    // %cnt = %list.getCount();
+    // for (%i = 0; %i < %cnt; %i++) {
+        // %b = %list.getObject(%i);
+    foreach(%b in %list) {
         %b.VeloX = GetRandomValue(-200,200);
         %b.VeloY = GetRandomValue(-200,200);
     }
@@ -160,8 +162,9 @@ function BunnyMark::Render(%this) {
     %mousePos = GetMousePosition();
 
     // $ticks++; //cheat ;)
-    for (%i = 0; %i < %cnt; %i++) {
-        %b = %list.getObject(%i);
+    // for (%i = 0; %i < %cnt; %i++) {
+    //     %b = %list.getObject(%i);
+    foreach(%b in %list) {
 
         %b.beginMove();
 
