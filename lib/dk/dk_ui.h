@@ -810,7 +810,12 @@ extern "C"
 
       // @Paste (CTRL+V)
       if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_V)) {
+        //FIXME XXTH: paste inside a text - i'am on a other misson to do this now
         strcat(text, GetClipboardText());
+
+        // cursorPos += strlen(GetClipboardText()) ; //XXTH added position of cursor
+        // since strcat add the text on the end i do:
+        cursorPos += strlen(text);
       }
 
       // @Submit (Enter)

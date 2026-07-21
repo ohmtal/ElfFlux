@@ -11,6 +11,13 @@
 #include <emscripten/emscripten.h>
 #endif
 
+#ifdef WITH_IMGUI
+#include "imgui.h"
+#include "rlImGui.h"
+extern void InitBindings_ImGui();
+bool gEnableDockSpace = false;
+#endif
+
 
 String gScriptFile = "assets/main.elf";
 bool gShutDownRequest = false;
@@ -63,12 +70,22 @@ int argParser(int argc, char* argv[]) {
 
 
 void mainLoop(void*) {
+#ifdef WITH_IMGUI
+    BeginDrawing();
+    rlImGuiBegin();
+    if (gEnableDockSpace) ImGui::DockSpaceOverViewport(0, NULL, ImGuiDockNodeFlags_PassthruCentralNode);
     Con::executef("MainLoop");
+    rlImGuiEnd();
+    EndDrawing();
+#else
+    Con::executef("MainLoop");
+#endif
     static F32 timeAccumulator = 0.0f;
     F32 currentMs = (GetFrameTime() * 1000.0f) + timeAccumulator;
     U32 dtMs = (U32)currentMs;
     timeAccumulator = currentMs - (F32)dtMs;
     engineGlue::process(dtMs);
+
 }
 
 
@@ -101,18 +118,46 @@ int main(int argc, char* argv[])
             return 1;
         }
 
-#if defined(PLATFORM_WEB)
+    #ifdef WITH_IMGUI
+        // overwrite script BeginDrawing(); / EndDrawing();
+        // with stubs to get ImGui working
+        Con::evaluate( R"(
+        function BeginDrawing() {}
+        function EndDrawing() {}
+        )"
+        );
+
+        // initialize rlImGui
+        rlImGuiSetup(true);
+        InitBindings_ImGui(); //ElfScript ImGui bindings
+
+        String iniFileName = Con::getVariable("$IMGUI::IniFilename", "");
+        gEnableDockSpace = Con::getBoolVariable("$IMGUI::EnableDockSpace", false);
+
+        if (iniFileName.isEmpty())  ImGui::GetIO().IniFilename = nullptr;
+        else ImGui::GetIO().IniFilename = iniFileName.c_str();
+        if (gEnableDockSpace) {
+            ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+        }
+
+    #endif
+
+
+    #if defined(PLATFORM_WEB)
         // emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
         emscripten_set_main_loop_arg(mainLoop, nullptr, 0, 1);
         emscripten_set_main_loop_timing(EM_TIMING_RAF, 1); //force RAF
-#else
+    #else
         while (!WindowShouldClose())    // Detect window close button or ESC key
         {
             mainLoop(nullptr);
             if (gShutDownRequest) break;
         }
-#endif
+    #endif
         Con::executef("MainShutdown");
+    #ifdef WITH_IMGUI
+        rlImGuiShutdown();
+    #endif
     } // !gNoDefaultCalls
 
 

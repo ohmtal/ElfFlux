@@ -1,5 +1,5 @@
 // Main Script
-$MODULES = "TerrainDemo ModelViewer WaterPlaneDemo gridtest Primitives2D BunnyMark";
+$MODULES = "TerrainDemo ModelViewer WaterPlaneDemo gridtest Primitives2D BunnyMark ImGuiDemo";
 // $MODULES = $MODULES SPC "lights_script models_first_person_maze textures_sprite_animation";
 // $MODULES = $MODULES SPC "textures_background_scrolling Eyes";
 // $MODULES = $MODULES SPC "textures_mouse_painting";
@@ -8,6 +8,15 @@ $MODULES = "TerrainDemo ModelViewer WaterPlaneDemo gridtest Primitives2D BunnyMa
 // $MODULES = $MODULES SPC "looptest blank shapes_starfield_effect shapes_starfield_nativ";
 
 // LOADFAILTEST shapes_starfield_effect_v1
+
+// ------- ImGui Settings ---------
+// set a  custom ini (default none):
+//      $IMGUI::IniFilename = "test.ini";
+// enable dock space (default off):
+//      $IMGUI::EnableDockSpace = true;
+// -------------------------------
+
+
 
 function Main::init(%this) {
     SetConfigFlags(%this.flags );
@@ -87,7 +96,7 @@ function Main::loop(%this) {
     }
 
 
-    BeginDrawing();
+    // done in C++! BeginDrawing();
 
     if (isObject(%this.module)){
         %this.module.render();
@@ -101,7 +110,8 @@ function Main::loop(%this) {
         , 5 , GetScreenHeight() - 50, 20,   BLACK, true, GREEN);
 
     %this.ConsoleGui.update();
-    EndDrawing();
+
+    // done in C++! EndDrawing();
 }
 
 // -----------------------------------------------------------------------------

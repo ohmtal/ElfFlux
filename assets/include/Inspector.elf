@@ -1,0 +1,182 @@
+//
+// ImGui Object Inspector
+//
+// -----------------------------------------------------------------------------
+//----------------------------------------------------------------------
+// TEST for script based ImGui Field Inspector
+function ListObjectFields(%object) {
+    // %object.dumpFields();
+
+    // see also for better filtering - should be cached with export ?!
+    // - echo(getFieldCountNS(SpriteObject));
+    // - echo(getFieldNS(SpriteObject,4));
+    // - echo(getClassHierarchy(SpriteObject)); << Space separated
+
+    %cnt = %object.getFieldCount();
+    echo ("----- FIELDS" SPC %cnt SPC "-------------");
+    for (%i = 0 ; %i < %cnt; %i++) {
+        %fieldName = %object.getField(%i);
+        %fieldType = %object.getFieldType(%fieldName);
+        %fieldDoc = %object.getFieldDoc(%fieldName);
+        %fieldValue = %object.getFieldValue(%fieldName);
+        echo(%fieldname SPC ":" SPC %fieldType SPC "=" SPC %fieldValue) ; // SPC "(" SPC %fieldDoc SPC  ")");
+    }
+    %cnt = %object.getDynamicFieldCount();
+    echo ("----- DYNAMIC FIELDS" SPC %cnt SPC "-------------");
+    for (%i = 0 ; %i < %cnt; %i++) {
+        %fldData = %object.getDynamicField(%i); //tab separates name^value
+        %fieldName = getField(%fldData,0);
+        %fieldType = %object.getFieldType(%fieldName);
+        %fieldValue = getField(%fldData,1);
+        echo(%fieldname SPC ":" SPC %fieldType SPC "=" SPC %fieldValue) ; // SPC "(" SPC %fieldDoc SPC  ")");
+    }
+
+}
+// -----------------------------------------------------------------------------
+// const for gui types:
+$I_UNKNOWN    = 0;
+$I_Header     = 1;
+$I_TypeBool   = 2;
+$I_TypeString = 3;
+$I_TypeInt    = 4;
+$I_TypeFloat  = 5;
+$I_CloseHeader = 6;
+// -----------------------------------------------------------------------------4
+function FieldInspector::_addFieldDef(%this, %fieldname) {
+    %object = %this.object;
+    if (!isObject( %object )) return false;
+
+    %element = new SimObject() {
+        static    = true;
+        fieldname = %fieldname;
+        fieldtype = %object.getFieldType(%fieldname);
+        internalName = %fieldname;
+    };
+    switch$ (%element.fieldtype) {
+        case "TypeS32": %element.type = $I_TypeInt;
+        case "TypeF32": %element.type = $I_TypeFloat;
+        case "TypeBool": %element.type = $I_TypeBool;
+        default: %element.type = $I_TypeString;
+    }
+    %this.gui.add(%element);
+
+    return true;
+}
+// -----------------------------------------------------------------------------
+// set new to object which should be inspected
+// here we generate the gui for the objects fields
+// this should be cached in a file
+function FieldInspector::Inspect(%this, %object) {
+    if (!isObject( %object )) return false;
+    %this.object = %object;
+    if (isObject(%this.gui)) %this.gui.delete();
+    %this.gui = new SimGroup();
+
+   %guiId = %this.gui.getId();
+   %classes = getClassHierarchy(%object.getClassName());
+   for (%index = getWordCount(%classes) - 1; %index >=0; %index--) {
+       %class = getWord(%classes,%index);
+       echo("class:" SPC %class SPC "I=" SPC %index);
+        %this.gui.add(
+          new SimObject() {
+            type = $I_Header;
+            caption = %class;
+          }
+        );
+        %cnt = getFieldCountNS(%class);
+        for (%i = 0; %i < %cnt; %i++) {
+            %fieldname = getFieldNS(%class, %i);
+            if (eval("return isObject(" @ %guiId @ "->" @ %fieldname @ ");")) {
+                continue;
+            }
+
+            %this._addFieldDef(%fieldname);
+
+        }
+        %this.gui.add( new SimObject() { type = $I_CloseHeader; caption = %class;});
+    } //classes iterator
+
+    // now the dynamic fields:
+    %cnt = %object.getDynamicFieldCount();
+
+
+    %this.gui.add( new SimObject() { type = $I_Header; caption = "Dynamic Fields"; } );
+    // FIXME ADD BUTTON! and a reload button
+    for (%i = 0 ; %i < %cnt; %i++) {
+        %fldData = %object.getDynamicField(%i); //tab separates name^value
+        %fieldName = getField(%fldData,0);
+        %this._addFieldDef(%fieldname);
+    }
+    %this.gui.add( new SimObject() { type = $I_CloseHeader; caption = "Dynamic Fields";});
+
+}
+// -----------------------------------------------------------------------------
+function FieldInspector::_reload(%this) {
+     if (!isObject( %this.object )) return ;
+      %this.Inspect(%this.object);
+}
+// -----------------------------------------------------------------------------
+// Render the gui
+function FieldInspector::Render(%this) {
+    if (!isObject( %this.object ) || !isObject(%this.gui)) return;
+    if (!ImBegin("FieldInspector: " SPC %this.object.getName() SPC %this.object.getId())) {
+        ImEnd();
+        return;
+    }
+
+    // FIXME $I_Header => if (ImTreeNode(%element.caption))  ... $I_CloseHeader => ImTreePop...
+    if (ImButton("Reload")) %this._reload();
+
+    %skip = false;
+    foreach (%element in %this.gui) {
+        ImSetNextItemWidth(140.0);
+        switch (%element.type) {
+            case $I_Header:
+               // ImSeparatorText(%element.caption);
+                %skip = !ImTreeNode(%element.caption, ImGuiTreeNodeFlags_DefaultOpen);
+                // echo("OPEN! skip=" SPC %skip SPC "class:" SPC %element.caption);
+
+            case $I_CloseHeader:
+                // echo("POP! skip=" SPC %skip SPC "class:" SPC %element.caption);
+                if (!%skip) ImTreePop();
+                %skip = false;
+
+            case $I_TypeString:
+                if (!%skip) ImInputText(%element.fieldname, %this.object.getId() @ "." @ %element.fieldname);
+
+            case $I_TypeBool:
+                if (!%skip) ImCheckbox(%element.fieldname, %this.object.getId() @ "." @ %element.fieldname);
+
+            case $I_TypeFloat:
+                if (!%skip) ImInputText(%element.fieldname, %this.object.getId() @ "." @ %element.fieldname);
+
+            case $I_TypeInt:
+                if (!%skip) ImInputText(%element.fieldname, %this.object.getId() @ "." @ %element.fieldname);
+
+
+            default:
+                if (!%skip) ImTextColored(cl_Red, %element.fieldname SPC %element.fieldtype);
+        } //switch
+    }
+
+    if (ImButton("Add dynamic Field")) {
+        ImOpenPopup("FieldInspectorAddDynamicPopup");
+    }
+
+    if (ImBeginPopup("FieldInspectorAddDynamicPopup")) {
+        ImInputText("Fieldname:", %this.getId() @ ".tmpFieldName");
+        ImInputText("Value:", %this.getId() @ ".tmpFieldValue");
+        if (ImButton("Apply")) {
+            if (trim( %this.tmpFieldName) !$= "") {
+                %this.object.setFieldValue(%this.tmpFieldName, %this.tmpFieldValue);
+                ImCloseCurrentPopup();
+                %this._reload();
+            }
+        }
+        ImEndPopup();
+    }
+
+    // %this.object=0; //debug only once...
+    ImEnd();
+}
+// -----------------------------------------------------------------------------

@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.24)
 # -----------------------------------------------------------------------------
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+option(ENABLE_IMGUI "Compile and use ImGui" ON)
 # -----------------------------------------------------------------------------
 
 project(elfFlux)
@@ -132,20 +134,26 @@ endif()
 
 
 # -------- Imgui + rlImgui
-set(IMGGUI_DIR "${CMAKE_CURRENT_LIST_DIR}/lib/imgui")
-set(RLIMGGUI_DIR "${CMAKE_CURRENT_LIST_DIR}/lib/rlImGui")
+if (ENABLE_IMGUI)
+    set(IMGGUI_DIR "${CMAKE_CURRENT_LIST_DIR}/lib/imgui")
+    set(RLIMGGUI_DIR "${CMAKE_CURRENT_LIST_DIR}/lib/rlImGui")
 
-set(IMGUI_SRC
-    ${IMGGUI_DIR}/imgui.cpp
-    ${IMGGUI_DIR}/imgui_draw.cpp
-    ${IMGGUI_DIR}/imgui_widgets.cpp
-    ${IMGGUI_DIR}/imgui_tables.cpp
-    # also demo ?
-    # ${IMGGUI_DIR}/imgui_demo.cpp
-    # ------
-    ${RLIMGGUI_DIR}/rlImGui.cpp
-)
+    set(IMGUI_SRC
+        ${IMGGUI_DIR}/imgui.cpp
+        ${IMGGUI_DIR}/imgui_draw.cpp
+        ${IMGGUI_DIR}/imgui_widgets.cpp
+        ${IMGGUI_DIR}/imgui_tables.cpp
+        # also demo ?
+        # ${IMGGUI_DIR}/imgui_demo.cpp
+        # ------
+        ${RLIMGGUI_DIR}/rlImGui.cpp
+        # -----
+        ${ELF_MODULE}/addons/ImGui/bindings_imgui.cpp
 
+    )
+
+
+endif()
 
 
 # ------------- Main
@@ -175,6 +183,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 target_link_libraries(${PROJECT_NAME} PRIVATE
     raylib
 )
+
+if (ENABLE_IMGUI)
+  target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_IMGUI)
+endif()
 
 
 # Web Configurations
