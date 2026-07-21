@@ -6,7 +6,7 @@
 // works also with values like 50000 but then delete/cleanup takes
 // very long ^^ << disabled garbagecollection make it fast again!
 #define _BATCH_COUNT_ 100
-#define _RECT_SIZE_ 100
+#define _RECT_SIZE_ 120
 
 function createPrimitives2D() {
     %obj = new ScriptObject() {

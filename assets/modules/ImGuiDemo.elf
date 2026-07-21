@@ -39,7 +39,7 @@ function ImGuiDemo::onAdd(%this) {
 
 
     %this.add ( singleton SimObject(FieldInspector)); // { class = "FieldInspector"; };(
-    FieldInspector.inspect(ImStorage);
+    FieldInspector.inspect(ImStorage.getId());
 
 
     return true;
