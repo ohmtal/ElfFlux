@@ -23,7 +23,7 @@ function ImGuiDemo::onAdd(%this) {
     // ImGui Binding store the data
     // in this Fields:
     %this.add ( //we add it as group member so it gets deleted automaticly
-        new ScriptObject(ImStorage) {
+        new SimObject(ImStorage) {
             TypeBool    myBool = false;
             TypeF32     myFloat = 0.0;
             TypeS32     myInt = 0;
@@ -46,8 +46,9 @@ function ImGuiDemo::onAdd(%this) {
 }
 //----------------------------------------------------------------------
 function ImGuiDemo::OnRemove(%this) {
+    UnLoadSound(%this.sndFlee );
     CloseAudioDevice();
-    FieldInspector.delete();
+    // removed by simgroup FieldInspector.delete();
 }
 //----------------------------------------------------------------------
 function ImGuiDemo::OnUpdate(%this, %dt) {

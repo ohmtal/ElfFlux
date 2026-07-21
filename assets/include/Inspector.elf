@@ -76,14 +76,15 @@ function FieldInspector::Inspect(%this, %object) {
    %classes = getClassHierarchy(%object.getClassName());
    for (%index = getWordCount(%classes) - 1; %index >=0; %index--) {
        %class = getWord(%classes,%index);
-       echo("class:" SPC %class SPC "I=" SPC %index);
-        %this.gui.add(
+       %cnt = getFieldCountNS(%class);
+       echo("class:" SPC %class SPC "I=" SPC %index SPC "field count:" SPC %cnt);
+       if (%cnt == 0) continue; //skip empty
+       %this.gui.add(
           new SimObject() {
             type = $I_Header;
             caption = %class;
           }
         );
-        %cnt = getFieldCountNS(%class);
         for (%i = 0; %i < %cnt; %i++) {
             %fieldname = getFieldNS(%class, %i);
             if (eval("return isObject(" @ %guiId @ "->" @ %fieldname @ ");")) {
@@ -133,7 +134,9 @@ function FieldInspector::Render(%this) {
         switch (%element.type) {
             case $I_Header:
                // ImSeparatorText(%element.caption);
-                %skip = !ImTreeNode(%element.caption, ImGuiTreeNodeFlags_DefaultOpen);
+                if (%element.caption $= "SimObject") %flags = 0;
+                else %flags = ImGuiTreeNodeFlags_DefaultOpen;
+                %skip = !ImTreeNode(%element.caption, %flags);
                 // echo("OPEN! skip=" SPC %skip SPC "class:" SPC %element.caption);
 
             case $I_CloseHeader:
