@@ -1,0 +1,15 @@
+set(RAYTAL_SRC
+  ${CMAKE_CURRENT_LIST_DIR}/RayTal/Core.h
+  ${CMAKE_CURRENT_LIST_DIR}/RayTal/Settings.h
+  ${CMAKE_CURRENT_LIST_DIR}/RayTal/Main.h
+  ${CMAKE_CURRENT_LIST_DIR}/RayTal/Tools.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/RayTal/Tools.h
+  ${CMAKE_CURRENT_LIST_DIR}/RayTal/Main.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/RayTal/TypeDef.h
+  ${CMAKE_CURRENT_LIST_DIR}/RayTal/Settings.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/RayTal/Gui.h
+  ${CMAKE_CURRENT_LIST_DIR}/RayTal/Gui.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/RayTal/ResourceManager.h
+  ${CMAKE_CURRENT_LIST_DIR}/RayTal/ResourceManager.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/RayTal/FileHelper.h
+)
