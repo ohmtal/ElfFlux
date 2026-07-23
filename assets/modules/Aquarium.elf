@@ -1,0 +1,140 @@
+exec("assets/include/TextureAtlas.elf");
+
+function createAquarium() {
+    %obj = new ScriptGroup() {
+        class = "Aquarium";
+    };
+
+    return %obj;
+}
+//----------------------------------------------------------------------
+function Aquarium::onAdd(%this) {
+
+
+    %this.Spritesheet = loadTextureAtlas("assets/texture/kenney_fish-pack_2/Spritesheet/", "spritesheet-double.xml");
+    %this.Spritesheet.name = "SpriteSheet";
+    %this.add(%this.Spritesheet);
+
+    %this.showSheet = true;
+    %this.paintSize = 32;
+    // %this.painting = false;
+    %this.add( new SimGroup(SceneObjects));
+
+    return true;
+}
+//----------------------------------------------------------------------
+function Aquarium::OnRemove(%this) {
+}
+//----------------------------------------------------------------------
+function Aquarium::OnUpdate(%this, %dt) {
+}
+//----------------------------------------------------------------------
+function Aquarium::DrawSpriteSheet(%this) {
+    %s = %this.Spritesheet;
+    %cnt = %s.getDynamicFieldCount();
+    %screenSize = getScreenSize();
+    %screenSize.y /= 2;
+    %x = 0; %y = 0;
+    %size = 32;
+    %mousePos = GetMousePosition();
+    %this.cursorTexure = "";
+    %textureId = %s.TextureId;
+    for (%i = 0; %i < %cnt ; %i++) {
+        %f = %s.getDynamicField(%i);
+        %name = getField(%f,0);
+        if (%name $= "TextureId") continue;
+        %srcRect = getField(%f,1);
+        %y += %size;
+        if ( %y+%size > %screenSize.y) {
+            %y = 0;
+            %x += %size;
+        }
+        %dstRect = %x SPC %y SPC %size SPC %size;
+        DrawTexturePro(%textureId,%srcRect,%dstRect, "0 0",0 );
+        // %s.DrawSrcDstRect(%srcRect,%dstRect, "255 255 255 254");
+        if (PointInRect(%mousePos, %dstRect)) {
+            // echo("inRect:" SPC %name);
+            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+                %this.selectedTexture = %name;
+            }
+            %this.cursorTexure = %name;
+        }
+
+    }
+    if (%this.cursorTexure !$="")  DrawText(%this.cursorTexure, %mousePos.x + 8, %mousePos.y + 8, 20, "128 255 0", true, BLACK);
+}
+//----------------------------------------------------------------------
+function Aquarium::Render(%this) {
+
+     ClearBackground("176 233 252"); //only set once
+
+   foreach(%obj in SceneObjects) {
+       //Spritesheet.DrawSrcDstRect(%obj.srcRect,%obj.dstRect, "255 255 255 254");
+       DrawTexturePro(Spritesheet.textureId,%obj.srcRect,%obj.dstRect, "0 0",0 );
+   }
+
+   %screenSize = GetScreenSize();
+   %mousePos = GetMousePosition();
+   if (%this.selectedTexture $= "") {
+        %this.DrawSpriteSheet();
+   }
+   else
+   {
+        %srcRect = Spritesheet.getFieldValue(%this.selectedTexture);
+        %dstRect = (%screenSize.x - 128) SPC 0 SPC 128 SPC 128;
+        if (PointInRect(%mousePos, %dstRect)) {
+            %dstRect.x -= 128;
+        }
+        DrawTexturePro(Spritesheet.textureId,%srcRect,%dstRect, "0 0",0 );
+        DrawRectangleLinesEx(%dstRect, 2.0, BLACK);
+
+
+
+            %wheel = GetMouseWheelMove();
+            if (%wheel != 0) {
+                %this.paintSize += 8 * %wheel;
+                if (%this.paintSize < 8 )  %this.paintSize = 8; // min 8 ?
+                if (%this.paintSize > 256 )  %this.paintSize = 256; //max 256 ?
+            }
+
+
+
+            if (IsKeyDown(KEY_LEFT_SHIFT)) {
+                // Snap to grid
+                %gridSize = %this.paintSize;
+
+                %snapX = mFloor(%mousePos.x / %gridSize) * %gridSize;
+                %snapY = mFloor(%mousePos.y / %gridSize) * %gridSize;
+
+                %maxX = getWord(%screenSize, 0) - %this.paintSize;
+                %maxY = getWord(%screenSize, 1) - %this.paintSize;
+
+                %snapX = mClamp(%snapX, 0, %maxX);
+                %snapY = mClamp(%snapY, 0, %maxY);
+
+                %dstRect = %snapX SPC %snapY SPC %this.paintSize SPC %this.paintSize;
+
+            } else {
+                %dstRect = (%mousePos.x - %this.paintSize / 2) SPC (%mousePos.y - %this.paintSize / 2) SPC %this.paintSize SPC %this.paintSize;
+            }
+            DrawTexturePro(Spritesheet.textureId,%srcRect,%dstRect, "0 0",0 );
+   //          Spritesheet.DrawSrcDstRect(%srcRect,%dstRect, "255 255 255 254");
+            DrawText(%this.paintSize, %dstRect.x + 1 , %dstRect.y + 1, 20);
+
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                SceneObjects.add(
+                  new SimObject() {
+                    TypeRectangle srcRect = %srcRect;
+                    TypeRectangle dstRect = %dstRect;
+                });
+            }
+
+
+
+        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+            %this.selectedTexture = "";
+            // %this.painting = false;
+        }
+   }
+}
+//----------------------------------------------------------------------

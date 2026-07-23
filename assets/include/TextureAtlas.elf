@@ -1,0 +1,86 @@
+exec("./ScriptXML.elf"); //getXMLAttribute
+
+// Texture Atlas .. parse content and create a SimSet with the Textures:
+// content looks like:
+// <TextureAtlas imagePath="spritesheet-double.png">
+// <SubTexture name="background_rock_a" x="640" y="256" width="128" height="128"/>
+// <SubTexture name="background_rock_b" x="1280" y="512" width="128" height="128"/>
+// <SubTexture name="background_seaweed_a" x="1280" y="384" width="128" height="128"/>
+// </TextureAtlas>
+
+
+/*
+ include("includes/TextureAtlas.elf");
+ $t = loadTextureAtlas("assets/texture/kenney_fish-pack_2/Spritesheet/", "spritesheet-double.xml");
+ echo($t.background_rock_a);
+
+ ....
+ result is a SimObject with field TextureId
+ object have fields with "name" and rect like background_rock_a="640 512 128 128";
+ //
+*/
+function loadTextureAtlas(%filePath, %filename) {
+
+    //NOTE LoadFileText is better for android ?!
+
+    if (!isFunction("getXMLAttribute")) {
+        error("Missing include ?! getXMLAttribute not found!");
+        return false;
+    }
+
+    %file = new FileObject();
+    if (!%file.openForRead(%filePath @ "/" @ %filename)) {
+        error("Failed to open Atlas XML File");
+        %file.delete();
+        return false;
+    }
+
+    while (!%file.isEOF()) {
+        %line = %file.readLine();
+        // echo("line:" SPC %line);
+
+        if (strstr(%line, "<TextureAtlas") != -1) {
+            %attrib =  getXMLAttribute(%line, "imagePath");
+            if (%attrib !$= "") {
+                %result = new SimObject() {
+                    class = "TextureAtlas";
+                    internalName = %attrib;
+                };
+                %result.TextureId = LoadTexture(%filePath @ "/" @ %attrib);
+            }
+            continue;
+        }
+
+        if (strstr(%line, "<SubTexture") == -1)
+            continue;
+
+        if (!isObject(%result)) {
+            // we do a dummy to load later!
+            error("Filename not detected .. add dummy SimObject!");
+            %result = new SimObject();
+        }
+
+        %name   = getXMLAttribute(%line, "name");
+        %x      = getXMLAttribute(%line, "x");
+        %y      = getXMLAttribute(%line, "y");
+        %width  = getXMLAttribute(%line, "width");
+        %height = getXMLAttribute(%line, "height");
+
+        if (%name $= "")
+            continue;
+        %result.addTypeField(%name, "TypeRectangle", %x SPC %y SPC %width SPC %height);
+    }
+
+    %file.close();
+    %file.delete();
+
+    return %result;
+
+}
+
+//---------------------------------------------------------------------------------------------
+
+
+
+
+

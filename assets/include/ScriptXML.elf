@@ -1,0 +1,67 @@
+// torque script xml attrib from a line
+function getXMLAttribute(%line, %attrib)
+{
+    %searchStr = %attrib @ "=\"";
+    %startIdx = strstr(%line, %searchStr);
+
+    if (%startIdx == -1)
+        return "";
+
+    %startIdx += strlen(%searchStr);
+    %endIdx = strpos(%line, "\"", %startIdx);
+
+    if (%endIdx == -1)
+        return "";
+
+    return getSubStr(%line, %startIdx, %endIdx - %startIdx);
+}
+// =============================================================================
+/**
+ * parseTextureAtlasString
+ * example parser for well formed <TextureAtlas>
+ * create a simSet with simobjects (texture name stored in internal name)
+ */
+function parseTextureAtlasString(%xmlContent, %setName)
+{
+    %xmlContent = strreplace(%xmlContent, "\r", "");
+    %count = getRecordCount(%xmlContent);
+
+    %result = new SimSet();
+    if (%setName !$= "") %result.name = %setName;
+
+    for (%i = 0; %i < %count; %i++)
+    {
+        %line = getRecord(%xmlContent, %i);
+
+        warn("working on line" SPC %line);
+
+        if (strstr(%line, "<TextureAtlas") != -1) {
+            %result.imagePath =  getXMLAttribute(%line, "imagePath");
+            continue;
+        }
+
+        if (strstr(%line, "<SubTexture") == -1)
+            continue;
+
+        %name   = getXMLAttribute(%line, "name");
+        %x      = getXMLAttribute(%line, "x");
+        %y      = getXMLAttribute(%line, "y");
+        %width  = getXMLAttribute(%line, "width");
+        %height = getXMLAttribute(%line, "height");
+
+        if (%name $= "")
+            continue;
+
+        %obj = new SimObject() {
+            x      = %x;
+            y      = %y;
+            width  = %width;
+            height = %height;
+            internalName = %name;
+        };
+
+        echo("created SimObject " @ %obj.getInternalName() @ " [x=" @ %obj.x @ ", y=" @ %obj.y @ "]");
+        %result.add(%obj);
+    }
+    return %result;
+}

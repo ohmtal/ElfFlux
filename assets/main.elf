@@ -1,5 +1,5 @@
 // Main Script
-$MODULES = "TerrainDemo ModelViewer WaterPlaneDemo gridtest Primitives2D BunnyMark ImGuiDemo";
+$MODULES = "TerrainDemo ModelViewer WaterPlaneDemo gridtest Primitives2D BunnyMark ImGuiDemo Aquarium";
 // $MODULES = $MODULES SPC "lights_script models_first_person_maze textures_sprite_animation";
 // $MODULES = $MODULES SPC "textures_background_scrolling Eyes";
 // $MODULES = $MODULES SPC "textures_mouse_painting";

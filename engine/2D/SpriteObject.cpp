@@ -29,6 +29,7 @@ public:
     }
 
     S32 mTextureID = 0;
+    Rectangle mTextureRect = {0.f,0.f,0.f,0.f};
     F32 mRotation = 0.f;
     Vector2 mRorationOrgin = {0.f, 0.f};
     // F32 mSpeed = 0.f;
@@ -66,12 +67,19 @@ void SpriteObject::draw(const F32& dt) {
 
     Texture* tex = ElfResource::TextureMap.get(mTextureID);
     if (!tex) return;
-    Rectangle source = {0.f, 0.f, (F32)tex->width, (F32)tex->height};
 
-    if (mFlipX) source.width = -source.width;
-    if (mFlipY) source.height = -source.height;
+    Rectangle srcRect;
+    if (mTextureRect.width <= 0.f || mTextureRect.height <= 0.f) {
+        srcRect = {0.f, 0.f, (F32)tex->width, (F32)tex->height};
+    } else {
+        srcRect = mTextureRect;
+    }
 
-    ::DrawTexturePro(*tex, source, mWorldBox, mRorationOrgin, mRotation, mColor);
+
+    if (mFlipX) srcRect.width = -srcRect.width;
+    if (mFlipY) srcRect.height = -srcRect.height;
+
+    ::DrawTexturePro(*tex, srcRect, mWorldBox, mRorationOrgin, mRotation, mColor);
 
     Parent::draw(dt);
 }
@@ -99,6 +107,8 @@ void SpriteObject::setForwardVectorByRotation(F32 rotation, F32 speed) {
 void SpriteObject::initPersistFields() {
 
     addField("TextureId", TypeS32, Offset(mTextureID, SpriteObject),"ID of the Texture");
+    addField("TextureRect", TypeRectangle, Offset(mTextureRect, SpriteObject)
+        , "source rect of the texture default 0.f,0.f,0.f,0.f using texture size.");
     addField("Rotation", TypeF32, Offset(mRotation, SpriteObject),"rotation in degree");
     addField("RotationOrgin", TypeF32, Offset(mRorationOrgin, SpriteObject),"point where the rotation orign is");
     // addField("Speed", TypeF32, Offset(mSpeed, SpriteObject),"motion speed");
