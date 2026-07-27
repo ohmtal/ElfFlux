@@ -104,7 +104,7 @@ namespace ElfObjects {
                 mStars[i].z -= dt * mSpeed;
 
                 // Calculate the screen position
-                mStarsScreenPos[i] = (Vector2){
+                mStarsScreenPos[i] = Vector2{
                     mScreenWidth*0.5f + mStars[i].x/mStars[i].z,
                     mScreenHeight*0.5f + mStars[i].y/mStars[i].z,
                 };
@@ -140,7 +140,7 @@ namespace ElfObjects {
                     if ((t - mStars[i].z) > 1e-3)
                     {
                         // Calculate the screen position of the old point
-                        Vector2 startPos = (Vector2){
+                        Vector2 startPos = Vector2{
                             mScreenWidth*0.5f + mStars[i].x/t,
                             mScreenHeight*0.5f + mStars[i].y/t,
                         };

@@ -351,7 +351,7 @@ extern "C"
 
       // Cursor for hue selection
       markerPos =
-        (Vector2){ pos.x + 210 + hueRect.width / 2 + offset,
+        Vector2{ pos.x + 210 + hueRect.width / 2 + offset,
                    pos.y + (1 - (color->b / 255.0f)) * hueRect.height +
                      offset };
       DrawCircleV(markerPos, 10, WHITE);
@@ -359,7 +359,7 @@ extern "C"
 
       // Cursor for alpha selection
       markerPos =
-        (Vector2){ pos.x + 250 + alphaRect.width / 2 + offset,
+        Vector2{ pos.x + 250 + alphaRect.width / 2 + offset,
                    pos.y + (1 - (color->a / 255.0f)) * alphaRect.height +
                      offset };
       DrawCircleV(markerPos, 10, WHITE);
@@ -367,13 +367,13 @@ extern "C"
 
       // Color preview rectangle rounded
       DrawRectangleRoundedLinesEx(
-        (Rectangle){ pos.x + 300 + offset, pos.y + offset, 80, 80 },
+        Rectangle{ pos.x + 300 + offset, pos.y + offset, 80, 80 },
         0.1,
         10,
         4.0,
         borderColor);
       DrawRectangleRounded(
-        (Rectangle){ pos.x + 300 + offset, pos.y + offset, 80, 80 },
+        Rectangle{ pos.x + 300 + offset, pos.y + offset, 80, 80 },
         0.1,
         10,
         *color);
@@ -461,7 +461,7 @@ extern "C"
       float stepCount = (max - min) / step;
       float stepWidth = width / stepCount;
       for (int i = 0; i < stepCount; ++i) {
-        DrawRectangleLinesEx((Rectangle){ position.x + stepWidth * i,
+        DrawRectangleLinesEx(Rectangle{ position.x + stepWidth * i,
                                           position.y + height,
                                           stepWidth,
                                           height },
@@ -547,7 +547,7 @@ extern "C"
     DrawTextEx(
       *io->font,
       text,
-      (Vector2){ position.x + 10, position.y + height / 2 - height / 2 },
+      Vector2{ position.x + 10, position.y + height / 2 - height / 2 },
       height,
       0,
       textColor);
@@ -581,7 +581,7 @@ extern "C"
         DrawTextEx(
           *io->font,
           options[i],
-          (Vector2){ position.x + 10,
+          Vector2{ position.x + 10,
                      position.y + height * (i + 1) + height / 2 - height / 2 },
           height,
           1,

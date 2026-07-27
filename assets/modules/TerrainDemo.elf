@@ -126,6 +126,7 @@ function TerrainDemo::loadGreenManModel(%this,%spawnPoint) {
 //----------------------------------------------------------------------
 function TerrainDemo::loadKenneyModel(%this, %spawnPoint) {
 
+
     // global! -  keep in memory until app ends ... (auto cleaned up by resource manager)
     if ($kenneyModel * 1 == 0) {
         %path = "assets/models/kenney_animated-characters-retro/";

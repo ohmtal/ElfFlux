@@ -12,7 +12,12 @@
 
 #include "raymath.h"
 
+using namespace ElfMath;
+
 namespace ElfGrid {
+
+
+
 //-----------------------------------------------------------------------------
 /* Constructor */
 BasicGrid::BasicGrid()
@@ -103,8 +108,8 @@ S32 BasicGrid::getNodeIndex(F32 x, F32 y)
 
 	// 3. Convert to integer and CLAMP
 	// This ensures that even if x is exactly at the edge, it stays within valid indices
-	S32 xNode = std::clamp(static_cast<S32>(std::floor(fx)), 0, mNodesX - 1);
-	S32 yNode = std::clamp(static_cast<S32>(std::floor(fy)), 0, mNodesY - 1);
+	S32 xNode = mClamp(static_cast<S32>(mFloor(fx)), 0, mNodesX - 1);
+	S32 yNode = mClamp(static_cast<S32>(mFloor(fy)), 0, mNodesY - 1);
 
 	// 4. Final safety check on the calculated index
 	S32 node = xNode + yNode * mNodesX;
@@ -145,11 +150,11 @@ bool BasicGrid::getNodesByRect(const Rectangle &lRect, std::vector<S32> &lList, 
 		return false;
 
 	// 1. Initial calculation using floor to ensure we get the correct starting cell
-	S32 xB = static_cast<S32>(std::floor((lRect.x - mArea.x) / mSquareSize));
-	S32 yB = static_cast<S32>(std::floor((lRect.y - mArea.y) / mSquareSize));
+	S32 xB = static_cast<S32>(mFloor((lRect.x - mArea.x) / mSquareSize));
+	S32 yB = static_cast<S32>(mFloor((lRect.y - mArea.y) / mSquareSize));
 
-	S32 xE = static_cast<S32>(std::floor((lRect.x + lRect.width - mArea.x) / mSquareSize));
-	S32 yE = static_cast<S32>(std::floor((lRect.y + lRect.height - mArea.y) / mSquareSize));
+	S32 xE = static_cast<S32>(mFloor((lRect.x + lRect.width - mArea.x) / mSquareSize));
+	S32 yE = static_cast<S32>(mFloor((lRect.y + lRect.height - mArea.y) / mSquareSize));
 
 	// 2. Bounds handling
 	if (lCanOverlap)

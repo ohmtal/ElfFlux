@@ -1,5 +1,18 @@
 // Main Script
-$MODULES = "TerrainDemo ModelViewer WaterPlaneDemo gridtest Primitives2D BunnyMark ImGuiDemo Aquarium";
+$MODULES = "ModelViewer WaterPlaneDemo gridtest Primitives2D BunnyMark ImGuiDemo";
+
+//FIXME TerrainDemo not working on Win64 ?! - terrain looks strange and characterMedium.gltf cause crash!
+if (getOS() $= "Win64") {
+    warn("Win64: TerrainDemo - GLB loader does not like characterMedium.gltf !!!");
+    warn("Win64: TerrainDemo - Terrain + Water looks bad ...");
+} else {
+    $MODULES = "TerrainDemo" SPC $MODULES;
+}
+
+
+
+// Aquarium
+
 // $MODULES = $MODULES SPC "lights_script models_first_person_maze textures_sprite_animation";
 // $MODULES = $MODULES SPC "textures_background_scrolling Eyes";
 // $MODULES = $MODULES SPC "textures_mouse_painting";

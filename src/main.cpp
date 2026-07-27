@@ -92,7 +92,13 @@ void mainLoop(void*) {
 int main(int argc, char* argv[])
 {
     argParser(argc, argv);
-    engineGlue::init(nullptr, GetApplicationDirectory()); // FIXME command line path => --path
+
+    // FIXME command line - look as i did it in BaseFlux 
+    // FIXME2 need more elfFile bindings 
+    engineGlue::init(nullptr, GetApplicationDirectory()); 
+    ChangeDirectory(GetApplicationDirectory()),
+
+
     initEnum();
     ElfFlux::initEnum();
     SetTraceLogCallback(CustomTraceLog);

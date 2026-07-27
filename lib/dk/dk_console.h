@@ -62,7 +62,7 @@ extern "C"
 #if defined(DK_CONSOLE_IMPLEMENTATION)
   void DK_ConsoleInit(Console* console, int log_size)
   {
-    console->ui = (Rectangle){ 0.0f, 0.0f, 0.0f, 0.0f };
+    console->ui = Rectangle{ 0.0f, 0.0f, 0.0f, 0.0f };
     console->ui.height = GetScreenHeight();
     console->is_open = false;
     console->log_index = 0;
