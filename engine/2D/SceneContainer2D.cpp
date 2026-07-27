@@ -19,6 +19,8 @@ SceneContainer2D gClientSceneContainer2D;
 S32 QSORT_CALLBACK SceneContainer2D::compare_CollisionOverlap( const void* a, const void* b ) {
     const CollisionInfo2D* infoA =  *(const CollisionInfo2D**)a;
     const CollisionInfo2D* infoB =  *(const CollisionInfo2D**)b;
+
+    if (infoA->mOverlap == infoB->mOverlap) return 0;
     if (infoA->mOverlap > infoB->mOverlap) return -1;
     return 1;
 }
@@ -28,6 +30,7 @@ S32 QSORT_CALLBACK SceneContainer2D::compare_ObjectLayer( const void* a, const v
     const SceneObject2D * cp_a = *(const SceneObject2D**)a;
     const SceneObject2D * cp_b = *(const SceneObject2D**)b;
 
+    if (cp_a->mPosition.z == cp_b->mPosition.z) return 0;
     if (cp_a->mPosition.z > cp_b->mPosition.z)
         return -1;
     else
