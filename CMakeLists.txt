@@ -121,6 +121,13 @@ if(NOT EXISTS ${ELF_CMAKE})
     )
 else()
 
+  set(ELF_APP_NAME "ElfFlux" CACHE STRING "ElfScript: App-Name used in scripts" FORCE)
+  set(ELF_APP_VERSION "500" CACHE STRING "ElfScript: App-Version used in scripts" FORCE)
+  set(ELF_APP_VERSION_STRING "Version 26.08" CACHE STRING "ElfScript: App-Version String used in scripts" FORCE)
+
+  set(ELF_ENABLE_DOC_EXPORTER ON CACHE BOOL "ElfScript: Enable the Doc Exporter addon" FORCE)
+
+
   message( STATUS "\n Using ElfScript: " ${ELF_CMAKE} )
   include(${ELF_CMAKE})
 
@@ -128,7 +135,7 @@ else()
    ${ELF_MODULE}
   )
 
-  list(APPEND ELFSCRIPT_SRC ${ELF_MODULE}/addons/console/consoleDocExporter.cpp)
+  # list(APPEND ELFSCRIPT_SRC ${ELF_MODULE}/addons/console/consoleDocExporter.cpp)
 
 endif()
 
