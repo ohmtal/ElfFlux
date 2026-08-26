@@ -178,8 +178,8 @@ void SceneContainer2D::findObjectsInBox(BoundingBox searchBox, Vector<SceneObjec
         return;
     }
 
-    F32 minLayer = ElfMath::mClamp(searchBox.min.z, 0.f, 1.f);
-    F32 maxLayer = ElfMath::mClamp(searchBox.max.z, 0.f, 1.f);
+    F32 minLayer = ElfMath::mClampF(searchBox.min.z, 0.f, 1.f);
+    F32 maxLayer = ElfMath::mClampF(searchBox.max.z, 0.f, 1.f);
     if (minLayer > maxLayer) {
         F32 dummy = minLayer;
         minLayer = maxLayer;
