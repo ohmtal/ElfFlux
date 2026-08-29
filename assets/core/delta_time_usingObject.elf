@@ -25,11 +25,12 @@ function MainInit() {
         TypeS32 currentFps = 60;
         TypeF32 speed = 10;
         TypeF32 circleRadius = 32;
+        TypeVector deltaCircle = {0};
+        TypeVector frameCircle = {0};
     };
-    // add fields here because i can't access a field on constructor - can i? : not tested
-    // TYPEIDENT must be cast as string here :
-    $Game.addTypeField("deltaCircle", "TypeVector2", 0 SPC $Game.screenHeight / 3.0 );
-    $Game.addTypeField("frameCircle", "TypeVector2", 0 SPC $Game.screenHeight * 2.0 / 3.0 );
+    $Game.deltaCircle = { 0, $Game.screenHeight / 3.0};
+    $Game.frameCircle = { 0, $Game.screenHeight * 2.0 / 3.0};
+
 
     // test layer
     $game.frameCircle = $game.deltaCircle;

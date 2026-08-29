@@ -4,6 +4,8 @@ function CreateDeltaTime() {
         TypeS32 currentFps = 60;
         TypeF32 speed = 10;
         TypeF32 circleRadius = 32;
+        TypeVector deltaCircle = {0};
+        TypeVector frameCircle = {0};
     };
     return %module;
 
@@ -18,9 +20,9 @@ function DeltaTime::OnAdd(%this) {
     %this.screenHeight = GetScreenHeight();
     %this.screenWidth = GetScreenWidth();
 
+    %this.deltaCircle = { 0, %this.screenHeight / 3.0};
+    %this.frameCircle = { 0, %this.screenHeight * 2.0 / 3.0};
 
-    %this.addTypeField("deltaCircle", "TypeVector2", 0 SPC %this.screenHeight / 3.0 );
-    %this.addTypeField("frameCircle", "TypeVector2", 0 SPC %this.screenHeight * 2.0 / 3.0 );
 
     %this.frameCircle = %this.deltaCircle;
     return true;
