@@ -1,3 +1,4 @@
+#if 0 // moved to ElfScript/addon/raylib/consoledk
 //-----------------------------------------------------------------------------
 // Copyright (c) 2026 Thomas Hühn (XXTH)
 // SPDX-License-Identifier: MIT
@@ -178,3 +179,4 @@ namespace ConsoleGui {
 
 } //namespace
 
+#endif

@@ -33,7 +33,7 @@ set(PROJECT_SRC
     engine/grid/Grid.h
     engine/grid/tBinaryHeap.h
 
-    engine/gui/ConsoleGuiObject.cpp
+    # engine/gui/ConsoleGuiObject.cpp
     engine/gui/Gui.cpp
     engine/gui/Gui.h
 
@@ -68,76 +68,107 @@ if ("${PLATFORM}" STREQUAL "Web")
     )
 endif()
 # -----------------------------------------------------------------------------
-
-# ------------- rayLib-elfScript
-set(RAYELF_DIR "/opt/raylib-elfscript" CACHE PATH "Path to RayLib-ElfScript")
-message( STATUS "\n Ray-ElfScript directory is: " ${RAYELF_DIR} )
-set(RAYELF_CMAKE "${RAYELF_DIR}/src/raylib-elfscript.cmake")
-if(NOT EXISTS ${RAYELF_CMAKE})
-  message(FATAL_ERROR
-    "\n" ${RAYELF_DIR}
-    "\n ********** RayLib-ElfScript not found! *************"
-  )
-  #FIXME fallback
-else()
-  message( STATUS "\n Include: " ${RAYELF_CMAKE} )
-  include(${RAYELF_CMAKE})
-endif()
-
-
-
-# ------------- RayLib
-# set(PLATFORM "SDL" CACHE STRING "raylib platform" FORCE)
-set(RAYLIB_DIR "${RAYELF_DIR}/lib/raylib" CACHE PATH "Path to RayLib 6.0")
-message( STATUS "\n Set Raylib to: " ${RAYLIB_DIR} )
-
-if(NOT EXISTS "${RAYLIB_DIR}/CMakeLists.txt")
-  message(FATAL_ERROR
-    "\n" ${RAYLIB_DIR}
-    "\n ********** RayLib not found! *************"
-  )
-else()
-  add_subdirectory("${RAYLIB_DIR}" "${CMAKE_BINARY_DIR}/raylib_build")
-endif()
-
-# ----------- Elf/TorqueScript
-# first try to get the current source
+# =============== ElfScript >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 set(ELFSCRIPT_PATH "/opt/ElfScript" CACHE PATH "Path to ElfScript")
 set(ELF_MODULE ${ELFSCRIPT_PATH}/ElfScript)
 set(ELF_CMAKE ${ELF_MODULE}/ElfScript.cmake)
+set(RAYELF_CMAKE ${ELF_MODULE}/addons/raylib/raylib-elfscript.cmake)
 
-# fallback to Version 0.1 if not found/configured
-if(NOT EXISTS ${ELF_CMAKE})
-  set(ELF_MODULE "${RAYELF_DIR}/lib/ElfScript_v0dot1")
-  set(ELF_CMAKE ${ELF_MODULE}/ElfScript.cmake)
-endif()
-
-# this should not happen ....
 if(NOT EXISTS ${ELF_CMAKE})
     message(FATAL_ERROR
-        "\n ElfScript path is not set! "
+        "\n ElfScript path is not set or invalid: ${ELFSCRIPT_PATH} "
         "\n Please provide the path using: "
         "\n cmake -B build -DELFSCRIPT_PATH=/path/to/ElfScript"
     )
 else()
 
-  set(ELF_APP_NAME "ElfFlux" CACHE STRING "ElfScript: App-Name used in scripts" FORCE)
-  set(ELF_APP_VERSION "500" CACHE STRING "ElfScript: App-Version used in scripts" FORCE)
-  set(ELF_APP_VERSION_STRING "Version 26.08" CACHE STRING "ElfScript: App-Version String used in scripts" FORCE)
+ set(RAYLIB_FETCH ON)
+ set(RAYELF_DEFAULTMAIN OFF)
+ set(RAYELF_DKCONSOLE ON)
+ set(ELF_ENABLE_CONSOLE_VECTOR ON)
+ set(ELF_ENABLE_SLIMOBJECT ON)
+ set(ELF_ENABLE_FIELDCACHE ON)
+ set(ELF_ENABLE_DOC_EXPORTER ON)
+ set(ELF_FILE_EXTENSION "elf" CACHE STRING "ElfScript: File extension")
+ set(ELF_APP_NAME "ElfFlux" CACHE STRING "ElfScript: App-Name used in scripts")
+ set(ELF_APP_VERSION "800" CACHE STRING "ElfScript: App-Version used in scripts")
+ set(ELF_APP_VERSION_STRING "Version 0.8" CACHE STRING "ElfScript: App-Version String used in scripts")
 
-  set(ELF_ENABLE_DOC_EXPORTER ON CACHE BOOL "ElfScript: Enable the Doc Exporter addon" FORCE)
 
-
-  message( STATUS "\n Using ElfScript: " ${ELF_CMAKE} )
-  include(${ELF_CMAKE})
-
-  set (ELFSCRIPT_INCLUDES
-   ${ELF_MODULE}
-  )
-
-  # list(APPEND ELFSCRIPT_SRC ${ELF_MODULE}/addons/console/consoleDocExporter.cpp)
-
+ include(${ELF_CMAKE})
+ include(${RAYELF_CMAKE})
 endif()
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<< ElfScript ========================
+
+# # # # ------------- rayLib-elfScript
+# # # set(RAYELF_DIR "/opt/raylib-elfscript" CACHE PATH "Path to RayLib-ElfScript")
+# # # message( STATUS "\n Ray-ElfScript directory is: " ${RAYELF_DIR} )
+# # # set(RAYELF_CMAKE "${RAYELF_DIR}/src/raylib-elfscript.cmake")
+# # # if(NOT EXISTS ${RAYELF_CMAKE})
+# # #   message(FATAL_ERROR
+# # #     "\n" ${RAYELF_DIR}
+# # #     "\n ********** RayLib-ElfScript not found! *************"
+# # #   )
+# # #   #FIXME fallback
+# # # else()
+# # #   message( STATUS "\n Include: " ${RAYELF_CMAKE} )
+# # #   include(${RAYELF_CMAKE})
+# # # endif()
+# # #
+# # #
+# # #
+# # # # ------------- RayLib
+# # # # set(PLATFORM "SDL" CACHE STRING "raylib platform" FORCE)
+# # # set(RAYLIB_DIR "${RAYELF_DIR}/lib/raylib" CACHE PATH "Path to RayLib 6.0")
+# # # message( STATUS "\n Set Raylib to: " ${RAYLIB_DIR} )
+# # #
+# # # if(NOT EXISTS "${RAYLIB_DIR}/CMakeLists.txt")
+# # #   message(FATAL_ERROR
+# # #     "\n" ${RAYLIB_DIR}
+# # #     "\n ********** RayLib not found! *************"
+# # #   )
+# # # else()
+# # #   add_subdirectory("${RAYLIB_DIR}" "${CMAKE_BINARY_DIR}/raylib_build")
+# # # endif()
+# # #
+# # # # ----------- Elf/TorqueScript
+# # # # first try to get the current source
+# # # set(ELFSCRIPT_PATH "/opt/ElfScript" CACHE PATH "Path to ElfScript")
+# # # set(ELF_MODULE ${ELFSCRIPT_PATH}/ElfScript)
+# # # set(ELF_CMAKE ${ELF_MODULE}/ElfScript.cmake)
+# # #
+# # # # fallback to Version 0.1 if not found/configured
+# # # if(NOT EXISTS ${ELF_CMAKE})
+# # #   set(ELF_MODULE "${RAYELF_DIR}/lib/ElfScript_v0dot1")
+# # #   set(ELF_CMAKE ${ELF_MODULE}/ElfScript.cmake)
+# # # endif()
+# # #
+# # # # this should not happen ....
+# # # if(NOT EXISTS ${ELF_CMAKE})
+# # #     message(FATAL_ERROR
+# # #         "\n ElfScript path is not set! "
+# # #         "\n Please provide the path using: "
+# # #         "\n cmake -B build -DELFSCRIPT_PATH=/path/to/ElfScript"
+# # #     )
+# # # else()
+# # #
+# # #   set(ELF_APP_NAME "ElfFlux" CACHE STRING "ElfScript: App-Name used in scripts" FORCE)
+# # #   set(ELF_APP_VERSION "500" CACHE STRING "ElfScript: App-Version used in scripts" FORCE)
+# # #   set(ELF_APP_VERSION_STRING "Version 26.08" CACHE STRING "ElfScript: App-Version String used in scripts" FORCE)
+# # #
+# # #   set(ELF_ENABLE_DOC_EXPORTER ON CACHE BOOL "ElfScript: Enable the Doc Exporter addon" FORCE)
+# # #
+# # #
+# # #   message( STATUS "\n Using ElfScript: " ${ELF_CMAKE} )
+# # #   include(${ELF_CMAKE})
+# # #
+# # #   set (ELFSCRIPT_INCLUDES
+# # #    ${ELF_MODULE}
+# # #   )
+# # #
+# # #   # list(APPEND ELFSCRIPT_SRC ${ELF_MODULE}/addons/console/consoleDocExporter.cpp)
+# # #
+# # # endif()
 
 
 # -------- Imgui + rlImgui
