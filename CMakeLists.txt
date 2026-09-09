@@ -83,6 +83,8 @@ if(NOT EXISTS ${ELF_CMAKE})
 else()
 
  set(RAYLIB_FETCH ON)
+#  ElfFlux require 6.1-dev
+ set(RAYLIB_GIT_MASTER ON)
  set(RAYELF_DEFAULTMAIN OFF)
  set(RAYELF_DKCONSOLE ON)
  set(ELF_ENABLE_CONSOLE_VECTOR ON)
@@ -97,6 +99,12 @@ else()
 
  include(${ELF_CMAKE})
  include(${RAYELF_CMAKE})
+
+
+  set (ELFSCRIPT_INCLUDES
+   ${ELF_MODULE}
+   ${ELF_MODULE}/addons/raylib/
+  )
 endif()
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<< ElfScript ========================
 
@@ -209,7 +217,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/engine/
     ${CMAKE_CURRENT_LIST_DIR}/lib/
     ${ELFSCRIPT_INCLUDES}
-    ${RAYELF_DIR}/src
     ${IMGGUI_DIR}
     ${RLIMGGUI_DIR}
 )
